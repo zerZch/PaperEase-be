@@ -12,7 +12,6 @@
   --color-fondo-medio: #CDE8E5;
 }
 
-
 body {
   font-family: 'Segoe UI', sans-serif;
   background-color: #f9fafb;
@@ -20,75 +19,69 @@ body {
   line-height: 1.6;
 }
 
+.container {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
 /* Header y navegación */
 header {
   background-color: white;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   padding: 1.5rem 2rem;
+  position: relative;
 }
 
 header .container {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.logo {
-  height: 50px;      /* Ajusta este valor al tamaño que quieras */
-  width: auto;       /* Mantiene la proporción original */
-  display: block;
-}
-
-
-.logo-text {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--color-primario);/* el mismo color principal que usas en la web */
-  user-select: none;
+  justify-content: flex-start;
+  position: relative;
 }
 
 .logo-container {
   display: flex;
   align-items: center;
-  gap: 2rem; /* reduce el espacio entre logo y texto */
+  gap: 0.5rem;
+  z-index: 1;
 }
 
-header .nav {
+.logo {
+  height: 50px;
+  width: auto;
+  display: block;
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primario);
+  user-select: none;
+}
+
+.nav {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  gap: 1.6rem; /* reduce separación entre links */
-  align-items: center;
-  margin-left: 2rem; /* separa del logo-container si es necesario */
+  gap: 1.5rem;
 }
 
-nav a {
+.nav a {
   color: var(--color-primario);
   text-decoration: none;
+  font-weight: 1000;
   transition: color 0.3s ease;
 }
 
-nav a:hover {
+.nav a:hover {
   color: var(--color-secundario);
-}
-
-.btn {
-  background-color: #4f46e5;
-  color: white;
-  padding: 0.6rem 1.5rem;
-  border-radius: 0.5rem;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-left: 1.5rem;
-}
-
-.btn:hover {
-  background-color: var(--color-primario);
 }
 
 /* Hero */
 .hero {
-  background: linear-gradient(to right, var(--color-primario), var( --color-fondo-medio));
+  background: linear-gradient(to right, var(--color-primario), var(--color-fondo-medio));
   color: white;
   text-align: center;
   padding: 6rem 2rem;
@@ -131,9 +124,19 @@ nav a:hover {
 
 /* Sección de features */
 .features {
-  padding: 4rem 2rem;
-  background-color: white;
+  padding: 4rem 0;
   text-align: center;
+}
+
+.features .container {
+  padding: 0 2rem;
+}
+
+.features h2 {
+  font-size: 2.5rem;
+  color: var(--color-primario);
+  font-weight: bold;
+  margin-bottom: 1rem;
 }
 
 .features-grid {
@@ -144,26 +147,135 @@ nav a:hover {
 }
 
 .feature-card {
-  background-color: #f9fafb;
-  padding: 2rem;
+  background-color: white;
+  border: 2px solid var(--color-borde);
+  padding: 2rem 1.5rem;
   border-radius: 1rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  margin: 1rem 0;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
 }
 
-/* === Sección Call to Action (CTA) === */
-/* === Sección Call to Action (CTA) con imagen === */
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.icono-feature {
+  width: 48px;
+  height: 48px;
+  color: var(--color-primario);
+  margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+  font-size: 1.25rem;
+  color: var(--color-primario);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.feature-card p {
+  font-size: 1rem;
+  color: #444;
+}
+
+
+/* --- Novedades --- */
+.novedades-section {
+  padding: 4rem 0;
+  background-color: var(--color-fondo-claro);
+}
+
+.novedades-section .container {
+  padding: 0 2rem;
+}
+
+.novedades-section h2 {
+  font-size: 2.5rem;    
+  font-weight: bold;      
+  color: var(--color-primario); /* mantener el color principal */
+}
+
+.novedades-section p {
+  font-size: 1.125rem;    
+  margin-bottom: 2rem;  
+  color: var(--color-primario);            /* color del texto */
+}
+
+
+.novedades-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.novedad-card {
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1rem;
+  min-height: 160px;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+}
+
+.novedad-card img {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  filter: brightness(0.75);
+  transition: transform 0.3s ease;
+}
+
+.novedad-card:hover img {
+  transform: scale(1.05);
+}
+
+.novedad-card h4 {
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.card1 { grid-column: 1 / span 2; grid-row: 1 / span 4; }
+.card2 { grid-column: 3 / span 2; grid-row: 1 / span 2; }
+.card3 { grid-column: 5 / span 2; grid-row: 1 / span 2; }
+.card5 { grid-column: 3 / span 4; grid-row: 3 / span 2; }
+.card6 { grid-column: 7 / span 2; grid-row: 1 / span 4; }
+
+.novedad-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
+
+/* CTA */
 .cta {
   width: 100%;
   background: linear-gradient(to right, var(--color-primario), var(--color-secundario));
   color: white;
-  padding: 4rem 2rem;
+  padding: 4rem 0;
 }
 
-.cta-container {
-  max-width: 1200px;
-  margin: 0 auto;
+.cta-container.container {
+  padding: 0 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -214,27 +326,13 @@ nav a:hover {
   border-radius: 1rem;
 }
 
-/* Responsive para móviles */
-@media (max-width: 768px) {
-  .cta-container {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .cta-text, .cta-image {
-    flex: 1 1 100%;
-  }
-}
-
-
-
 /* Footer */
 footer {
   background-color: white;
   border-top: 1px solid #ddd;
   padding: 2rem;
   font-size: 0.875rem;
-  color: #777;
+  color: var(--color-primario);
   text-align: center;
 }
 
@@ -248,7 +346,7 @@ footer {
 
 .footer-links a {
   margin-left: 1rem;
-  color: #4f46e5;
+  color: var(--color-primario);
   text-decoration: none;
   font-weight: 600;
   transition: text-decoration 0.3s ease;
@@ -256,9 +354,9 @@ footer {
 
 .footer-links a:hover {
   text-decoration: underline;
+  color: var(--color-secundario);
 }
 
-/* Transiciones suaves para interacciones */
 button, a {
   transition: background-color 0.3s ease, color 0.3s ease;
 }

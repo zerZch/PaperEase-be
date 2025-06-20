@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PaperEase • Bienestar Estudiantil UTP</title>
   <link href="css/style.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 </head>
 <body>
   <!-- Header -->
   <header class="header">
     <div class="container">
-      
-      <!-- Logo + Texto agrupados -->
+      <!-- Logo + Texto -->
       <div class="logo-container">
-        <img src="/frontend/public/logo.png" alt="PaperEase Logo" class="logo">
+        <img src="/Universidad/17Mimi/PaperEase-be/frontend/public/logo.png" alt="PaperEase Logo" class="logo">
         <span class="logo-text">PaperEase</span>
       </div>
   
@@ -25,10 +25,6 @@
         <a href="estadisticas.html">Estadísticas</a>
         <a href="eventos.html">Eventos</a>
       </nav>
-  
-      <!-- Botón -->
-      <button class="btn">Iniciar Sesión</button>
-      
     </div>
   </header>
   
@@ -44,42 +40,76 @@
     </div>
   </section>
 
-  <!-- Features Section -->
-  <section class="features">
-    <div class="container">
-      <h2>¿Qué puedes hacer en PaperEase?</h2>
-      <div class="features-grid">
-        <div class="feature-card">
-          <h3>Visualizar Requisitos</h3>
-          <p>Consulta los requisitos detallados de cada programa de Bienestar Estudiantil.</p>
-        </div>
-        <div class="feature-card">
-          <h3>Solicitud de Formulario</h3>
-          <p>Completa y envía tu formulario con datos personales y archivos adjuntos.</p>
-        </div>
-        <div class="feature-card">
-          <h3>Estadísticas Personalizadas</h3>
-          <p>Filtra y visualiza gráficos con métricas de uso y participación.</p>
-        </div>
-        <div class="feature-card">
-          <h3>Calendario de Eventos</h3>
-          <p>Consulta y gestiona eventos interactivos en un calendario intuitivo.</p>
-        </div>
+ <!-- Features Section -->
+ <section class="features">
+  <div class="container">
+    <h2>¿Qué puedes hacer en PaperEase?</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="icono-feature" data-lucide="file-text"></div>
+        <h3>Visualizar Requisitos</h3>
+        <p>Consulta los requisitos detallados de cada programa de Bienestar Estudiantil.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icono-feature" data-lucide="clipboard-list"></div>
+        <h3>Solicitud de Formulario</h3>
+        <p>Completa y envía tu formulario con datos personales y archivos adjuntos.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icono-feature" data-lucide="bar-chart-2"></div>
+        <h3>Estadísticas Personalizadas</h3>
+        <p>Filtra y visualiza gráficos con métricas de uso y participación.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icono-feature" data-lucide="calendar"></div>
+        <h3>Calendario de Eventos</h3>
+        <p>Consulta y gestiona eventos interactivos en un calendario intuitivo.</p>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Call to Action -->
+<!-- Novedades Section -->
+<section class="novedades-section">
+  <div class="container">
+    <h2>Novedades</h2>
+    <p>Descubre las últimas actualizaciones y mejoras en PaperEase.</p>
+
+    <div class="novedades-grid">
+      <div class="novedad-card card1">
+        <img src="/Universidad/17Mimi/PaperEase-be/frontend/public/Novedades/empleo.avif" alt="Descripción 1">
+        <h4>01/ Próxima feria de empleo</h4>
+      </div>
+      <div class="novedad-card card2">
+        <img src="/Universidad/17Mimi/PaperEase-be/frontend/public/Novedades/feriadesalud.jpeg" alt="Descripción 2">
+        <h4>02/ Feria de Salud</h4>
+      </div>
+      <div class="novedad-card card3">
+        <img src="ruta/a/imagen3.jpg" alt="Descripción 3">
+        <h4>03/ Feria de Salud</h4>
+      </div>
+      <div class="novedad-card card5">
+        <img src="/Universidad/17Mimi/PaperEase-be/frontend/public/Novedades/valores.jpeg" alt="Descripción 5">
+        <h4>05/ Campaña de valores 2024</h4>
+      </div>
+      <div class="novedad-card card6">
+        <img src="/Universidad/17Mimi/PaperEase-be/frontend/public/Novedades/lentes.avif" alt="Descripción 6">
+        <h4>04/ Nuevos aros</h4>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Call to Action -->
 <section class="cta">
-  <div class="cta-container">
+  <div class="container cta-container">
     <div class="cta-text">
       <h2>Empieza a usar PaperEase hoy</h2>
       <p>Regístrate y descubre cómo PaperEase puede facilitar tu gestión universitaria.</p>
       <a href="formulario.html" class="cta-primary">Crear Solicitud</a>
     </div>
     <div class="cta-image">
-      <img src="/frontend/public/cta.avif" alt="Estudiante usando PaperEase">
+      <img src="/Universidad/17Mimi/PaperEase-be/frontend/public/cta.avif" alt="Estudiante usando PaperEase">
     </div>
   </div>
 </section>
@@ -97,4 +127,9 @@
     </div>
   </footer>
 </body>
+
+<script>
+  lucide.createIcons();
+</script>
+
 </html>
