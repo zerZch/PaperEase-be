@@ -1,111 +1,264 @@
 /* Reset básico */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #f9fafb;
-    color: #333;
-    line-height: 1.6;
-  }
-  
-  /* Header y navegación */
-  header {
-    background-color: white;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    padding: 1.5rem 2rem;
-  }
-  
-  nav a {
-    margin-right: 1.5rem;
-    color: #4a4a4a;
-    text-decoration: none;
-  }
-  
-  nav a:hover {
-    color: #4f46e5;
-  }
-  
-  .btn {
-    background-color: #4f46e5;
-    color: white;
-    padding: 0.6rem 1.5rem;
-    border-radius: 0.5rem;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .btn:hover {
-    background-color: #4338ca;
-  }
-  
-  /* Hero */
-  .hero {
-    background: linear-gradient(to right, #6366f1, #8b5cf6);
-    color: white;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --color-primario: #4D869C;
+  --color-secundario: #7AB2B2;
+  --color-fondo-claro: #EEF7FF;
+  --color-fondo-medio: #CDE8E5;
+}
+
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f9fafb;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Header y navegación */
+header {
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  padding: 1.5rem 2rem;
+}
+
+header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.logo {
+  height: 50px;      /* Ajusta este valor al tamaño que quieras */
+  width: auto;       /* Mantiene la proporción original */
+  display: block;
+}
+
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primario);/* el mismo color principal que usas en la web */
+  user-select: none;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 2rem; /* reduce el espacio entre logo y texto */
+}
+
+header .nav {
+  display: flex;
+  gap: 1.6rem; /* reduce separación entre links */
+  align-items: center;
+  margin-left: 2rem; /* separa del logo-container si es necesario */
+}
+
+nav a {
+  color: var(--color-primario);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  color: var(--color-secundario);
+}
+
+.btn {
+  background-color: #4f46e5;
+  color: white;
+  padding: 0.6rem 1.5rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-left: 1.5rem;
+}
+
+.btn:hover {
+  background-color: var(--color-primario);
+}
+
+/* Hero */
+.hero {
+  background: linear-gradient(to right, var(--color-primario), var( --color-fondo-medio));
+  color: white;
+  text-align: center;
+  padding: 6rem 2rem;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.cta-buttons a {
+  display: inline-block;
+  margin: 0 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.cta-primary {
+  background-color: white;
+  color: var(--color-primario);
+}
+
+.cta-secondary {
+  border: 2px solid white;
+  color: white;
+}
+
+.cta-secondary:hover {
+  background-color: white;
+  color: var(--color-primario);
+}
+
+/* Sección de features */
+.features {
+  padding: 4rem 2rem;
+  background-color: white;
+  text-align: center;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.feature-card {
+  background-color: #f9fafb;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  margin: 1rem 0;
+  text-align: center;
+}
+
+/* === Sección Call to Action (CTA) === */
+/* === Sección Call to Action (CTA) con imagen === */
+.cta {
+  width: 100%;
+  background: linear-gradient(to right, var(--color-primario), var(--color-secundario));
+  color: white;
+  padding: 4rem 2rem;
+}
+
+.cta-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.cta-text {
+  flex: 1 1 400px;
+}
+
+.cta-text h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+.cta-text p {
+  font-size: 1.125rem;
+  margin-bottom: 2rem;
+}
+
+.cta-primary {
+  background-color: white;
+  color: var(--color-primario);
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.cta-primary:hover {
+  background-color: var(--color-primario);
+  color: var(--color-fondo-claro);
+}
+
+.cta-image {
+  flex: 1 1 400px;
+  text-align: center;
+}
+
+.cta-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 1rem;
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+  .cta-container {
+    flex-direction: column;
     text-align: center;
-    padding: 6rem 2rem;
   }
-  
-  .hero h1 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
+
+  .cta-text, .cta-image {
+    flex: 1 1 100%;
   }
-  
-  .hero p {
-    font-size: 1.2rem;
-    margin-bottom: 2rem;
-  }
-  
-  .cta-buttons a {
-    display: inline-block;
-    margin: 0 0.5rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: 9999px;
-    font-weight: 600;
-    text-decoration: none;
-  }
-  
-  .cta-primary {
-    background-color: white;
-    color: #4f46e5;
-  }
-  
-  .cta-secondary {
-    border: 2px solid white;
-    color: white;
-  }
-  
-  .cta-secondary:hover {
-    background-color: white;
-    color: #4f46e5;
-  }
-  
-  /* Sección de features */
-  .features {
-    padding: 4rem 2rem;
-    background-color: white;
-    text-align: center;
-  }
-  
-  .feature-card {
-    background-color: #f9fafb;
-    padding: 2rem;
-    border-radius: 1rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    margin: 1rem;
-  }
-  
-  /* Footer */
-  footer {
-    background-color: white;
-    border-top: 1px solid #ddd;
-    padding: 2rem;
-    text-align: center;
-    font-size: 0.875rem;
-    color: #777;
-  }
-  
+}
+
+
+
+/* Footer */
+footer {
+  background-color: white;
+  border-top: 1px solid #ddd;
+  padding: 2rem;
+  font-size: 0.875rem;
+  color: #777;
+  text-align: center;
+}
+
+.footer-flex {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.footer-links a {
+  margin-left: 1rem;
+  color: #4f46e5;
+  text-decoration: none;
+  font-weight: 600;
+  transition: text-decoration 0.3s ease;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+/* Transiciones suaves para interacciones */
+button, a {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}

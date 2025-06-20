@@ -10,7 +10,14 @@
   <!-- Header -->
   <header class="header">
     <div class="container">
-      <img src="public/logo.svg" alt="PaperEase Logo" class="logo">
+      
+      <!-- Logo + Texto agrupados -->
+      <div class="logo-container">
+        <img src="/frontend/public/logo.png" alt="PaperEase Logo" class="logo">
+        <span class="logo-text">PaperEase</span>
+      </div>
+  
+      <!-- Navegación -->
       <nav class="nav">
         <a href="index.html">Inicio</a>
         <a href="requisitos.html">Requisitos</a>
@@ -18,10 +25,13 @@
         <a href="estadisticas.html">Estadísticas</a>
         <a href="eventos.html">Eventos</a>
       </nav>
+  
+      <!-- Botón -->
       <button class="btn">Iniciar Sesión</button>
+      
     </div>
   </header>
-
+  
   <!-- Hero Section -->
   <section class="hero">
     <div class="container text-center">
@@ -60,13 +70,20 @@
   </section>
 
   <!-- Call to Action -->
-  <section class="cta">
-    <div class="container text-center">
+<!-- Call to Action -->
+<section class="cta">
+  <div class="cta-container">
+    <div class="cta-text">
       <h2>Empieza a usar PaperEase hoy</h2>
       <p>Regístrate y descubre cómo PaperEase puede facilitar tu gestión universitaria.</p>
       <a href="formulario.html" class="cta-primary">Crear Solicitud</a>
     </div>
-  </section>
+    <div class="cta-image">
+      <img src="/frontend/public/cta.avif" alt="Estudiante usando PaperEase">
+    </div>
+  </div>
+</section>
+
 
   <!-- Footer -->
   <footer class="footer">
