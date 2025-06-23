@@ -57,10 +57,25 @@
             <label for="programa">Programa a Solicitar</label>
             <select id="programa" name="programa" required>
               <option value="">Seleccione una opción</option>
-              <option value="consejeria">Consejería Personal</option>
-              <option value="sangre">Banco de Sangre</option>
-              <option value="gafas">Ayuda de Gafas</option>
-              <option value="medicina">Apoyo en Medicamentos</option>
+         
+              <optgroup label="Salud">
+                <option value="consejeria">Consejería Personal</option>
+                <option value="sangre">Banco de Sangre</option>
+                <option value="gastos_medicos">Ayuda en Gastos Médicos</option>
+                <option value="feria_salud">Feria de Salud</option>
+                <option value="gafas">Compra de Lentes</option>
+                <option value="medicina">Apoyo en Medicamentos</option>
+                <option value="poliza">Póliza de Salud</option>
+              </optgroup>
+          
+              <optgroup label="Promoción Social">
+                <option value="canasta">Canasta Navideña</option>
+                <option value="valores">Campaña de Fortalecimiento de Valores</option>
+                <option value="concienciacion">Campaña de Concienciación de Instalaciones</option>
+                <option value="feria_empleo">Feria de Empleo</option>
+                <option value="siniestros">Apoyo en Casos de Siniestros</option>
+              </optgroup>
+          
             </select>
           </div>
 
