@@ -1,30 +1,27 @@
 const express = require('express');
+const path = require('path');
 const app = express();
-const port = 3000;
+const novedadesRouter = require('./novedades');
+const cors = require('cors');
 
-// Simulamos datos para prueba (más adelante conecta a BD)
-const eventos = [
-  {
-    Id_Eventos: 1,
-    Titulo: "Próxima feria de empleo",
-    Imagen: "/Novedades/empleo.avif"
-  },
-  {
-    Id_Eventos: 2,
-    Titulo: "Feria de Salud",
-    Imagen: "/Novedades/feriadesalud.jpeg"
-  },
-  // Agrega más eventos aquí...
-];
+app.use(cors());
+app.use(express.json());
 
-// Endpoint para eventos
-app.get('/api/eventos', (req, res) => {
-  res.json(eventos);
+// API para novedades
+app.use('/api', novedadesRouter);
+
+// Servir archivos estáticos (imágenes, css, js) desde carpeta public
+app.use('/public', express.static(path.join(__dirname, '../frontend/public')));
+
+// Servir archivos estáticos (html, js, css) desde carpeta src
+app.use('/src', express.static(path.join(__dirname, '../frontend/src')));
+
+// Definir la ruta raíz para enviar el HTML principal (menuPE.html)
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/src/menuPE.html'));
 });
 
-// Para servir archivos estáticos (imágenes, CSS, etc.)
-app.use(express.static('frontend/public'));
-
-app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
