@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Formulario de Solicitud • PaperEase</title>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+
+  <!-- Header reutilizado -->
+  <header>
+    <div class="container">
+      <div class="logo-container">
+        <img src="/Universidad/17Mimi/PaperEase-be/frontend/public/logo.png" alt="PaperEase Logo" class="logo" />
+        <span class="logo-text">PaperEase</span>
+      </div>
+      <nav class="nav">
+        <a href="MenuPE.html">Inicio</a>
+        <a href="Programas.html">Requisitos</a>
+        <a href="formulario.html">Solicitud</a>
+        <a href="estadisticas.html">Estadísticas</a>
+        <a href="eventos.html">Eventos</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Contenido principal -->
+  <main>
+    <section class="form-section">
+      <div class="container">
+        <h2>Formulario de Solicitud</h2>
+        <p>Completa los campos con tus datos personales y elige el programa de Bienestar Estudiantil que deseas solicitar.</p>
+
+        <form action="#" method="POST" class="formulario">
+          <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" name="nombre" required />
+          </div>
+
+          <div class="form-group">
+            <label for="apellido">Apellido</label>
+            <input type="text" id="apellido" name="apellido" required />
+          </div>
+
+          <div class="form-group">
+            <label for="cedula">Cédula</label>
+            <input type="text" id="cedula" name="cedula" required />
+          </div>
+
+          <div class="form-group">
+            <label for="correo">Correo Electrónico</label>
+            <input type="email" id="correo" name="correo" required />
+          </div>
+
+          <div class="form-group">
+            <label for="programa">Programa a Solicitar</label>
+            <select id="programa" name="programa" required>
+              <option value="">Seleccione una opción</option>
+          
+              <optgroup label="Salud">
+                <option value="consejeria">Consejería Personal</option>
+                <option value="sangre">Banco de Sangre</option>
+                <option value="gastos_medicos">Ayuda en Gastos Médicos</option>
+                <option value="feria_salud">Feria de Salud</option>
+                <option value="gafas">Compra de Lentes</option>
+                <option value="medicina">Apoyo en Medicamentos</option>
+                <option value="poliza">Póliza de Salud</option>
+              </optgroup>
+          
+              <optgroup label="Promoción Social">
+                <option value="canasta">Canasta Navideña</option>
+                <option value="valores">Campaña de Fortalecimiento de Valores</option>
+                <option value="concienciacion">Campaña de Concienciación de Instalaciones</option>
+                <option value="feria_empleo">Feria de Empleo</option>
+                <option value="siniestros">Apoyo en Casos de Siniestros</option>
+              </optgroup>
+          
+            </select>
+          </div>
+          
+
+          <div class="form-group">
+            <label for="archivo">Adjuntar Archivos (PDF, JPG, PNG)</label>
+            <input type="file" id="archivo" name="archivo" accept=".pdf,.jpg,.jpeg,.png" />
+          </div>
+
+          <button type="submit" class="cta-primary">Enviar Solicitud</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-flex container">
+      <p>© 2025 PaperEase • Universidad Tecnológica de Panamá</p>
+      <div class="footer-links">
+        <a href="#">Ayuda</a>
+        <a href="#">Privacidad</a>
+        <a href="#">Términos</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
