@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Requisitos • PaperEase</title>
+  <link href="css/style.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="js/frontend.js"></script>
+</head>
+<body>
+
+  <!-- Header reutilizado -->
+  <header>
+    <div class="container">
+      <div class="logo-container">
+        <img src="public/logo.png" alt="PaperEase Logo" class="logo" />
+        <span class="logo-text">PaperEase</span>
+      </div>
+      <nav class="nav">
+        <a href="MenuPE.html">Inicio</a>
+        <a href="Programas.html" class="active">Requisitos</a>
+        <a href="Formulario.html">Solicitud</a>
+        <a href="estadisticas.html">Estadísticas</a>
+        <a href="eventos.html">Eventos</a>
+      </nav>
+    </div>
+</header>
+
+<main>
+  <section class="requisitos-section">
+    <div class="container">
+      <h2>Requisitos por Programa</h2>
+      <p>Selecciona una categoría y luego haz clic en un programa para ver sus requisitos.</p>
+
+      <div class="tabs">
+        <button class="tab active" data-cat="salud">Salud</button>
+        <button class="tab" data-cat="promo">Promoción Social</button>
+      </div>
+
+      <div class="requisitos-grid">
+        <!-- CONSEJERÍA PERSONAL -->
+        <div class="requisito-card" data-cat="salud">
+          <div class="card-header">
+            <div class="icon" data-lucide="user-check"></div>
+            <h4>Consejería Personal</h4>
+     
+          </div>
+          <div class="card-body" style="display: none;">
+            <h2>Consejería Personal</h2>
+            <p>
+              Espacio seguro y confidencial para acompañarte en tu desarrollo personal y emocional. El equipo de Bienestar Estudiantil brinda apoyo individual según tus necesidades.
+            </p>
+            <h3>Beneficios</h3>
+            <ul>
+              <li>Apoyo emocional con profesionales capacitados</li>
+              <li>Mejora del bienestar psicológico y académico</li>
+              <li>Orientación para toma de decisiones personales o vocacionales</li>
+            </ul>
+            <h3>Requisitos para la Solicitud</h3>
+            <ul>
+              <li>Ser estudiante activo de la universidad</li>
+              <li>Completar y enviar el Formulario.html de solicitud</li>
+              <li>Presentar copia del carnet estudiantil vigente</li>
+              <li>Describir el motivo de la consulta o tipo de apoyo requerido</li>
+              <li>Indicar disponibilidad para programar sesiones</li>
+            </ul>
+            <a href="Formulario.html_consejeria.html" class="btn btn-secondary">Ir al Formulario.html</a>
+          </div>
+        </div>
+
+        <!-- BANCO DE SANGRE -->
+        <div class="requisito-card" data-cat="salud">
+          <div class="card-header">
+            <div class="icon" data-lucide="heart"></div>
+            <h4>Banco de Sangre</h4>
+     
+          </div>
+          <div class="card-body" style="display: none;">
+            <h2>Banco de Sangre</h2>
+            <p>
+              Campañas de donación voluntaria de sangre para apoyar a hospitales y fomentar valores de solidaridad en la comunidad estudiantil.
+            </p>
+            <h3>Beneficios</h3>
+            <ul>
+              <li>Contribuir a salvar vidas</li>
+              <li>Fomento del altruismo y la responsabilidad social</li>
+              <li>Participación en actividades de salud institucional</li>
+            </ul>
+            <h3>Requisitos para la Solicitud</h3>
+            <ul>
+              <li>Ser estudiante activo</li>
+              <li>Tener al menos 18 años</li>
+              <li>Cumplir criterios médicos para donar sangre</li>
+              <li>Presentar identificación vigente</li>
+            </ul>
+            <a href="Formulario.html" class="btn btn-secondary">Ir al Formulario.html</a>
+          </div>
+        </div>
+
+        <!-- AYUDA EN GASTOS MÉDICOS -->
+        <div class="requisito-card" data-cat="salud">
+          <div class="card-header">
+            <div class="icon" data-lucide="folder-plus"></div>
+            <h4>Ayuda en Gastos Médicos</h4>
+     
+          </div>
+          <div class="card-body" style="display: none;">
+            <h2>Ayuda en Gastos Médicos</h2>
+            <p>
+              Apoyo económico puntual para gastos médicos inesperados que afecten la salud y continuidad académica del estudiante.
+            </p>
+            <h3>Beneficios</h3>
+            <ul>
+              <li>Reducción de barreras económicas para tratamientos</li>
+              <li>Continuidad académica ante emergencias de salud</li>
+              <li>Tranquilidad emocional en situaciones críticas</li>
+            </ul>
+            <h3>Requisitos para la Solicitud</h3>
+            <ul>
+              <li>Ser estudiante activo</li>
+              <li>Presentar comprobantes o cotizaciones médicas</li>
+              <li>Describir brevemente la situación de salud</li>
+              <li>Adjuntar carnet universitario</li>
+            </ul>
+            <a href="Formulario.html" class="btn btn-secondary">Ir al Formulario.html</a>
+          </div>
+        </div>
+
+        <!-- FERIA DE SALUD -->
+        <div class="requisito-card" data-cat="salud">
+          <div class="card-header">
+            <div class="icon" data-lucide="activity"></div>
+            <h4>Feria de Salud</h4>
+     
+          </div>
+          <div class="card-body" style="display: none;">
+            <h2>Feria de Salud</h2>
+            <p>
+              Jornadas de salud preventiva con exámenes gratuitos, orientación nutricional y actividades de concientización.
+            </p>
+            <h3>Beneficios</h3>
+            <ul>
+              <li>Acceso a servicios de salud gratuitos</li>
+              <li>Promoción de estilos de vida saludables</li>
+              <li>Detección temprana de condiciones médicas</li>
+            </ul>
+            <h3>Requisitos para la Solicitud</h3>
+            <ul>
+              <li>Ser estudiante activo</li>
+              <li>Registrarse previamente si aplica</li>
+              <li>Presentar carnet estudiantil en el evento</li>
+            </ul>
+            <a href="Formulario.html" class="btn btn-secondary">Ir al Formulario.html</a>
+          </div>
+        </div>
+
+        <!-- COMPRA DE LENTES -->
+        <div class="requisito-card" data-cat="salud">
+          <div class="card-header">
+            <div class="icon" data-lucide="eye"></div>
+            <h4>Compra de Lentes</h4>
+     
+          </div>
+          <div class="card-body" style="display: none;">
+            <h2>Compra de Lentes</h2>
+            <p>
+              Facilitamos acceso a lentes ópticos a precios accesibles mediante convenios con ópticas asociadas.
+            </p>
+            <h3>Beneficios</h3>
+            <ul>
+              <li>Mejora del rendimiento académico por buena visión</li>
+              <li>Ahorro económico</li>
+              <li>Asesoramiento óptico personalizado</li>
+            </ul>
+            <h3>Requisitos para la Solicitud</h3>
+            <ul>
+              <li>Ser estudiante activo</li>
+              <li>Presentar receta óptica vigente</li>
+              <li>Carnet universitario</li>
+              <li>Llenar Formulario.html de solicitud</li>
+            </ul>
+            <a href="Formulario.html" class="btn btn-secondary">Ir al Formulario.html</a>
+          </div>
+        </div>
+
+        <!-- MATRÍCULA -->
+        <div class="requisito-card" data-cat="salud">
+          <div class="card-header">
+            <div class="icon" data-lucide="credit-card"></div>
+            <h4>Matrícula</h4>
+     
+          </div>
+          <div class="card-body" style="display: none;">
+            <h2>Matrícula</h2>
+            <p>
+              Asesoramiento y acompañamiento en el proceso de matrícula para evitar errores y mejorar la experiencia del estudiante.
+            </p>
+            <h3>Beneficios</h3>
+            <ul>
+              <li>Evita contratiempos técnicos</li>
+              <li>Asegura una selección adecuada de materias</li>
+              <li>Atención personalizada en el proceso</li>
+            </ul>
+            <h3>Requisitos para la Solicitud</h3>
+            <ul>
+              <li>Ser estudiante activo</li>
+              <li>Estar al día con pagos</li>
+              <li>Presentar carnet vigente</li>
+              <li>Solicitar cita si aplica</li>
+            </ul>
+            <a href="Formulario.html" class="btn btn-secondary">Ir al Formulario.html</a>
+          </div>
+        </div>
+
+        <!-- PÓLIZA DE SALUD -->
+        <div class="requisito-card" data-cat="salud">
+          <div class="card-header">
+            <div class="icon" data-lucide="shield-check"></div>
+            <h4>Póliza de Salud</h4>
+     
+          </div>
+          <div class="card-body" style="display: none;">
+            <h2>Póliza de Salud</h2>
+            <p>
+              Orientación y apoyo para afiliarse a pólizas estudiantiles de salud que brinden cobertura médica básica.
+            </p>
+            <h3>Beneficios</h3>
+            <ul>
+              <li>Acceso a servicios médicos cubiertos</li>
+              <li>Tranquilidad en casos de emergencias</li>
+              <li>Acompañamiento en el proceso de afiliación</li>
+            </ul>
+            <h3>Requisitos para la Solicitud</h3>
+            <ul>
+              <li>Ser estudiante regular</li>
+              <li>Presentar carnet estudiantil</li>
+              <li>Llenar Formulario.html de afiliación</li>
+              <li>Adjuntar documentos solicitados</li>
+            </ul>
+            <a href="Formulario.html" class="btn btn-secondary">Ir al Formulario.html</a>
+          </div>
+        </div>
+
+        <!-- APOYO EN MEDICAMENTOS -->
+        <div class="requisito-card" data-cat="salud">
+          <div class="card-header">
+            <div class="icon" data-lucide="pill"></div>
+            <h4>Apoyo en Medicamentos</h4>
+     
+          </div>
+          <div class="card-body" style="display: none;">
+            <h2>Apoyo en Medicamentos</h2>
+            <p>
+              Programa de ayuda para obtener medicamentos esenciales con descuento o cobertura total.
+            </p>
+            <h3>Beneficios</h3>
+            <ul>
+              <li>Reducción del gasto familiar</li>
+              <li>Continuidad del tratamiento médico</li>
+              <li>Mayor bienestar físico y emocional</li>
+            </ul>
+            <h3>Requisitos para la Solicitud</h3>
+            <ul>
+              <li>Ser estudiante activo</li>
+              <li>Presentar receta médica vigente</li>
+              <li>Proporcionar cotización de farmacia</li>
+              <li>Carnet estudiantil vigente</li>
+            </ul>
+            <a href="Formulario.html" class="btn btn-secondary">Ir al Formulario.html</a>
+          </div>
+        </div>
+
+        <!-- PROMOCIÓN SOCIAL -->
+        <!-- CANASTA NAVIDEÑA -->
+  
+        <div class="requisito-card" data-cat="promo">
+          <div class="card-header">
+            <div class="icon" data-lucide="gift"></div>
+            <h4>Canasta Navideña</h4>
+     
+          </div>
+          <div class="card-body" style="display: none;">
+            <h2>Canasta Navideña</h2>
+            <p>
+              Apoyo solidario mediante la entrega de alimentos y productos básicos a estudiantes con necesidad económica durante las fiestas.
+            </p>
+            <h3>Beneficios</h3>
+            <ul>
+              <li>Alivio económico</li>
+              <li>Fomento del sentido de comunidad</li>
+              <li>Celebración digna en temporada navideña</li>
+            </ul>
+            <h3>Requisitos para la Solicitud</h3>
+            <ul>
+              <li>Ser estudiante activo en situación vulnerable</li>
+              <li>Completar Formulario.html de solicitud</li>
+              <li>Presentar carta explicativa</li>
+              <li>Adjuntar documentación socioeconómica</li>
+            </ul>
+            <a href="Formulario.html" class="btn btn-secondary">Ir al Formulario.html</a>
+          </div>
+        </div>
+
+        <!-- CAMPAÑA DE FORTALECIMIENTO DE VALORES -->
+        <div class="requisito-card" data-cat="promo">
+          <div class="card-header">
+            <div class="icon" data-lucide="award"></div>
+            <h4>Campaña de Fortalecimiento de Valores</h4>
+     
+          </div>
+          <div class="card-body" style="display: none;">
+            <h2>Campaña de Fortalecimiento de Valores</h2>
+            <p>
+              Actividades orientadas a reforzar valores institucionales como el respeto, la honestidad y la solidaridad.
+            </p>
+            <h3>Beneficios</h3>
+            <ul>
+              <li>Fomento de una convivencia pacífica</li>
+              <li>Desarrollo de ética personal y profesional</li>
+              <li>Participación activa en la vida universitaria</li>
+            </ul>
+            <h3>Requisitos para la Solicitud</h3>
+            <ul>
+              <li>Ser estudiante activo</li>
+              <li>Inscribirse previamente</li>
+              <li>Participar activamente en las actividades</li>
+            </ul>
+            <a href="Formulario.html" class="btn btn-secondary">Ir al Formulario.html</a>
+          </div>
+        </div>
+
+        <!-- CAMPAÑA DE CONCIENCIACIÓN DE INSTALACIONES -->
+        <div class="requisito-card" data-cat="promo">
+          <div class="card-header">
+            <div class="icon" data-lucide="globe"></div>
+            <h4>Campaña de Concienciación de Instalaciones</h4>
+     
+          </div>
+          <div class="card-body" style="display: none;">
+            <h2>Campaña de Concienciación de Instalaciones</h2>
+            <p>
+              Jornadas educativas para sensibilizar sobre el cuidado de los espacios universitarios y recursos compartidos.
+            </p>
+            <h3>Beneficios</h3>
+            <ul>
+              <li>Responsabilidad colectiva sobre las instalaciones</li>
+              <li>Mejora del entorno universitario</li>
+              <li>Promoción del civismo y la limpieza</li>
+            </ul>
+            <h3>Requisitos para la Solicitud</h3>
+            <ul>
+              <li>Ser estudiante activo</li>
+              <li>Registrarse en la campaña</li>
+              <li>Asistir y participar en actividades asignadas</li>
+            </ul>
+            <a href="Formulario.html" class="btn btn-secondary">Ir al Formulario.html</a>
+          </div>
+        </div>
+
+        <!-- FERIA DE EMPLEO -->
+        <div class="requisito-card" data-cat="promo">
+          <div class="card-header">
+            <div class="icon" data-lucide="briefcase"></div>
+            <h4>Feria de Empleo</h4>
+     
+          </div>
+          <div class="card-body" style="display: none;">
+            <h2>Feria de Empleo</h2>
+            <p>
+              Eventos que conectan a estudiantes con empresas nacionales e internacionales para pasantías o empleos.
+            </p>
+            <h3>Beneficios</h3>
+            <ul>
+              <li>Acceso directo a oportunidades laborales</li>
+              <li>Asesoría en hoja de vida y entrevistas</li>
+              <li>Red de contactos profesionales</li>
+            </ul>
+            <h3>Requisitos para la Solicitud</h3>
+            <ul>
+              <li>Ser estudiante activo</li>
+              <li>Registrarse para el evento</li>
+              <li>Presentar CV actualizado</li>
+              <li>Cumplir requisitos de empresas participantes</li>
+            </ul>
+            <a href="Formulario.html" class="btn btn-secondary">Ir al Formulario.html</a>
+          </div>
+        </div>
+
+        <!-- APOYO EN CASOS DE SINIESTROS -->
+        <div class="requisito-card" data-cat="promo">
+          <div class="card-header">
+            <div class="icon" data-lucide="umbrella"></div>
+            <h4>Apoyo en Casos de Siniestros</h4>
+     
+          </div>
+          <div class="card-body" style="display: none;">
+            <h2>Apoyo en Casos de Siniestros</h2>
+            <p>
+              Asistencia en situaciones graves como incendios, accidentes o daños a vivienda que afecten al estudiante.
+            </p>
+            <h3>Beneficios</h3>
+            <ul>
+              <li>Respuesta rápida ante emergencias</li>
+              <li>Apoyo institucional en procesos difíciles</li>
+              <li>Asistencia emocional y práctica</li>
+            </ul>
+            <h3>Requisitos para la Solicitud</h3>
+            <ul>
+              <li>Ser estudiante activo</li>
+              <li>Presentar documentación del siniestro</li>
+              <li>Carta explicativa del caso</li>
+              <li>Formulario.html de solicitud completo</li>
+            </ul>
+            <a href="Formulario.html" class="btn btn-secondary">Ir al Formulario.html</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" style="display: none;">
+  <div class="modal-window">
+    <button class="modal-close" id="modalClose">&times;</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-flex container">
+      <p>© 2025 PaperEase • Universidad Tecnológica de Panamá</p>
+      <div class="footer-links">
+        <a href="#">Ayuda</a>
+        <a href="#">Privacidad</a>
+        <a href="#">Términos</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+  
+      // Mostrar categoría por defecto
+      filterCards('salud');
+  
+      // Mostrar modal al hacer clic en header
+      document.querySelectorAll('.card-header').forEach(header => {
+        header.addEventListener('click', () => {
+          const card = header.closest('.requisito-card');
+          const body = card.querySelector('.card-body');
+          const modal = document.getElementById('modal');
+          const modalContent = document.getElementById('modalContent');
+  
+          // Copiar el contenido del body de la tarjeta al modal
+          modalContent.innerHTML = body.innerHTML;
+          modal.style.display = 'flex';
+          document.body.style.overflow = 'hidden'; // Evita scroll de fondo
+        });
+      });
+  
+      // Cerrar modal
+      document.getElementById('modalClose').addEventListener('click', () => {
+        document.getElementById('modal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+      });
+  
+      // Cerrar si se hace clic fuera del modal
+      document.getElementById('modal').addEventListener('click', (e) => {
+        if (e.target.id === 'modal') {
+          document.getElementById('modal').style.display = 'none';
+          document.body.style.overflow = 'auto';
+        }
+      });
+  
+      // Tabs: filtra por categoría
+      document.querySelectorAll(".tabs .tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+          document.querySelectorAll(".tabs .tab").forEach(t => t.classList.remove("active"));
+          tab.classList.add("active");
+          const category = tab.dataset.cat;
+          filterCards(category);
+        });
+      });
+  
+      function filterCards(category) {
+        document.querySelectorAll(".requisito-card").forEach(card => {
+          card.style.display = card.dataset.cat === category ? "block" : "none";
+        });
+      }
+    });
+  </script>
+</body>
+</html>

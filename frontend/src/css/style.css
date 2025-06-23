@@ -1,3 +1,4 @@
+/* MENU PRINCIPAL PAPEREASE */
 /* Reset básico */
 * {
   margin: 0;
@@ -25,7 +26,7 @@ body {
   padding: 0 1rem;
 }
 
-/* Header y navegación */
+/* Header y navegación [MENU PE] */
 header {
   background-color: white;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
@@ -183,7 +184,6 @@ header .container {
   color: #444;
 }
 
-
 /* --- Novedades --- */
 .novedades-section {
   padding: 4rem 0;
@@ -205,7 +205,6 @@ header .container {
   margin-bottom: 2rem;  
   color: var(--color-primario);            /* color del texto */
 }
-
 
 .novedades-grid {
   display: grid;
@@ -264,7 +263,6 @@ header .container {
   background: rgba(0, 0, 0, 0.3);
   z-index: 1;
 }
-
 
 /* CTA */
 .cta {
@@ -359,4 +357,323 @@ footer {
 
 button, a {
   transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* FORMULARIO */
+
+.form-section {
+  padding: 2rem 0 1rem;
+  background-color: #f9fafb;
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 600px;
+  margin: 0 auto;
+
+}
+
+.form-section h2 {
+  font-size: 2rem;
+  color: var(--color-primario);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.form-section p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 2rem;
+  max-width: 600px;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--color-primario);
+}
+
+.form-group input,
+.form-group select {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--color-secundario);
+  outline: none;
+}
+
+.cta-primary {
+  margin-top: 1rem;
+  align-self: center;
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  background-color: var(--color-primario);
+  color: white;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+}
+
+.cta-primary:hover {
+  background-color: var(--color-secundario);
+}
+
+/* Footer ajuste */
+footer {
+  margin-top: 4rem;
+}
+
+/* PROGRAMAS */
+/* SECCIÓN REQUISITOS */
+.requisitos-section {
+  padding: 4rem 0;
+  background-color: white;
+}
+
+.requisitos-section h2 {
+  font-size: 2rem;
+  color: var(--color-primario);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.requisitos-section p {
+  text-align: center;
+  color: #555;
+  margin-bottom: 2.5rem;
+}
+
+/* PESTAÑAS */
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.tab {
+  background: var(--color-fondo-medio);
+  color: var(--color-primario);
+  padding: 0.5rem 1.5rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.tab.active,
+.tab:hover {
+  background: var(--color-primario);
+  color: white;
+}
+
+/* GRID DE TARJETAS */
+.requisitos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  align-content: start;
+}
+
+/* TARJETA */
+.requisito-card {
+  background: var(--color-fondo-claro);
+  border-radius: 1rem;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+  overflow: hidden;
+  transition: transform 0.3s;
+}
+
+.requisito-card:hover {
+  transform: translateY(-4px);
+}
+
+/* HEADER DE TARJETA */
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  position: relative;
+}
+
+.card-header .icon {
+  width: 28px;
+  height: 28px;
+  stroke-width: 2;
+  color: var(--color-primario);
+  margin-right: 0.25rem;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.card-header:hover .icon {
+  transform: scale(1.1);
+}
+
+.card-header h4 {
+  margin: 0;
+  color: var(--color-primario);
+  font-size: 1.1rem;
+  font-weight: 600;
+  flex: 1;
+}
+
+/* CUERPO DE TARJETA - SIEMPRE VISIBLE */
+.card-body {
+  padding: 1rem 1.25rem;
+  color: #444;
+}
+
+.card-body ul {
+  padding-left: 1.2rem;
+}
+
+/* BOTÓN SECUNDARIO */
+.btn-secondary {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.5rem 1.25rem;
+  border: 2px solid var(--color-primario);
+  color: var(--color-primario);
+  border-radius: 9999px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.3s, color 0.3s;
+}
+
+.btn-secondary:hover {
+  background: var(--color-primario);
+  color: white;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .requisito-card {
+    margin: 0.5rem;
+    padding: 0.8rem;
+  }
+
+  .card-header h4 {
+    font-size: 1rem;
+  }
+
+  .card-body h2,
+  .card-body h3 {
+    font-size: 1rem;
+  }
+
+  .btn-secondary {
+    font-size: 0.9rem;
+  }
+}
+
+/* MODAL POP-UP */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* MODAL POP-UP MEJORADO */
+.modal-window {
+  background: white;
+  border-radius: 1.5rem;
+  padding: 3rem 2.5rem;
+  max-width: 800px;
+  width: 95%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+
+/* Tipografía interna */
+.modal-window h2 {
+  font-size: 1.8rem;
+  color: var(--color-primario);
+  margin-bottom: 1rem;
+}
+
+.modal-window h3 {
+  font-size: 1.2rem;
+  color: var(--color-primario);
+  margin-top: 2rem;
+  margin-bottom: 0.8rem;
+}
+
+.modal-window p {
+  color: #444;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+/* Lista dentro del modal */
+.modal-window ul {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 2rem;
+}
+
+.modal-window ul li {
+  position: relative;
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #333;
+}
+
+.modal-window ul li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--color-primario);
+  font-weight: bold;
+}
+
+/* Botón en el modal */
+.modal-window .btn-secondary {
+  margin-top: 1rem;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  font-size: 2rem; /* Aumentado */
+  line-height: 1;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: #999;
+  transition: color 0.3s ease, transform 0.2s ease;
+  z-index: 1;
+}
+
+.modal-close:hover {
+  color: var(--color-primario);
+  transform: scale(1.15);
 }
