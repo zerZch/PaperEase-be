@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eventos • PaperEase</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.js"></script>
+
+</head>
+<body>
+
+  <!-- Header reutilizado -->
+  <header>
+    <div class="container">
+      <div class="logo-container">
+        <img src="public/logo.png" alt="PaperEase Logo" class="logo" />
+        <span class="logo-text">PaperEase</span>
+      </div>
+      <nav class="nav">
+        <a href="MenuPE.html">Inicio</a>
+        <a href="requisitos.html">Requisitos</a>
+        <a href="formulario.html">Solicitud</a>
+        <a href="estadisticas.html">Estadísticas</a>
+        <a href="eventos.html" class="active">Eventos</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Calendario interactivo -->
+    <section class="eventos-section">
+      <div class="container">
+        <h2>Vista de Calendario</h2>
+        <div id="calendar"></div>
+      </div>
+    </section>
+
+    <!-- Lista de eventos + Formulario -->
+    <section class="eventos-section">
+      <div class="container">
+        <h2>Agregar y Consultar Eventos</h2>
+        <div class="vista-control">
+          <button class="vista-btn active" data-view="dia">Día</button>
+          <button class="vista-btn" data-view="semana">Semana</button>
+          <button class="vista-btn" data-view="mes">Mes</button>
+        </div>
+
+        <form class="evento-formulario">
+          <input type="text" placeholder="Nombre del Evento" required>
+          <input type="text" placeholder="Lugar" required>
+          <input type="time" placeholder="Hora Inicio" required>
+          <input type="time" placeholder="Hora Fin" required>
+          <textarea placeholder="Descripción del Evento"></textarea>
+          <button type="submit" class="btn-guardar">Guardar Evento</button>
+        </form>
+
+        <div class="eventos-grid">
+          <div class="evento-card">
+            <h4>Feria de Salud</h4>
+            <p><strong>Lugar:</strong> Gimnasio UTP</p>
+            <p><strong>Hora:</strong> 10:00am – 11:30am</p>
+            <p><strong>Descripción:</strong> Actividades gratuitas para la salud.</p>
+          </div>
+          <div class="evento-card">
+            <h4>Canasta Navideña</h4>
+            <p><strong>Lugar:</strong> Salón B-205</p>
+            <p><strong>Hora:</strong> 2:00pm – 3:30pm</p>
+            <p><strong>Descripción:</strong> Entrega de apoyos para familias.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-flex container">
+      <p>© 2025 PaperEase • Universidad Tecnológica de Panamá</p>
+      <div class="footer-links">
+        <a href="#">Ayuda</a>
+        <a href="#">Privacidad</a>
+        <a href="#">Términos</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JS completo -->
+  <script>
+    let calendar; // Necesario para acceder desde fuera
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const calendarEl = document.getElementById('calendar');
+      calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'timeGridWeek',
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        height: 'auto',
+        nowIndicator: true,
+        selectable: true,
+        events: [
+          { title: 'Feria de Salud', start: '2025-06-18T10:00:00', end: '2025-06-18T11:30:00' },
+          { title: 'Banco de Sangre', start: '2025-06-20T09:00:00', end: '2025-06-20T11:00:00' }
+        ],
+        select: function (selectionInfo) {
+          const title = prompt('Nombre del evento:');
+          if (title) {
+            calendar.addEvent({
+              title,
+              start: selectionInfo.startStr,
+              end: selectionInfo.endStr
+            });
+          }
+          calendar.unselect();
+        },
+        eventClick: function (info) {
+          alert('Evento: ' + info.event.title);
+        }
+      });
+      calendar.render();
+    });
+
+    // Cambiar vista del calendario con botones personalizados
+    document.querySelectorAll('.vista-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.vista-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const vista = btn.dataset.view;
+        if (vista === 'dia') calendar.changeView('timeGridDay');
+        if (vista === 'semana') calendar.changeView('timeGridWeek');
+        if (vista === 'mes') calendar.changeView('dayGridMonth');
+      });
+    });
+
+    // Guardar evento en tarjetas
+    document.querySelector('.evento-formulario').addEventListener('submit', e => {
+      e.preventDefault();
+      const inputs = e.target.querySelectorAll('input, textarea');
+      const values = Array.from(inputs).map(i => i.value);
+
+      const nuevaCard = document.createElement('div');
+      nuevaCard.className = 'evento-card';
+      nuevaCard.innerHTML = `
+        <h4>${values[0]}</h4>
+        <p><strong>Lugar:</strong> ${values[1]}</p>
+        <p><strong>Hora:</strong> ${values[2]} – ${values[3]}</p>
+        <p><strong>Descripción:</strong> ${values[4]}</p>
+      `;
+      document.querySelector('.eventos-grid').appendChild(nuevaCard);
+
+      e.target.reset();
+    });
+  </script>
+</body>
+</html>
