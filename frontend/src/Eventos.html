@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Eventos • PaperEase</title>
   <link rel="stylesheet" href="css/style.css" />
-  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.js"></script>
-
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 </head>
 <body>
 
@@ -28,50 +26,48 @@
     </div>
   </header>
 
+  <section class="calendar-intro container">
+    <h1 class="calendar-main-title">Calendario de Eventos</h1>
+    <p class="calendar-description-text">
+      Consulta y navega por los eventos programados para cada mes. Haz clic en cualquier día para ver detalles.
+    </p>
+  </section>  
+
   <main>
-    <!-- Calendario interactivo -->
-    <section class="eventos-section">
-      <div class="container">
-        <h2>Vista de Calendario</h2>
-        <div id="calendar"></div>
-      </div>
+    <section class="calendar">
+        <!-- HEAD CALENDARIO -->
+        <header class="calendar-header">
+            <div class="header-container">
+                <button class="calendar-button calendar-button-previous" data-lucide="chevron-left"></button>  
+                <h3 class="container-heading" id="calendarMonthTitle"></h3>
+                <button class="calendar-button calendar-button-next" data-lucide="chevron-right"></button>
+                <button class="btn-crear-evento">Crear evento</button>
+            </div>
+        </header>
+
+        <!-- Días de la semana -->
+        <div class="calendar-weekdays">
+          <div class="calendar-weekday"><h4>Lunes</h4><abbr>Lun</abbr></div>
+          <div class="calendar-weekday"><h4>Martes</h4><abbr>Mar</abbr></div>
+          <div class="calendar-weekday"><h4>Miércoles</h4><abbr>Mie</abbr></div>
+          <div class="calendar-weekday"><h4>Jueves</h4><abbr>Jue</abbr></div>
+          <div class="calendar-weekday"><h4>Viernes</h4><abbr>Vie</abbr></div>
+          <div class="calendar-weekday"><h4>Sábado</h4><abbr>Sab</abbr></div>
+          <div class="calendar-weekday"><h4>Domingo</h4><abbr>Dom</abbr></div>
+        </div>
+        
+        <!-- Contenedor de días -->
+        <ol class="calendar-days"></ol>
     </section>
 
-    <!-- Lista de eventos + Formulario -->
-    <section class="eventos-section">
-      <div class="container">
-        <h2>Agregar y Consultar Eventos</h2>
-        <div class="vista-control">
-          <button class="vista-btn active" data-view="dia">Día</button>
-          <button class="vista-btn" data-view="semana">Semana</button>
-          <button class="vista-btn" data-view="mes">Mes</button>
-        </div>
-
-        <form class="evento-formulario">
-          <input type="text" placeholder="Nombre del Evento" required>
-          <input type="text" placeholder="Lugar" required>
-          <input type="time" placeholder="Hora Inicio" required>
-          <input type="time" placeholder="Hora Fin" required>
-          <textarea placeholder="Descripción del Evento"></textarea>
-          <button type="submit" class="btn-guardar">Guardar Evento</button>
-        </form>
-
-        <div class="eventos-grid">
-          <div class="evento-card">
-            <h4>Feria de Salud</h4>
-            <p><strong>Lugar:</strong> Gimnasio UTP</p>
-            <p><strong>Hora:</strong> 10:00am – 11:30am</p>
-            <p><strong>Descripción:</strong> Actividades gratuitas para la salud.</p>
-          </div>
-          <div class="evento-card">
-            <h4>Canasta Navideña</h4>
-            <p><strong>Lugar:</strong> Salón B-205</p>
-            <p><strong>Hora:</strong> 2:00pm – 3:30pm</p>
-            <p><strong>Descripción:</strong> Entrega de apoyos para familias.</p>
-          </div>
-        </div>
+    <!-- Modal de Eventos -->
+    <div class="calendar-modal-overlay" id="calendarModalOverlay">
+      <div class="calendar-modal">
+        <button class="calendar-modal-close" id="calendarCloseModal">×</button>
+        <h3 class="calendar-modal-title">Eventos del Día</h3>
+        <ul class="calendar-modal-eventos-list" id="calendarModalEventosLista"></ul>
       </div>
-    </section>
+    </div>
   </main>
 
   <!-- Footer -->
@@ -86,74 +82,95 @@
     </div>
   </footer>
 
-  <!-- JS completo -->
+  <!-- JS -->
   <script>
-    let calendar; // Necesario para acceder desde fuera
+    lucide.createIcons();
 
-    document.addEventListener('DOMContentLoaded', function () {
-      const calendarEl = document.getElementById('calendar');
-      calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'timeGridWeek',
-        headerToolbar: {
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay'
-        },
-        height: 'auto',
-        nowIndicator: true,
-        selectable: true,
-        events: [
-          { title: 'Feria de Salud', start: '2025-06-18T10:00:00', end: '2025-06-18T11:30:00' },
-          { title: 'Banco de Sangre', start: '2025-06-20T09:00:00', end: '2025-06-20T11:00:00' }
-        ],
-        select: function (selectionInfo) {
-          const title = prompt('Nombre del evento:');
-          if (title) {
-            calendar.addEvent({
-              title,
-              start: selectionInfo.startStr,
-              end: selectionInfo.endStr
-            });
+    document.addEventListener('DOMContentLoaded', () => {
+      const modal = document.getElementById('calendarModalOverlay');
+      const closeModal = document.getElementById('calendarCloseModal');
+      const listaEventos = document.getElementById('calendarModalEventosLista');
+      const calendarDaysContainer = document.querySelector('.calendar-days');
+      const monthTitle = document.getElementById('calendarMonthTitle');
+      const nextMonthBtn = document.querySelector('.calendar-button-next');
+      const previousMonthBtn = document.querySelector('.calendar-button-previous');
+
+      const eventosPorDia = {
+        '2025-06-05': ['Feria de Salud – 10:00 a.m.', 'Chequeo médico gratuito'],
+        '2025-06-12': ['Entrega de gafas – 9:00 a.m.'],
+        '2025-06-20': ['Campaña de valores – 1:00 p.m.']
+      };
+
+      const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+      let currentDate = new Date();
+
+      function renderCalendar(date) {
+        const year = date.getFullYear();
+        const month = date.getMonth();
+
+        const firstDayIndex = new Date(year, month, 1).getDay();
+        const diasEnMes = new Date(year, month + 1, 0).getDate();
+
+        monthTitle.textContent = `${meses[month]} ${year}`;
+        calendarDaysContainer.innerHTML = '';
+
+        // Espacios vacíos antes del día 1 (ajuste para que Lunes sea primero)
+        const offset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+        for (let i = 0; i < offset; i++) {
+          const empty = document.createElement('li');
+          empty.classList.add('calendar-day');
+          calendarDaysContainer.appendChild(empty);
+        }
+
+        for (let day = 1; day <= diasEnMes; day++) {
+          const li = document.createElement('li');
+          li.classList.add('calendar-day');
+          li.dataset.day = day;
+
+          const dateKey = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+
+          li.innerHTML = `<div class="day-info"><h5>${day}</h5></div>`;
+
+          // Si hay eventos, marca visualmente
+          if (eventosPorDia[dateKey]) {
+            li.classList.add('evento');
           }
-          calendar.unselect();
-        },
-        eventClick: function (info) {
-          alert('Evento: ' + info.event.title);
+
+          // Evento clic día
+          li.addEventListener('click', () => {
+            const eventos = eventosPorDia[dateKey] || ['No hay eventos programados.'];
+            listaEventos.innerHTML = eventos.map(ev => `<li>${ev}</li>`).join('');
+            modal.style.display = 'flex';
+          });
+
+          calendarDaysContainer.appendChild(li);
+        }
+      }
+
+      nextMonthBtn.addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar(currentDate);
+      });
+
+      previousMonthBtn.addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        renderCalendar(currentDate);
+      });
+
+      closeModal.addEventListener('click', () => {
+        modal.style.display = 'none';
+      });
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.style.display = 'none';
         }
       });
-      calendar.render();
-    });
 
-    // Cambiar vista del calendario con botones personalizados
-    document.querySelectorAll('.vista-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.vista-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        const vista = btn.dataset.view;
-        if (vista === 'dia') calendar.changeView('timeGridDay');
-        if (vista === 'semana') calendar.changeView('timeGridWeek');
-        if (vista === 'mes') calendar.changeView('dayGridMonth');
-      });
-    });
-
-    // Guardar evento en tarjetas
-    document.querySelector('.evento-formulario').addEventListener('submit', e => {
-      e.preventDefault();
-      const inputs = e.target.querySelectorAll('input, textarea');
-      const values = Array.from(inputs).map(i => i.value);
-
-      const nuevaCard = document.createElement('div');
-      nuevaCard.className = 'evento-card';
-      nuevaCard.innerHTML = `
-        <h4>${values[0]}</h4>
-        <p><strong>Lugar:</strong> ${values[1]}</p>
-        <p><strong>Hora:</strong> ${values[2]} – ${values[3]}</p>
-        <p><strong>Descripción:</strong> ${values[4]}</p>
-      `;
-      document.querySelector('.eventos-grid').appendChild(nuevaCard);
-
-      e.target.reset();
+      // Render inicial
+      renderCalendar(currentDate);
     });
   </script>
 </body>
