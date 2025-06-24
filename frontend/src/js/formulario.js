@@ -1,26 +1,29 @@
+const form = document.querySelector('.formulario');
 
-  const form = document.querySelector('.formulario');
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
+  const formData = new FormData(form);
 
-    const formData = new FormData(form); // Captura todos los campos, incluido el archivo
+  try {
+    const res = await fetch('http://localhost:3000/api/formulario', {
+      method: 'POST',
+      body: formData
+    });
 
-    try {
-      const res = await fetch('http://localhost:3000/api/solicitud', {
-        method: 'POST',
-        body: formData, // Aquí se envían los datos + archivo
-      });
-
-      const result = await res.json();
-
-      if (res.ok) {
-        alert('✅ Solicitud enviada correctamente');
-        form.reset();
-      } else {
-        alert('❌ Error: ' + result.error);
-      }
-    } catch (err) {
-      alert('❌ Error de conexión con el servidor');
+    if (!res.ok) {
+      const errorText = await res.text(); // Captura respuesta como texto si no es JSON
+      throw new Error(errorText);
     }
-  });
+
+    const result = await res.json();
+
+    alert('✅ Solicitud enviada correctamente');
+    form.reset();
+
+  } catch (err) {
+    alert('❌ Error: ' + err.message);
+    console.error('Error al enviar solicitud:', err);
+  }
+});
+
