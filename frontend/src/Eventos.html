@@ -41,7 +41,7 @@
                 <button class="calendar-button calendar-button-previous" data-lucide="chevron-left"></button>  
                 <h3 class="container-heading" id="calendarMonthTitle"></h3>
                 <button class="calendar-button calendar-button-next" data-lucide="chevron-right"></button>
-                <button class="btn-crear-evento">Crear evento</button>
+                <button class="btn-crear-evento" id="crearEvento">Crear evento</button>
             </div>
         </header>
 
@@ -68,6 +68,58 @@
         <ul class="calendar-modal-eventos-list" id="calendarModalEventosLista"></ul>
       </div>
     </div>
+
+    <section class="evento-formulario" id="panelEventoFormulario">
+      <h2>Añadir Evento</h2>
+    
+      <form id="formCrearEvento">
+        <input type="text" placeholder="Nombre del Evento" name="titulo" required />
+    
+        <div class="input-icono">
+          <i data-lucide="map-pin"></i>
+          <input type="text" placeholder="Lugar del Evento" name="lugar" required />
+        </div>
+    
+        <div class="input-icono">
+          <i data-lucide="calendar"></i>
+          <input type="date" name="fecha" required />
+        </div>
+    
+        <div class="hora-rango">
+          <div class="input-icono">
+            <i data-lucide="clock"></i>
+            <input type="time" name="horaInicio" required />
+          </div>
+          <span class="flecha-hora">→</span>
+          <div class="input-icono">
+            <i data-lucide="clock"></i>
+            <input type="time" name="horaFin" required />
+          </div>
+        </div>
+    
+        <textarea name="descripcion" placeholder="Añade una descripción"></textarea>
+    
+        <div class="colores-evento">
+          <label>
+            <input type="radio" name="color" value="#c084fc" checked />
+            <span class="color-circulo" style="background-color: #c084fc;"></span>
+            <span class="color-label">Programa de Salud</span>
+          </label>
+          <label>
+            <input type="radio" name="color" value="#fde047" />
+            <span class="color-circulo" style="background-color: #fde047;"></span>
+            <span class="color-label">Promoción Social</span>
+          </label>
+        </div>
+    
+        <div class="acciones">
+          <button type="button" class="btn-cancelar">Cancelar</button>
+          <button type="submit" class="btn-guardar">Guardar</button>
+        </div>
+      </form>
+    </section>
+    
+    
   </main>
 
   <!-- Footer -->
@@ -94,12 +146,6 @@
       const monthTitle = document.getElementById('calendarMonthTitle');
       const nextMonthBtn = document.querySelector('.calendar-button-next');
       const previousMonthBtn = document.querySelector('.calendar-button-previous');
-
-      const eventosPorDia = {
-        '2025-06-05': ['Feria de Salud – 10:00 a.m.', 'Chequeo médico gratuito'],
-        '2025-06-12': ['Entrega de gafas – 9:00 a.m.'],
-        '2025-06-20': ['Campaña de valores – 1:00 p.m.']
-      };
 
       const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
                      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
@@ -172,6 +218,96 @@
       // Render inicial
       renderCalendar(currentDate);
     });
+
+    const btnCrearEvento = document.getElementById("crearEvento");
+    const panelEvento = document.getElementById("panelEventoFormulario");
+    const btnCancelar = document.querySelector(".btn-cancelar");
+
+    btnCrearEvento.addEventListener("click", () => {
+      panelEvento.classList.add("open");
+    });
+
+    btnCancelar.addEventListener("click", () => {
+      panelEvento.classList.remove("open");
+    });
+
+    // 1) Cambiamos la estructura de eventosPorDia para almacenar objetos con html y color
+const eventosPorDia = {
+  '2025-06-05': [
+    { html: 'Feria de Salud – 10:00 a.m.<br>Chequeo médico gratuito', color: '#c084fc' }
+  ],
+  '2025-06-12': [
+    { html: 'Entrega de gafas – 9:00 a.m.', color: '#fde047' }
+  ],
+  '2025-06-20': [
+    { html: 'Campaña de valores – 1:00 p.m.', color: '#c084fc' }
+  ]
+};
+
+// 2) Modificamos renderCalendar para pintar un “punto” de color por cada evento
+function renderCalendar(date) {
+  // … tu código actual hasta calendarDaysContainer.innerHTML = ''
+  // luego, dentro del bucle de días:
+  for (let day = 1; day <= diasEnMes; day++) {
+    const li = document.createElement('li');
+    li.classList.add('calendar-day');
+    li.dataset.day = day;
+    const dateKey = `${year}-${pad(month+1)}-${pad(day)}`;
+    li.innerHTML = `<div class="day-info"><h5>${day}</h5></div>`;
+
+    if (eventosPorDia[dateKey]) {
+      li.classList.add('evento');
+      // por cada evento, añadimos un marcador de color
+      eventosPorDia[dateKey].forEach(ev => {
+        const mark = document.createElement('span');
+        mark.className = 'event-marker';
+        mark.style.backgroundColor = ev.color;
+        li.appendChild(mark);
+      });
+    }
+
+    li.addEventListener('click', () => {
+      const lista = eventosPorDia[dateKey] || [];
+      listaEventos.innerHTML = lista
+        .map(ev => 
+          `<li style="border-left:4px solid ${ev.color}; padding-left:0.5rem; margin-bottom:0.5rem;">
+             ${ev.html}
+           </li>`)
+        .join('');
+      modal.style.display = 'flex';
+    });
+
+    calendarDaysContainer.appendChild(li);
+  }
+}
+
+    // Helper para formatear con dos dígitos
+    function pad(n){ return n.toString().padStart(2, '0'); }
+
+    // 3) Listener del formulario: crea el objeto evento y vuelve a renderizar
+    const formCrearEvento = document.getElementById('formCrearEvento');
+    formCrearEvento.addEventListener('submit', e => {
+      e.preventDefault();
+      const data = new FormData(formCrearEvento);
+      const fecha      = data.get('fecha');
+      const titulo     = data.get('titulo');
+      const lugar      = data.get('lugar');
+      const hi         = data.get('horaInicio');
+      const hf         = data.get('horaFin');
+      const desc       = data.get('descripcion');
+      const color      = data.get('color');
+
+      const htmlText = `${titulo} – ${hi} a ${hf}<br>${lugar}<br>${desc}`;
+
+      if (!eventosPorDia[fecha]) eventosPorDia[fecha] = [];
+      eventosPorDia[fecha].push({ html: htmlText, color });
+
+      // re-render y cierre del panel
+      renderCalendar(currentDate);
+      formCrearEvento.reset();
+      panelEvento.classList.remove('open');
+    });
+
   </script>
 </body>
 </html>
