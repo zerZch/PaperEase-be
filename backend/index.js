@@ -1,30 +1,29 @@
 const express = require('express');
 const path = require('path');
-const cors = require('cors');
-const novedadesRouter = require('./novedades');
-const formularioRouter = require('./formulario'); // 👈 Importamos solicitud
-
 const app = express();
-const PORT = 3000;
+const novedadesRouter = require('./novedades.js');
+const eventosRouter = require('./eventos.js');
+const cors = require('cors');
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Archivos estáticos
+// Montar routers en rutas específicas para evitar conflicto
+app.use('/api/novedades', novedadesRouter);
+app.use('/api/eventos', eventosRouter);
+
+// Servir archivos estáticos (imágenes, css, js) desde carpeta public
 app.use('/public', express.static(path.join(__dirname, '../frontend/public')));
+
+// Servir archivos estáticos (html, js, css) desde carpeta src
 app.use('/src', express.static(path.join(__dirname, '../frontend/src')));
 
-// Rutas API
-app.use('/api', novedadesRouter);
-app.use('/api', formularioRouter); // 👈 Usamos las rutas del formulario
-
-// Página raíz
+// Ruta raíz sirve el archivo HTML principal
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/src/menuPE.html'));
 });
 
-// Iniciar servidor
+const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
