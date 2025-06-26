@@ -41,7 +41,7 @@
                 <button class="calendar-button calendar-button-previous" data-lucide="chevron-left"></button>  
                 <h3 class="container-heading" id="calendarMonthTitle"></h3>
                 <button class="calendar-button calendar-button-next" data-lucide="chevron-right"></button>
-                <button class="btn-crear-evento">Crear evento</button>
+                <button class="btn-crear-evento" id="crearEvento">Crear evento</button>
             </div>
         </header>
 
@@ -68,6 +68,58 @@
         <ul class="calendar-modal-eventos-list" id="calendarModalEventosLista"></ul>
       </div>
     </div>
+
+    <section class="evento-formulario" id="panelEventoFormulario">
+      <h2>Añadir Evento</h2>
+    
+      <form id="formCrearEvento">
+        <input type="text" placeholder="Nombre del Evento" name="titulo" required />
+    
+        <div class="input-icono">
+          <i data-lucide="map-pin"></i>
+          <input type="text" placeholder="Lugar del Evento" name="lugar" required />
+        </div>
+    
+        <div class="input-icono">
+          <i data-lucide="calendar"></i>
+          <input type="date" name="fecha" required />
+        </div>
+    
+        <div class="hora-rango">
+          <div class="input-icono">
+            <i data-lucide="clock"></i>
+            <input type="time" name="horaInicio" required />
+          </div>
+          <span class="flecha-hora">→</span>
+          <div class="input-icono">
+            <i data-lucide="clock"></i>
+            <input type="time" name="horaFin" required />
+          </div>
+        </div>
+    
+        <textarea name="descripcion" placeholder="Añade una descripción"></textarea>
+    
+        <div class="colores-evento">
+          <label>
+            <input type="radio" name="color" value="#c084fc" checked />
+            <span class="color-circulo" style="background-color: #c084fc;"></span>
+            <span class="color-label">Programa de Salud</span>
+          </label>
+          <label>
+            <input type="radio" name="color" value="#fde047" />
+            <span class="color-circulo" style="background-color: #fde047;"></span>
+            <span class="color-label">Promoción Social</span>
+          </label>
+        </div>
+    
+        <div class="acciones">
+          <button type="button" class="btn-cancelar">Cancelar</button>
+          <button type="submit" class="btn-guardar">Guardar</button>
+        </div>
+      </form>
+    </section>
+    
+    
   </main>
 
   <!-- Footer -->
@@ -83,8 +135,95 @@
   </footer>
 
   <!-- JS -->
-   <script src="js/eventos.js" defer></script>
+  <script>
+    lucide.createIcons();
 
+    document.addEventListener('DOMContentLoaded', () => {
+      const modal = document.getElementById('calendarModalOverlay');
+      const closeModal = document.getElementById('calendarCloseModal');
+      const listaEventos = document.getElementById('calendarModalEventosLista');
+      const calendarDaysContainer = document.querySelector('.calendar-days');
+      const monthTitle = document.getElementById('calendarMonthTitle');
+      const nextMonthBtn = document.querySelector('.calendar-button-next');
+      const previousMonthBtn = document.querySelector('.calendar-button-previous');
 
+      const eventosPorDia = {
+        '2025-06-05': ['Feria de Salud – 10:00 a.m.', 'Chequeo médico gratuito'],
+        '2025-06-12': ['Entrega de gafas – 9:00 a.m.'],
+        '2025-06-20': ['Campaña de valores – 1:00 p.m.']
+      };
+
+      const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+      let currentDate = new Date();
+
+      function renderCalendar(date) {
+        const year = date.getFullYear();
+        const month = date.getMonth();
+
+        const firstDayIndex = new Date(year, month, 1).getDay();
+        const diasEnMes = new Date(year, month + 1, 0).getDate();
+
+        monthTitle.textContent = `${meses[month]} ${year}`;
+        calendarDaysContainer.innerHTML = '';
+
+        // Espacios vacíos antes del día 1 (ajuste para que Lunes sea primero)
+        const offset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+        for (let i = 0; i < offset; i++) {
+          const empty = document.createElement('li');
+          empty.classList.add('calendar-day');
+          calendarDaysContainer.appendChild(empty);
+        }
+
+        for (let day = 1; day <= diasEnMes; day++) {
+          const li = document.createElement('li');
+          li.classList.add('calendar-day');
+          li.dataset.day = day;
+
+          const dateKey = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+
+          li.innerHTML = `<div class="day-info"><h5>${day}</h5></div>`;
+
+          // Si hay eventos, marca visualmente
+          if (eventosPorDia[dateKey]) {
+            li.classList.add('evento');
+          }
+
+          // Evento clic día
+          li.addEventListener('click', () => {
+            const eventos = eventosPorDia[dateKey] || ['No hay eventos programados.'];
+            listaEventos.innerHTML = eventos.map(ev => `<li>${ev}</li>`).join('');
+            modal.style.display = 'flex';
+          });
+
+          calendarDaysContainer.appendChild(li);
+        }
+      }
+
+      nextMonthBtn.addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        renderCalendar(currentDate);
+      });
+
+      previousMonthBtn.addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        renderCalendar(currentDate);
+      });
+
+      closeModal.addEventListener('click', () => {
+        modal.style.display = 'none';
+      });
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+
+      // Render inicial
+      renderCalendar(currentDate);
+    });
+  </script>
 </body>
 </html>
