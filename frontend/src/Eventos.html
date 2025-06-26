@@ -72,55 +72,126 @@
     <section class="evento-formulario" id="panelEventoFormulario">
       <h2>Añadir Evento</h2>
     
+    <!-- Panel de Formulario (derecha) -->  
       <form id="formCrearEvento">
-        <input type="text" placeholder="Nombre del Evento" name="titulo" required />
-    
-        <div class="input-icono">
-          <i data-lucide="map-pin"></i>
-          <input type="text" placeholder="Lugar del Evento" name="lugar" required />
+        <!-- Nombre del Evento -->
+        <div class="form-group">
+          <label for="titulo">Nombre del Evento</label>
+          <input type="text" id="titulo" name="titulo" placeholder="Ej: Feria de Salud" required />
         </div>
     
-        <div class="input-icono">
-          <i data-lucide="calendar"></i>
-          <input type="date" name="fecha" required />
+        <!-- Lugar -->
+        <div class="form-group">
+          <label for="lugar">Lugar del Evento</label>
+          <input type="text" id="lugar" name="lugar" placeholder="Ej: Gimnasio UTP" required />
         </div>
     
+        <!-- Fecha -->
+        <div class="form-group">
+          <label for="fecha">Fecha</label>
+          <input type="date" id="fecha" name="fecha" required />
+        </div>
+    
+        <!-- Hora de Inicio y Fin -->
         <div class="hora-rango">
-          <div class="input-icono">
-            <i data-lucide="clock"></i>
-            <input type="time" name="horaInicio" required />
+          <div class="grupo-hora">
+            <label for="horaInicio">Hora de Inicio</label>
+            <input type="time" id="horaInicio" name="horaInicio" required />
           </div>
           <span class="flecha-hora">→</span>
-          <div class="input-icono">
-            <i data-lucide="clock"></i>
-            <input type="time" name="horaFin" required />
+          <div class="grupo-hora">
+            <label for="horaFin">Hora de Fin</label>
+            <input type="time" id="horaFin" name="horaFin" required />
           </div>
         </div>
     
-        <textarea name="descripcion" placeholder="Añade una descripción"></textarea>
+        <!-- Descripción -->
+        <div class="form-group">
+          <label for="descripcion">Descripción</label>
+          <textarea id="descripcion" name="descripcion" placeholder="Ej: Actividades de chequeo médico gratuito..."></textarea>
+        </div>
     
-        <div class="colores-evento">
+        <!-- Color -->
+        <div class="form-group colores-evento">
+          <label>Color del Evento</label>
           <label>
             <input type="radio" name="color" value="#c084fc" checked />
-            <span class="color-circulo" style="background-color: #c084fc;"></span>
+            <span class="color-circulo color-morado" style="background-color: #c084fc;"></span>
             <span class="color-label">Programa de Salud</span>
           </label>
           <label>
             <input type="radio" name="color" value="#fde047" />
-            <span class="color-circulo" style="background-color: #fde047;"></span>
+            <span class="color-circulo color-amarillo" style="background-color: #fde047;"></span>
             <span class="color-label">Promoción Social</span>
           </label>
         </div>
     
+        <!-- Botones -->
         <div class="acciones">
           <button type="button" class="btn-cancelar">Cancelar</button>
           <button type="submit" class="btn-guardar">Guardar</button>
         </div>
       </form>
     </section>
-    
-    
   </main>
+
+  <!-- Toast de Confirmación -->
+  <div id="toast" class="calendar-toast"></div>
+
+  <!-- Overlay para cerrar paneles -->
+<div class="panel-overlay" id="panelOverlay"></div>
+
+<!-- Panel de detalles del evento (izquierda) -->
+<section class="evento-detalle" id="panelEventoDetalle">
+    <div class="panel-header">
+        <h2 class="panel-title">Detalles del Evento</h2>
+        <button class="btn-close" id="btnCerrarDetalle">&times;</button>
+    </div>
+
+    <div class="evento-info">
+        <h3 class="evento-title" id="eventoTitulo">Título del Evento</h3>
+        
+        <div class="evento-detail-item">
+            <div class="evento-detail-label">Fecha</div>
+            <div class="evento-detail-value" id="eventoFecha">-</div>
+        </div>
+
+        <div class="evento-detail-item">
+            <div class="evento-detail-label">Horario</div>
+            <div class="evento-detail-value" id="eventoHorario">-</div>
+        </div>
+
+        <div class="evento-detail-item">
+            <div class="evento-detail-label">Lugar</div>
+            <div class="evento-detail-value" id="eventoLugar">-</div>
+        </div>
+
+        <div class="evento-detail-item">
+            <div class="evento-detail-label">Descripción</div>
+            <div class="evento-detail-value" id="eventoDescripcion">-</div>
+        </div>
+
+        <div class="evento-detail-item">
+            <div class="evento-detail-label">Categoría</div>
+            <div class="evento-detail-value">
+                <span id="eventoCategoria" style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; margin-right: 8px;"></span>
+                <span id="eventoCategoriaTexto">General</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="evento-actions">
+        <button class="btn btn-primary" id="btnEditarEvento">
+            Editar Evento
+        </button>
+        <button class="btn btn-secondary" id="btnDuplicarEvento">
+            Duplicar Evento
+        </button>
+        <button class="btn btn-danger" id="btnEliminarEvento">
+            Eliminar Evento
+        </button>
+    </div>
+</section>
 
   <!-- Footer -->
   <footer>
@@ -135,66 +206,109 @@
   </footer>
 
   <!-- JS -->
-  <script>
+<script>
     lucide.createIcons();
+  
+    // Mover estas variables FUERA del DOMContentLoaded para que sean globales
+    let currentDate = new Date();
+    const eventosPorDia = {
+      '2025-06-05': [
+        { html: 'Feria de Salud – 10:00 a.m.<br>Chequeo médico gratuito', color: '#c084fc' }
+      ],
+      '2025-06-12': [
+        { html: 'Entrega de gafas – 9:00 a.m.', color: '#fde047' }
+      ],
+      '2025-06-20': [
+        { html: 'Campaña de valores – 1:00 p.m.', color: '#c084fc' }
+      ]
+    };
+    
+    // Variables del DOM que se inicializarán en DOMContentLoaded
+    let modal, closeModal, listaEventos, calendarDaysContainer, monthTitle, nextMonthBtn, previousMonthBtn;
+    let btnCrearEvento, panelEvento, btnCancelar, formCrearEvento;
+    
+    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const modal = document.getElementById('calendarModalOverlay');
-      const closeModal = document.getElementById('calendarCloseModal');
-      const listaEventos = document.getElementById('calendarModalEventosLista');
-      const calendarDaysContainer = document.querySelector('.calendar-days');
-      const monthTitle = document.getElementById('calendarMonthTitle');
-      const nextMonthBtn = document.querySelector('.calendar-button-next');
-      const previousMonthBtn = document.querySelector('.calendar-button-previous');
-
-      const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-                     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-
-      let currentDate = new Date();
-
-      function renderCalendar(date) {
-        const year = date.getFullYear();
-        const month = date.getMonth();
-
-        const firstDayIndex = new Date(year, month, 1).getDay();
-        const diasEnMes = new Date(year, month + 1, 0).getDate();
-
-        monthTitle.textContent = `${meses[month]} ${year}`;
-        calendarDaysContainer.innerHTML = '';
-
-        // Espacios vacíos antes del día 1 (ajuste para que Lunes sea primero)
-        const offset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
-        for (let i = 0; i < offset; i++) {
-          const empty = document.createElement('li');
-          empty.classList.add('calendar-day');
-          calendarDaysContainer.appendChild(empty);
-        }
-
-        for (let day = 1; day <= diasEnMes; day++) {
-          const li = document.createElement('li');
-          li.classList.add('calendar-day');
-          li.dataset.day = day;
-
-          const dateKey = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-
-          li.innerHTML = `<div class="day-info"><h5>${day}</h5></div>`;
-
-          // Si hay eventos, marca visualmente
-          if (eventosPorDia[dateKey]) {
+    // Función renderCalendar GLOBAL
+    function renderCalendar(date) {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDayIndex = new Date(year, month, 1).getDay();
+    const diasEnMes = new Date(year, month + 1, 0).getDate();
+    
+    monthTitle.textContent = `${meses[month]} ${year}`;
+    calendarDaysContainer.innerHTML = '';
+    
+    const offset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+    
+    for (let i = 0; i < offset; i++) {
+        const empty = document.createElement('li');
+        empty.classList.add('calendar-day');
+        calendarDaysContainer.appendChild(empty);
+    }
+    
+    for (let day = 1; day <= diasEnMes; day++) {
+        const li = document.createElement('li');
+        li.classList.add('calendar-day');
+        li.dataset.day = day;
+        
+        const dateKey = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+        li.innerHTML = `<div class="day-info"><h5>${day}</h5></div>`;
+        
+        if (eventosPorDia[dateKey]) {
             li.classList.add('evento');
-          }
-
-          // Evento clic día
-          li.addEventListener('click', () => {
-            const eventos = eventosPorDia[dateKey] || ['No hay eventos programados.'];
-            listaEventos.innerHTML = eventos.map(ev => `<li>${ev}</li>`).join('');
-            modal.style.display = 'flex';
-          });
-
-          calendarDaysContainer.appendChild(li);
+            eventosPorDia[dateKey].forEach(ev => {
+                const mark = document.createElement('span');
+                mark.className = 'event-marker';
+                mark.style.backgroundColor = ev.color;
+                li.appendChild(mark);
+            });
         }
-      }
+        
+        // Event listener actualizado con las nuevas funcionalidades
+        li.addEventListener('click', () => {
+            const lista = eventosPorDia[dateKey] || [];
+            
+            if (lista.length === 1) {
+                // Si solo hay un evento, mostrar directamente los detalles
+                mostrarDetalleEvento(lista[0], dateKey);
+            } else if (lista.length > 1) {
+                // Si hay múltiples eventos, mostrar modal para seleccionar
+                listaEventos.innerHTML = lista
+                    .map((ev, index) => 
+                        `<li style="border-left:4px solid ${ev.color}; padding-left:0.5rem; margin-bottom:0.5rem; cursor: pointer;" 
+                            onclick="mostrarDetalleEvento(eventosPorDia['${dateKey}'][${index}], '${dateKey}', ${index})">
+                            ${ev.html}
+                        </li>`)
+                    .join('');
+                modal.style.display = 'flex';
+            } else {
+                // No hay eventos, podrías mostrar opción para crear uno
+                fechaActualSeleccionada = dateKey;
+                // Opcional: mostrar formulario para crear evento en esta fecha
+            }
+        });
+        
+        calendarDaysContainer.appendChild(li);
+    }
+}
+  
+    document.addEventListener('DOMContentLoaded', () => {
+      // Inicializar variables del DOM
+      modal = document.getElementById('calendarModalOverlay');
+      closeModal = document.getElementById('calendarCloseModal');
+      listaEventos = document.getElementById('calendarModalEventosLista');
+      calendarDaysContainer = document.querySelector('.calendar-days');
+      monthTitle = document.getElementById('calendarMonthTitle');
+      nextMonthBtn = document.querySelector('.calendar-button-next');
+      previousMonthBtn = document.querySelector('.calendar-button-previous');
+      btnCrearEvento = document.getElementById("crearEvento");
+      panelEvento = document.getElementById("panelEventoFormulario");
+      btnCancelar = document.querySelector(".btn-cancelar");
+      formCrearEvento = document.getElementById('formCrearEvento');
 
+      // Event listeners para navegación del calendario
       nextMonthBtn.addEventListener('click', () => {
         currentDate.setMonth(currentDate.getMonth() + 1);
         renderCalendar(currentDate);
@@ -215,99 +329,227 @@
         }
       });
 
-      // Render inicial
+      // Event listeners para crear evento
+      btnCrearEvento.addEventListener("click", () => {
+        panelEvento.classList.add("open");
+      });
+
+      btnCancelar.addEventListener("click", () => {
+        panelEvento.classList.remove("open");
+      });
+
+      // Event listener para el formulario [ENVIAR Y MOSTRAR]
+      formCrearEvento.addEventListener('submit', e => {
+        e.preventDefault();
+        
+        const data = new FormData(formCrearEvento);
+        const fecha = data.get('fecha');
+        const titulo = data.get('titulo');
+        const lugar = data.get('lugar');
+        const hi = data.get('horaInicio');
+        const hf = data.get('horaFin');
+        const desc = data.get('descripcion');
+        const color = data.get('color');
+        
+        const htmlText = `${titulo} – ${hi} a ${hf}<br>${lugar}<br>${desc}`;
+        
+        if (!eventosPorDia[fecha]) eventosPorDia[fecha] = [];
+        eventosPorDia[fecha].push({ html: htmlText, color });
+        
+        renderCalendar(currentDate);
+        formCrearEvento.reset();
+        panelEvento.classList.remove('open');
+        
+        // Mostrar el toast
+        const toast = document.getElementById('toast');
+        
+        if (!toast) {
+            console.error('Error: No se encontró el elemento con ID "toast"');
+            return;
+        }
+        
+        console.log('Toast element found:', toast);
+        
+        toast.textContent = `Evento "${titulo}" añadido con éxito`;
+        toast.classList.add('show');
+        
+        console.log('Toast classes:', toast.classList);
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+            console.log('Toast hidden');
+        }, 3000);
+      });
+
+      // Renderizar calendario inicial
       renderCalendar(currentDate);
     });
 
-    const btnCrearEvento = document.getElementById("crearEvento");
-    const panelEvento = document.getElementById("panelEventoFormulario");
-    const btnCancelar = document.querySelector(".btn-cancelar");
+    // Variables globales adicionales
+let eventoActualSeleccionado = null;
+let fechaActualSeleccionada = null;
 
-    btnCrearEvento.addEventListener("click", () => {
-      panelEvento.classList.add("open");
-    });
-
-    btnCancelar.addEventListener("click", () => {
-      panelEvento.classList.remove("open");
-    });
-
-    // 1) Cambiamos la estructura de eventosPorDia para almacenar objetos con html y color
-const eventosPorDia = {
-  '2025-06-05': [
-    { html: 'Feria de Salud – 10:00 a.m.<br>Chequeo médico gratuito', color: '#c084fc' }
-  ],
-  '2025-06-12': [
-    { html: 'Entrega de gafas – 9:00 a.m.', color: '#fde047' }
-  ],
-  '2025-06-20': [
-    { html: 'Campaña de valores – 1:00 p.m.', color: '#c084fc' }
-  ]
-};
-
-// 2) Modificamos renderCalendar para pintar un “punto” de color por cada evento
-function renderCalendar(date) {
-  // … tu código actual hasta calendarDaysContainer.innerHTML = ''
-  // luego, dentro del bucle de días:
-  for (let day = 1; day <= diasEnMes; day++) {
-    const li = document.createElement('li');
-    li.classList.add('calendar-day');
-    li.dataset.day = day;
-    const dateKey = `${year}-${pad(month+1)}-${pad(day)}`;
-    li.innerHTML = `<div class="day-info"><h5>${day}</h5></div>`;
-
-    if (eventosPorDia[dateKey]) {
-      li.classList.add('evento');
-      // por cada evento, añadimos un marcador de color
-      eventosPorDia[dateKey].forEach(ev => {
-        const mark = document.createElement('span');
-        mark.className = 'event-marker';
-        mark.style.backgroundColor = ev.color;
-        li.appendChild(mark);
-      });
+// Función para parsear los datos del evento desde el HTML
+function parsearEventoDesdeHTML(htmlEvento, color, fecha) {
+    // Extraer información del HTML del evento
+    const lineas = htmlEvento.split('<br>');
+    const primeraLinea = lineas[0]; // "Título – hora a hora"
+    const lugar = lineas[1] || '';
+    const descripcion = lineas[2] || '';
+    
+    // Parsear título y horarios
+    const [titulo, horario] = primeraLinea.split(' – ');
+    let horaInicio = '', horaFin = '';
+    
+    if (horario && horario.includes(' a ')) {
+        const [inicio, fin] = horario.split(' a ');
+        horaInicio = inicio.trim();
+        horaFin = fin.trim();
     }
-
-    li.addEventListener('click', () => {
-      const lista = eventosPorDia[dateKey] || [];
-      listaEventos.innerHTML = lista
-        .map(ev => 
-          `<li style="border-left:4px solid ${ev.color}; padding-left:0.5rem; margin-bottom:0.5rem;">
-             ${ev.html}
-           </li>`)
-        .join('');
-      modal.style.display = 'flex';
-    });
-
-    calendarDaysContainer.appendChild(li);
-  }
+    
+    return {
+        titulo: titulo || 'Sin título',
+        fecha: fecha,
+        horaInicio: horaInicio,
+        horaFin: horaFin,
+        lugar: lugar,
+        descripcion: descripcion,
+        color: color
+    };
 }
 
-    // Helper para formatear con dos dígitos
-    function pad(n){ return n.toString().padStart(2, '0'); }
+// Función para mostrar detalles del evento (integrada)
+function mostrarDetalleEvento(eventoData, fecha, index = 0) {
+    const evento = parsearEventoDesdeHTML(eventoData.html, eventoData.color, fecha);
+    eventoActualSeleccionado = { ...evento, index, fecha };
+    
+    // Actualizar contenido del panel
+    document.getElementById('eventoTitulo').textContent = evento.titulo;
+    document.getElementById('eventoFecha').textContent = formatearFecha(evento.fecha);
+    document.getElementById('eventoHorario').textContent = `${evento.horaInicio} - ${evento.horaFin}`;
+    document.getElementById('eventoLugar').textContent = evento.lugar;
+    document.getElementById('eventoDescripcion').textContent = evento.descripcion;
+    document.getElementById('eventoCategoria').style.backgroundColor = evento.color;
+    
+    // Mostrar panel
+    document.getElementById('panelOverlay').classList.add('active');
+    document.getElementById('panelEventoDetalle').classList.add('open');
+    
+    // Cerrar modal del calendario si está abierto
+    const modal = document.getElementById('calendarModalOverlay');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
 
-    // 3) Listener del formulario: crea el objeto evento y vuelve a renderizar
-    const formCrearEvento = document.getElementById('formCrearEvento');
-    formCrearEvento.addEventListener('submit', e => {
-      e.preventDefault();
-      const data = new FormData(formCrearEvento);
-      const fecha      = data.get('fecha');
-      const titulo     = data.get('titulo');
-      const lugar      = data.get('lugar');
-      const hi         = data.get('horaInicio');
-      const hf         = data.get('horaFin');
-      const desc       = data.get('descripcion');
-      const color      = data.get('color');
+// Función para formatear fecha
+function formatearFecha(fechaStr) {
+    const fecha = new Date(fechaStr + 'T00:00:00');
+    const opciones = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    };
+    return fecha.toLocaleDateString('es-ES', opciones);
+}
 
-      const htmlText = `${titulo} – ${hi} a ${hf}<br>${lugar}<br>${desc}`;
-
-      if (!eventosPorDia[fecha]) eventosPorDia[fecha] = [];
-      eventosPorDia[fecha].push({ html: htmlText, color });
-
-      // re-render y cierre del panel
-      renderCalendar(currentDate);
-      formCrearEvento.reset();
-      panelEvento.classList.remove('open');
+// Event listeners para las acciones del evento
+document.addEventListener('DOMContentLoaded', () => {
+    // Cerrar paneles
+    const panelOverlay = document.getElementById('panelOverlay');
+    const btnCerrarDetalle = document.getElementById('btnCerrarDetalle');
+    const btnCerrarFormulario = document.getElementById('btnCerrarFormulario');
+    
+    function cerrarPaneles() {
+        panelOverlay?.classList.remove('active');
+        document.getElementById('panelEventoDetalle')?.classList.remove('open');
+        document.getElementById('panelEventoFormulario')?.classList.remove('open');
+    }
+    
+    btnCerrarDetalle?.addEventListener('click', cerrarPaneles);
+    btnCerrarFormulario?.addEventListener('click', cerrarPaneles);
+    panelOverlay?.addEventListener('click', cerrarPaneles);
+    
+    // Editar evento
+    document.getElementById('btnEditarEvento')?.addEventListener('click', () => {
+        if (eventoActualSeleccionado) {
+            // Precargar formulario con datos del evento
+            const form = document.getElementById('formCrearEvento');
+            if (form) {
+                form.querySelector('[name="fecha"]').value = eventoActualSeleccionado.fecha;
+                form.querySelector('[name="titulo"]').value = eventoActualSeleccionado.titulo;
+                form.querySelector('[name="lugar"]').value = eventoActualSeleccionado.lugar;
+                form.querySelector('[name="horaInicio"]').value = eventoActualSeleccionado.horaInicio;
+                form.querySelector('[name="horaFin"]').value = eventoActualSeleccionado.horaFin;
+                form.querySelector('[name="descripcion"]').value = eventoActualSeleccionado.descripcion;
+                form.querySelector('[name="color"]').value = eventoActualSeleccionado.color;
+                
+                // Cambiar a modo edición
+                form.dataset.editMode = 'true';
+                form.dataset.editIndex = eventoActualSeleccionado.index;
+                form.dataset.editFecha = eventoActualSeleccionado.fecha;
+                
+                // Cerrar panel de detalles y abrir formulario
+                cerrarPaneles();
+                document.getElementById('panelEventoFormulario').classList.add('open');
+                panelOverlay.classList.add('active');
+            }
+        }
     });
-
-  </script>
+    
+    // Duplicar evento
+    document.getElementById('btnDuplicarEvento')?.addEventListener('click', () => {
+        if (eventoActualSeleccionado) {
+            const nuevoEvento = {
+                html: `${eventoActualSeleccionado.titulo} (Copia) – ${eventoActualSeleccionado.horaInicio} a ${eventoActualSeleccionado.horaFin}<br>${eventoActualSeleccionado.lugar}<br>${eventoActualSeleccionado.descripcion}`,
+                color: eventoActualSeleccionado.color
+            };
+            
+            eventosPorDia[eventoActualSeleccionado.fecha].push(nuevoEvento);
+            renderCalendar(currentDate);
+            cerrarPaneles();
+            
+            // Mostrar toast
+            const toast = document.getElementById('toast');
+            if (toast) {
+                toast.textContent = `Evento "${eventoActualSeleccionado.titulo}" duplicado con éxito`;
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            }
+        }
+    });
+    
+    // Eliminar evento
+    document.getElementById('btnEliminarEvento')?.addEventListener('click', () => {
+        if (eventoActualSeleccionado && confirm('¿Estás seguro de que quieres eliminar este evento?')) {
+            const eventos = eventosPorDia[eventoActualSeleccionado.fecha];
+            eventos.splice(eventoActualSeleccionado.index, 1);
+            
+            if (eventos.length === 0) {
+                delete eventosPorDia[eventoActualSeleccionado.fecha];
+            }
+            
+            renderCalendar(currentDate);
+            cerrarPaneles();
+            
+            // Mostrar toast
+            const toast = document.getElementById('toast');
+            if (toast) {
+                toast.textContent = `Evento "${eventoActualSeleccionado.titulo}" eliminado con éxito`;
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            }
+        }
+    });
+    
+    // Cerrar con Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            cerrarPaneles();
+        }
+    });
+});
+  </script>  
 </body>
 </html>
