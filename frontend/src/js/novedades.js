@@ -1,6 +1,6 @@
 async function cargarEventos() {
   try {
-    const res = await fetch('/api/novedades');
+    const res = await fetch('http://localhost:3000/api/novedades');
     const eventos = await res.json();
 
     const tarjetas = document.querySelectorAll('.novedades-grid .novedad-card');
@@ -12,9 +12,10 @@ async function cargarEventos() {
       tarjeta.innerHTML = '';
 
       const imagen = document.createElement('img');
-      imagen.src = `/public/${evento.Imagen}`; // 👈 ruta ajustada
+      imagen.src = evento.Imagen;  // usa la URL completa directamente
       imagen.alt = evento.Titulo;
       tarjeta.appendChild(imagen);
+
 
       const titulo = document.createElement('h4');
       titulo.textContent = `${evento.Dia}/${evento.Mes} - ${evento.Titulo}`;

@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   lucide.createIcons();
 
+  // Referencias a elementos HTML
   const modal = document.getElementById('calendarModalOverlay');
   const closeModal = document.getElementById('calendarCloseModal');
   const listaEventos = document.getElementById('calendarModalEventosLista');
@@ -15,22 +16,20 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentDate = new Date();
   let eventosPorDia = {};
 
+  // Función para cargar eventos desde backend
   async function cargarEventos() {
     try {
       const res = await fetch('http://localhost:3000/api/eventos');
       if (!res.ok) throw new Error('Error cargando eventos');
       const eventos = await res.json();
 
-      // Convertir eventos a un objeto donde la clave es la fecha en formato YYYY-MM-DD
-      eventosPorDia = {};
+      eventosPorDia = {}; // reset
+
       eventos.forEach(ev => {
-        // Aquí asumo que tienes los campos Dia y Mes para construir la fecha, 
-        // si tienes un campo de fecha directa usa ese.
-        // Para tu ejemplo, uso Fecha en formato YYYY-MM-DD si existe:
-        // Pero en tu DB, usa Dia y Mes para formar la fecha del evento para el año actual:
+        // Construir fecha YYYY-MM-DD a partir de Mes y Dia (y año actual)
         const year = currentDate.getFullYear();
-        const mesNum = ev.Mes.toString().padStart(2, '0');
-        const diaNum = ev.Dia.toString().padStart(2, '0');
+        const mesNum = String(ev.Mes).padStart(2, '0');
+        const diaNum = String(ev.Dia).padStart(2, '0');
         const fechaKey = `${year}-${mesNum}-${diaNum}`;
 
         if (!eventosPorDia[fechaKey]) {
@@ -46,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Función que dibuja el calendario según fecha actual
   function renderCalendar(date) {
     const year = date.getFullYear();
     const month = date.getMonth();
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
     monthTitle.textContent = `${meses[month]} ${year}`;
     calendarDaysContainer.innerHTML = '';
 
-    // Ajuste para que la semana comience en lunes (offset)
+    // Ajuste para que la semana comience en lunes
     const offset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
     for (let i = 0; i < offset; i++) {
       const empty = document.createElement('li');
@@ -69,12 +69,12 @@ document.addEventListener('DOMContentLoaded', () => {
       li.classList.add('calendar-day');
       li.dataset.day = day;
 
-      const dateKey = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+      const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
       li.innerHTML = `<div class="day-info"><h5>${day}</h5></div>`;
 
       if (eventosPorDia[dateKey]) {
-        li.classList.add('eventos');
+        li.classList.add('eventos'); // puedes agregar estilo CSS para diferenciar
       }
 
       li.addEventListener('click', () => {
@@ -90,8 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
               ${ev.Lugar ? `Lugar: ${ev.Lugar}<br>` : ''}
               ${ev.Categoria ? `Categoría: ${ev.Categoria}<br>` : ''}
               ${ev.Facultad ? `Facultad: ${ev.Facultad}<br>` : ''}
-              ${ev.Imagen ? `<img src="${ev.Imagen}" alt="Imagen evento" style="max-width:100px;max-height:100px;">` : ''}
-            </li>
           `).join('');
         }
         modal.style.display = 'flex';
@@ -101,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Navegación entre meses
   nextMonthBtn.addEventListener('click', () => {
     currentDate.setMonth(currentDate.getMonth() + 1);
     renderCalendar(currentDate);
@@ -111,15 +110,17 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCalendar(currentDate);
   });
 
+  // Cerrar modal
   closeModal.addEventListener('click', () => {
     modal.style.display = 'none';
   });
 
-  modal.addEventListener('click', (e) => {
+  modal.addEventListener('click', e => {
     if (e.target === modal) {
       modal.style.display = 'none';
     }
   });
 
-  cargarEventos(); // carga eventos al iniciar
+  // Carga inicial
+  cargarEventos();
 });
