@@ -1421,6 +1421,152 @@ input[type="radio"] + .color-amarillo:hover {
   }
 }
 
+/* === ESTILO EVENTOS EN EL CALENDARIO - MINIMALISTA === */
+.event-bars-container {
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* Barras de eventos minimalistas y elegantes */
+.event-bar {
+  height: 24px;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  line-height: 1.2;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+/* Contenido del texto del evento */
+.event-bar .event-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.event-bar .event-title {
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 1.1;
+  margin-bottom: 1px;
+}
+
+.event-bar .event-time {
+  font-size: 9px;
+  opacity: 0.85;
+  line-height: 1;
+}
+
+/* Solo dos colores permitidos */
+.event-bar.amarillo {
+  background: linear-gradient(135deg, #FEF3C7 0%, #FCD34D 100%);
+  color: rgba(0, 0, 0, 0.85);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.event-bar.morado {
+  background: linear-gradient(135deg, #EDE9FE 0%, #A855F7 100%);
+  color: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+/* Efectos hover suaves */
+.event-bar:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.event-bar.amarillo:hover {
+  background: linear-gradient(135deg, #FCD34D 0%, #F59E0B 100%);
+}
+
+.event-bar.morado:hover {
+  background: linear-gradient(135deg, #A855F7 0%, #7C3AED 100%);
+}
+
+/* Efecto activo/presionado */
+.event-bar:active {
+  transform: translateY(0);
+  transition: all 0.1s ease;
+}
+
+/* Ajustes para días con eventos */
+.calendar-day.evento {
+  min-height: auto;
+  padding-bottom: 4px;
+}
+
+/* Responsivo - ajustar en pantallas pequeñas */
+@media (max-width: 768px) {
+  .event-bar {
+      height: 22px;
+      padding: 3px 8px;
+      font-size: 10px;
+      border-radius: 6px;
+  }
+  
+  .event-bar .event-title {
+      font-size: 10px;
+  }
+  
+  .event-bar .event-time {
+      font-size: 8px;
+  }
+}
+
+/* Animación de entrada para nuevos eventos */
+@keyframes fadeInEvent {
+  from {
+      opacity: 0;
+      transform: translateY(-10px);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+
+.event-bar.new-event {
+  animation: fadeInEvent 0.3s ease forwards;
+}
+
+/* Indicador visual sutil para diferentes tipos */
+.event-bar.amarillo::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #F59E0B;
+  border-radius: 8px 0 0 8px;
+}
+
+.event-bar.morado::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #7C3AED;
+  border-radius: 8px 0 0 8px;
+}
+
 /* === ESTADÍSTICAS DASHBOARD === */
 .dashboard {
   padding: 2rem;
