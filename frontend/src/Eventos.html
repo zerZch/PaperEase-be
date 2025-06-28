@@ -6,6 +6,7 @@
   <title>Eventos • PaperEase</title>
   <link rel="stylesheet" href="css/style.css" />
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="src/js/eventos.js" defer></script>
 </head>
 <body>
 
@@ -115,12 +116,12 @@
         <div class="form-group colores-evento">
           <label>Color del Evento</label>
           <label>
-            <input type="radio" name="color" value="#c084fc" checked />
+            <input type="radio" name="color" value="Programa de Salud" checked />
             <span class="color-circulo color-morado" style="background-color: #c084fc;"></span>
             <span class="color-label">Programa de Salud</span>
           </label>
           <label>
-            <input type="radio" name="color" value="#fde047" />
+            <input type="radio" name="color" value="Promoción Social" />
             <span class="color-circulo color-amarillo" style="background-color: #fde047;"></span>
             <span class="color-label">Promoción Social</span>
           </label>
@@ -198,9 +199,6 @@
   <!-- Toast de Confirmación -->
   <div id="toast" class="calendar-toast"></div>
 
-  <!-- Overlay para cerrar paneles -->
-<div class="panel-overlay" id="panelOverlay"></div>
-
   <!-- Footer -->
   <footer>
     <div class="footer-flex container">
@@ -213,346 +211,10 @@
     </div>
   </footer>
 
-  <!-- JS -->
+  <!-- JS - Solo cargar el archivo externo, sin script inline -->
   <script>
+    // Solo inicializar lucide icons
     lucide.createIcons();
-  
-    // Variables globales
-    let currentDate = new Date();
-    let eventoActualSeleccionado = null;
-    let fechaActualSeleccionada = null;
-    
-    const eventosPorDia = {
-      '2025-06-05': [
-        { html: 'Feria de Salud – 10:00 a.m.<br>Chequeo médico gratuito', color: '#c084fc' }
-      ],
-      '2025-06-12': [
-        { html: 'Entrega de gafas – 9:00 a.m.', color: '#fde047' }
-      ],
-      '2025-06-20': [
-        { html: 'Campaña de valores – 1:00 p.m.', color: '#c084fc' }
-      ]
-    };
-    
-    // Variables del DOM que se inicializarán en DOMContentLoaded
-    let modal, closeModal, listaEventos, calendarDaysContainer, monthTitle, nextMonthBtn, previousMonthBtn;
-    let btnCrearEvento, panelEvento, btnCancelar, formCrearEvento;
-    
-    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-                   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-
-    // Función para parsear los datos del evento desde el HTML
-    function parsearEventoDesdeHTML(htmlEvento, color, fecha) {
-        const lineas = htmlEvento.split('<br>');
-        const primeraLinea = lineas[0]; // "Título – hora a hora"
-        const lugar = lineas[1] || '';
-        const descripcion = lineas[2] || '';
-        
-        // Parsear título y horarios
-        const [titulo, horario] = primeraLinea.split(' – ');
-        let horaInicio = '', horaFin = '';
-        
-        if (horario && horario.includes(' a ')) {
-            const [inicio, fin] = horario.split(' a ');
-            horaInicio = inicio.trim();
-            horaFin = fin.trim();
-        }
-        
-        return {
-            titulo: titulo || 'Sin título',
-            fecha: fecha,
-            horaInicio: horaInicio,
-            horaFin: horaFin,
-            lugar: lugar,
-            descripcion: descripcion,
-            color: color
-        };
-    }
-
-    // Función para formatear fecha
-    function formatearFecha(fechaStr) {
-        const fecha = new Date(fechaStr + 'T00:00:00');
-        const opciones = { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-        };
-        return fecha.toLocaleDateString('es-ES', opciones);
-    }
-
-    // Función para mostrar detalles del evento
-    function mostrarDetalleEvento(eventoData, fecha, index = 0) {
-        const evento = parsearEventoDesdeHTML(eventoData.html, eventoData.color, fecha);
-        eventoActualSeleccionado = { ...evento, index, fecha };
-        
-        // Actualizar contenido del panel
-        document.getElementById('eventoTitulo').textContent = evento.titulo;
-        document.getElementById('eventoFecha').textContent = formatearFecha(evento.fecha);
-        document.getElementById('eventoHorario').textContent = `${evento.horaInicio} - ${evento.horaFin}`;
-        document.getElementById('eventoLugar').textContent = evento.lugar;
-        document.getElementById('eventoDescripcion').textContent = evento.descripcion;
-        document.getElementById('eventoCategoria').style.backgroundColor = evento.color;
-        
-        // Mostrar panel
-        document.getElementById('panelOverlay').classList.add('active');
-        document.getElementById('panelEventoDetalle').classList.add('open');
-        
-        // Cerrar modal del calendario si está abierto
-        if (modal) {
-            modal.style.display = 'none';
-        }
-    }
-
-    // Función para obtener la clase de color basada en el color hex
-    function getColorClass(hexColor) {
-        // Mapeo simplificado solo para promoción social (amarillo) y programa de salud (morado)
-        const colorMap = {
-            '#FCD34D': 'amarillo',
-            '#F59E0B': 'amarillo',
-            '#FEF3C7': 'amarillo',
-            '#FBBF24': 'amarillo',
-            '#fde047': 'amarillo',
-            '#A855F7': 'morado',
-            '#7C3AED': 'morado',
-            '#EDE9FE': 'morado',
-            '#9333EA': 'morado',
-            '#c084fc': 'morado'
-        };
-        
-        return colorMap[hexColor] || 'amarillo'; // Amarillo por defecto
-    }
-
-    // Función para determinar color por tipo de evento
-    function getColorByEventType(eventTitle) {
-        const title = eventTitle.toLowerCase();
-        
-        // Palabras clave para programa de salud (morado)
-        const healthKeywords = ['salud', 'médico', 'consulta', 'cita', 'doctor', 'medicina', 'tratamiento', 'terapia'];
-        
-        // Palabras clave para promoción social (amarillo)  
-        const socialKeywords = ['promoción', 'social', 'evento', 'actividad', 'reunión', 'taller', 'capacitación'];
-        
-        // Verificar si contiene palabras clave de salud
-        if (healthKeywords.some(keyword => title.includes(keyword))) {
-            return 'morado';
-        }
-        
-        // Verificar si contiene palabras clave sociales
-        if (socialKeywords.some(keyword => title.includes(keyword))) {
-            return 'amarillo';
-        }
-        
-        // Por defecto, promoción social
-        return 'amarillo';
-    }
-
-    // Función renderCalendar
-    function renderCalendar(date) {
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const firstDayIndex = new Date(year, month, 1).getDay();
-        const diasEnMes = new Date(year, month + 1, 0).getDate();
-        
-        monthTitle.textContent = `${meses[month]} ${year}`;
-        calendarDaysContainer.innerHTML = '';
-        
-        const offset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
-        
-        // Días vacíos al inicio
-        for (let i = 0; i < offset; i++) {
-            const empty = document.createElement('li');
-            empty.classList.add('calendar-day');
-            calendarDaysContainer.appendChild(empty);
-        }
-        
-        // Días del mes
-        for (let day = 1; day <= diasEnMes; day++) {
-            const li = document.createElement('li');
-            li.classList.add('calendar-day');
-            li.dataset.day = day;
-            
-            const dateKey = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-            
-            // Crear contenedor principal del día con flexbox
-            const dayContainer = document.createElement('div');
-            dayContainer.className = 'day-container';
-            dayContainer.style.cssText = `
-                display: flex;
-                justify-content: space-between;
-                align-items: flex-start;
-                width: 100%;
-                height: 100%;
-                position: relative;
-                padding: 4px;
-                box-sizing: border-box;
-            `;
-            
-            // Crear elemento para el número del día
-            const dayNumber = document.createElement('h5');
-            dayNumber.style.cssText = `
-                margin: 0;
-                font-size: inherit;
-                font-weight: inherit;
-                flex-shrink: 0;
-            `;
-            dayNumber.textContent = day;
-            
-            dayContainer.appendChild(dayNumber);
-            
-            // Crear indicadores de eventos a la derecha
-            if (eventosPorDia[dateKey]) {
-                li.classList.add('evento');
-                
-                const eventIndicators = document.createElement('div');
-                eventIndicators.className = 'event-indicators';
-                eventIndicators.style.cssText = `
-                    display: flex;
-                    flex-direction: column;
-                    gap: 3px;
-                    align-items: flex-end;
-                    flex-shrink: 0;
-                `;
-                
-                eventosPorDia[dateKey].forEach((ev, index) => {
-                    const indicator = document.createElement('div');
-                    
-                    // Determinar color por tipo de evento o usar el color definido
-                    const colorClass = ev.color ? getColorClass(ev.color) : getColorByEventType(ev.title || '');
-                    const backgroundColor = colorClass === 'amarillo' ? '#F59E0B' : '#7C3AED';
-                    
-                    indicator.style.cssText = `
-                        width: 10px;
-                        height: 10px;
-                        border-radius: 50%;
-                        background-color: ${backgroundColor};
-                        cursor: pointer;
-                        transition: transform 0.2s;
-                        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-                    `;
-                    
-                    // Tooltip con información completa
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = ev.html;
-                    const fullText = tempDiv.textContent;
-                    const parts = fullText.split(' – ');
-                    const eventTitle = parts[0] || `Evento ${index + 1}`;
-                    const timeRange = parts[1] ? parts[1].split('\\n')[0] : '';
-                    
-                    indicator.title = `${eventTitle}${timeRange ? ' - ' + timeRange : ''}`;
-                    
-                    // Hover effect
-                    indicator.addEventListener('mouseenter', () => {
-                        indicator.style.transform = 'scale(1.4)';
-                    });
-                    
-                    indicator.addEventListener('mouseleave', () => {
-                        indicator.style.transform = 'scale(1)';
-                    });
-                    
-                    // Event listener para click
-                    indicator.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        mostrarDetalleEvento(ev, dateKey, index);
-                    });
-                    
-                    eventIndicators.appendChild(indicator);
-                });
-                
-                dayContainer.appendChild(eventIndicators);
-            }
-            
-            li.appendChild(dayContainer);
-            
-            // Event listener para el día
-            li.addEventListener('click', (e) => {
-                if (e.target.closest('.event-indicators')) {
-                    return;
-                }
-                
-                const lista = eventosPorDia[dateKey] || [];
-                fechaActualSeleccionada = dateKey;
-                
-                if (lista.length === 1) {
-                    mostrarDetalleEvento(lista[0], dateKey, 0);
-                } else if (lista.length > 1) {
-                    listaEventos.innerHTML = '';
-                    lista.forEach((evento, index) => {
-                        const li = document.createElement('li');
-                        const colorClass = evento.color ? getColorClass(evento.color) : getColorByEventType(evento.title || '');
-                        const borderColor = colorClass === 'amarillo' ? '#F59E0B' : '#7C3AED';
-                        
-                        li.style.cssText = `
-                            border-left: 4px solid ${borderColor}; 
-                            padding: 8px; 
-                            margin-bottom: 8px; 
-                            cursor: pointer;
-                            border-radius: 4px;
-                            transition: background-color 0.2s;
-                        `;
-                        li.innerHTML = evento.html;
-                        
-                        li.addEventListener('click', () => {
-                            mostrarDetalleEvento(evento, dateKey, index);
-                        });
-                        
-                        li.addEventListener('mouseenter', () => {
-                            li.style.backgroundColor = 'rgba(0,0,0,0.05)';
-                        });
-                        
-                        li.addEventListener('mouseleave', () => {
-                            li.style.backgroundColor = 'transparent';
-                        });
-                        
-                        listaEventos.appendChild(li);
-                    });
-                    modal.style.display = 'flex';
-                } else {
-                    console.log(`No hay eventos para ${dateKey}`);
-                }
-            });
-            
-            calendarDaysContainer.appendChild(li);
-        }
-    }
-
-    // Función para agregar evento con animación
-    function addEventWithAnimation(dateKey, eventData) {
-        if (!eventosPorDia[dateKey]) eventosPorDia[dateKey] = [];
-        eventosPorDia[dateKey].push(eventData);
-        
-        // Re-renderizar el calendario
-        renderCalendar(currentDate);
-        
-        // Añadir animación a los nuevos eventos
-        setTimeout(() => {
-            const dayElement = document.querySelector(`[data-day="${dateKey.split('-')[2]}"]`);
-            if (dayElement) {
-                const eventIndicators = dayElement.querySelectorAll('.event-indicators > div');
-                const lastIndicator = eventIndicators[eventIndicators.length - 1];
-                if (lastIndicator) {
-                    lastIndicator.style.transform = 'scale(1.6)';
-                    setTimeout(() => {
-                        lastIndicator.style.transform = 'scale(1)';
-                    }, 300);
-                }
-            }
-        }, 50);
-    } 
-    
-    // Función para cerrar paneles
-    function cerrarPaneles() {
-        const panelOverlay = document.getElementById('panelOverlay');
-        const panelDetalle = document.getElementById('panelEventoDetalle');
-        const panelFormulario = document.getElementById('panelEventoFormulario');
-        
-        panelOverlay?.classList.remove('active');
-        panelDetalle?.classList.remove('open');
-        panelFormulario?.classList.remove('open');
-    }
-  
- 
-</script>
-<script src="/src/js/eventos.js" defer></script>
+  </script>
 </body>
 </html>

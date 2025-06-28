@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Estadísticas • PaperEase</title>
-  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/estadisticas.css"/>
+  <link rel="stylesheet" href="css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -26,103 +27,170 @@
   </div>
 </header>
 
-<!-- Contenido de estadísticas -->
-<div class="dashboard">
-  <div class="panel-grid">
-    <div class="panel-card">
-      <h4>Estudiantes</h4>
-      <p>1,000</p>
+<!-- Main Content -->
+<div class="container main-content-stats">
+  <!-- Contenedor Principal del Dashboard -->
+  <div class="dashboard-container">
+    <!-- Header Section -->
+    <div class="header-section">
+      <h1 class="page-title">Panel Central</h1>
+      <button class="filter-button" onclick="openModal()">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z"/>
+        </svg>
+        Filtrar
+      </button>
     </div>
-    <div class="panel-card">
-      <h4>Aplicaciones</h4>
-      <p>500</p>
-    </div>
-    <div class="panel-card">
-      <h4>Eventos</h4>
-      <p>700</p>
-    </div>
-    <div class="panel-card">
-      <h4>Mensajes</h4>
-      <p>8,000</p>
-    </div>
-  </div>
 
-  <div class="charts-grid">
-    <div class="chart-card">
-      <div class="badges">
-        <div class="badge">Promoción Social</div>
-        <div class="badge">Feria de Empleo</div>
+    <!-- Métricas principales -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-icon">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+          </svg>
+        </div>
+        <div class="metric-content">
+          <h4>Estudiantes</h4>
+          <p class="metric-value" id="estudiantesCount">1,000</p>
+          <p class="metric-description">Visitas a PaperEase en el último mes</p>
+        </div>
       </div>
-      <h4>Facultades - Participación</h4>
-      <canvas id="facultadesChart"></canvas>
+      
+      <div class="metric-card">
+        <div class="metric-icon">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </div>
+        <div class="metric-content">
+          <h4>Aplicaciones</h4>
+          <p class="metric-value" id="aplicacionesCount">500</p>
+          <p class="metric-description">Enviadas para aplicar a los programas de DDBE</p>
+        </div>
+      </div>
+      
+      <div class="metric-card highlighted">
+        <div class="metric-icon">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <div class="metric-content">
+          <h4>Eventos</h4>
+          <p class="metric-value" id="eventosCount">700</p>
+          <p class="metric-description">Agregados por los estudiantes a sus calendarios</p>
+        </div>
+      </div>
+      
+      <div class="metric-card">
+        <div class="metric-icon">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+          </svg>
+        </div>
+        <div class="metric-content">
+          <h4>Mensajes</h4>
+          <p class="metric-value" id="participantesCount">8,000</p>
+          <p class="metric-description">Enviados entre estudiantes y trabajadores sociales</p>
+        </div>
+      </div>
     </div>
-
-    <div class="chart-card">
-      <h4>Banco de Sangre</h4>
-      <canvas id="bancoChart"></canvas>
+      
+    <!-- Sección de gráficos -->
+    <div class="charts-section">
+      <h2 class="section-title">Análisis Detallado</h2>
+      <div class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="badges" id="chartBadges">
+              <div class="badge">Todos los Programas</div>
+            </div>
+            <h3 class="chart-title" id="chartTitle">Facultades - Participación General</h3>
+            <p class="chart-subtitle">Período 2023-2024</p>
+          </div>
+          <div class="chart-container">
+            <canvas id="facultadesChart"></canvas>
+          </div>
+        </div>
+        
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3 class="chart-title" id="timeChartTitle">Participación por Año</h3>
+            <p class="chart-subtitle">Banco de Sangre 2023-2024</p>
+          </div>
+          <div class="chart-container">
+            <canvas id="timeChart"></canvas>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Footer reutilizado -->
+<!-- Modal de Filtros -->
+<div class="modal-overlay" id="filterModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Filtros de Estadísticas</h3>
+      <button class="close-button" onclick="closeModal()">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="filter-group">
+        <label for="tipoPrograma">Tipo de Programa:</label>
+        <select id="tipoPrograma" class="filter-select">
+            <option value="">Todos los tipos</option>
+            <option value="salud">Salud</option>
+            <option value="promocion_social">Promoción Social</option>
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label for="programa">Programa Específico:</label>
+        <select id="programa" class="filter-select">
+            <option value="">Seleccione una opción</option>
+            <optgroup label="Salud">
+                <option value="consejeria">Consejería Personal</option>
+                <option value="sangre">Banco de Sangre</option>
+                <option value="gastos_medicos">Ayuda en Gastos Médicos</option>
+                <option value="feria_salud">Feria de Salud</option>
+                <option value="gafas">Compra de Lentes</option>
+                <option value="medicina">Apoyo en Medicamentos</option>
+                <option value="poliza">Póliza de Salud</option>
+            </optgroup>
+            <optgroup label="Promoción Social">
+                <option value="canasta">Canasta Navideña</option>
+                <option value="valores">Campaña de Fortalecimiento de Valores</option>
+                <option value="concienciacion">Campaña de Concienciación de Instalaciones</option>
+                <option value="feria_empleo">Feria de Empleo</option>
+                <option value="siniestros">Apoyo en Casos de Siniestros</option>
+            </optgroup>
+        </select>
+    </div>
+
+    <div class="modal-actions">
+      <button class="reset-button" onclick="resetFilters()">Reiniciar Filtros</button>
+      <button class="apply-button" onclick="applyFilters()">Aplicar Filtros</button>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
 <footer>
   <div class="footer-flex container">
-    <p>© 2025 PaperEase • Universidad Tecnológica de Panamá</p>
-    <div class="footer-links">
-      <a href="#">Ayuda</a>
-      <a href="#">Privacidad</a>
-      <a href="#">Términos</a>
-    </div>
+      <p>© 2025 PaperEase • Universidad Tecnológica de Panamá</p>
+      <div class="footer-links">
+          <a href="#">Ayuda</a>
+          <a href="#">Privacidad</a>
+          <a href="#">Términos</a>
+      </div>
   </div>
 </footer>
 
-<!-- Scripts -->
-<script>
-  const ctx1 = document.getElementById('facultadesChart').getContext('2d');
-  new Chart(ctx1, {
-    type: 'doughnut',
-    data: {
-      labels: ['Civil', 'Mecánica', 'Eléctrica', 'Sistemas', 'C&T', 'Industrial'],
-      datasets: [{
-        label: 'Participación',
-        data: [5, 35, 45, 20, 18, 8],
-        backgroundColor: [
-          '#C084FC', '#F472B6', '#60A5FA', '#34D399', '#FBBF24', '#FCD34D'
-        ]
-      }]
-    },
-    options: {
-      responsive: true,
-      cutout: '60%'
-    }
-  });
-
-  const ctx2 = document.getElementById('bancoChart').getContext('2d');
-  new Chart(ctx2, {
-    type: 'bar',
-    data: {
-      labels: ['18', '19', '20', '21', '22', '23', '24'],
-      datasets: [
-        {
-          label: 'Hombres',
-          data: [50, 95, 30, 60, 100, 80, 40],
-          backgroundColor: 'rgba(77,134,156,0.7)'
-        },
-        {
-          label: 'Mujeres',
-          data: [45, 70, 25, 50, 85, 65, 30],
-          backgroundColor: 'rgba(122,178,178,0.7)'
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: { beginAtZero: true }
-      }
-    }
-  });
-</script>
-
+<script src="js/estadisticas/estadisticas.js"></script>
 </body>
 </html>

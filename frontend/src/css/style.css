@@ -33,55 +33,54 @@ body {
 /* Header y navegación [MENU PE] */
 header {
   background-color: white;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  padding: 1.5rem 2rem;
-  position: relative;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 header .container {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: flex-start;
-  position: relative;
+  padding: 1rem;
 }
 
 .logo-container {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  z-index: 1;
+  gap: 0.75rem;
 }
 
 .logo {
-  height: 50px;
-  width: auto;
-  display: block;
+  height: 40px;
+  width: 40px;
 }
 
 .logo-text {
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: bold;
   color: var(--color-primario);
-  user-select: none;
 }
 
 .nav {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
-  gap: 1.5rem;
+  gap: 2rem;
 }
 
 .nav a {
-  color: var(--color-primario);
   text-decoration: none;
-  font-weight: 1000;
-  transition: color 0.3s ease;
+  color: var(--color-primario);
+  font-weight: 800;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: var(--transition);
 }
 
-.nav a:hover {
-  color: var(--color-secundario);
+.nav a:hover,
+.nav a.active {
+  background-color: var(--color-fondo-medio);
+  color: var(--color-primario);
 }
 
 /* Hero */
