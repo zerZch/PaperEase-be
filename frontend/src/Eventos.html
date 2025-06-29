@@ -6,6 +6,7 @@
   <title>Eventos • PaperEase</title>
   <link rel="stylesheet" href="css/style.css" />
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="src/js/eventos.js" defer></script>
 </head>
 <body>
 
@@ -115,12 +116,12 @@
         <div class="form-group colores-evento">
           <label>Color del Evento</label>
           <label>
-            <input type="radio" name="color" value="#c084fc" checked />
+            <input type="radio" name="color" value="Programa de Salud" checked />
             <span class="color-circulo color-morado" style="background-color: #c084fc;"></span>
             <span class="color-label">Programa de Salud</span>
           </label>
           <label>
-            <input type="radio" name="color" value="#fde047" />
+            <input type="radio" name="color" value="Promoción Social" />
             <span class="color-circulo color-amarillo" style="background-color: #fde047;"></span>
             <span class="color-label">Promoción Social</span>
           </label>
@@ -133,71 +134,70 @@
         </div>
       </form>
     </section>
+
+    <!-- Overlay para cerrar paneles -->
+    <div class="panel-overlay" id="panelOverlay"></div>
+    
+    <!-- Panel de detalles del evento (izquierda) -->
+    <section class="evento-detalle" id="panelEventoDetalle">
+      <div class="panel-header">
+        <h2 class="panel-title">Detalles del Evento</h2>
+      
+        <!-- Botón Cerrar -->
+        <button class="btn-close" id="btnCerrarDetalle">&times;</button>
+      </div>
+    
+      <div class="evento-info">
+        <h3 class="evento-title" id="eventoTitulo">Conferencia de Tecnología 2024</h3>
+    
+        <div class="evento-detail-item">
+          <div class="evento-detail-label">Fecha</div>
+          <div class="evento-detail-value" id="eventoFecha">15 de Marzo, 2024</div>
+        </div>
+    
+        <div class="evento-detail-item">
+          <div class="evento-detail-label">Horario</div>
+          <div class="evento-detail-value" id="eventoHorario">09:00 AM - 05:00 PM</div>
+        </div>
+    
+        <div class="evento-detail-item">
+          <div class="evento-detail-label">Lugar</div>
+          <div class="evento-detail-value" id="eventoLugar">Centro de Convenciones Tech Hub</div>
+        </div>
+    
+        <div class="evento-detail-item">
+          <div class="evento-detail-label">Descripción</div>
+          <div class="evento-detail-value" id="eventoDescripcion">
+            Una conferencia anual que reúne a los mejores profesionales de la tecnología para compartir conocimientos sobre las últimas tendencias e innovaciones del sector.
+          </div>
+        </div>
+    
+        <div class="evento-detail-item">
+          <div class="evento-detail-label">Categoría</div>
+          <div class="evento-detail-value">
+            <span id="eventoCategoria" style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; margin-right: 8px; background-color: #3b82f6;"></span>
+            <span id="eventoCategoriaTexto">Tecnología</span>
+          </div>
+        </div>
+      </div>
+    
+      <!-- Acciones secundarias abajo -->
+      <div class="evento-actions">
+        <button class="btn-icon btn-edit" id="btnEditarEvento" data-tooltip="Editar">
+          <i data-lucide="edit"></i>
+        </button>
+        <button class="btn-icon btn-duplicate" id="btnDuplicarEvento" data-tooltip="Duplicar">
+          <i data-lucide="copy"></i>
+        </button>
+        <button class="btn-icon btn-delete" id="btnEliminarEvento" data-tooltip="Eliminar">
+          <i data-lucide="trash-2"></i>
+        </button>
+      </div>
+    </section>
   </main>
 
   <!-- Toast de Confirmación -->
   <div id="toast" class="calendar-toast"></div>
-
-  <!-- Overlay para cerrar paneles -->
-<div class="panel-overlay" id="panelOverlay"></div>
-
-<!-- Panel de detalles del evento (izquierda) -->
-<section class="evento-detalle" id="panelEventoDetalle">
-  <div class="panel-header">
-    <h2 class="panel-title">Detalles del Evento</h2>
-  
-    <!-- Botón Cerrar -->
-    <button class="btn-close" id="btnCerrarDetalle">&times;</button>
-  </div>
-
-  <div class="evento-info">
-    <h3 class="evento-title" id="eventoTitulo">Conferencia de Tecnología 2024</h3>
-
-    <div class="evento-detail-item">
-      <div class="evento-detail-label">Fecha</div>
-      <div class="evento-detail-value" id="eventoFecha">15 de Marzo, 2024</div>
-    </div>
-
-    <div class="evento-detail-item">
-      <div class="evento-detail-label">Horario</div>
-      <div class="evento-detail-value" id="eventoHorario">09:00 AM - 05:00 PM</div>
-    </div>
-
-    <div class="evento-detail-item">
-      <div class="evento-detail-label">Lugar</div>
-      <div class="evento-detail-value" id="eventoLugar">Centro de Convenciones Tech Hub</div>
-    </div>
-
-    <div class="evento-detail-item">
-      <div class="evento-detail-label">Descripción</div>
-      <div class="evento-detail-value" id="eventoDescripcion">
-        Una conferencia anual que reúne a los mejores profesionales de la tecnología para compartir conocimientos sobre las últimas tendencias e innovaciones del sector.
-      </div>
-    </div>
-
-    <div class="evento-detail-item">
-      <div class="evento-detail-label">Categoría</div>
-      <div class="evento-detail-value">
-        <span id="eventoCategoria" style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; margin-right: 8px; background-color: #3b82f6;"></span>
-        <span id="eventoCategoriaTexto">Tecnología</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Acciones secundarias abajo -->
-  <div class="evento-actions">
-    <button class="btn-icon btn-edit" id="btnEditarEvento" data-tooltip="Editar">
-      <i data-lucide="edit"></i>
-    </button>
-    <button class="btn-icon btn-duplicate" id="btnDuplicarEvento" data-tooltip="Duplicar">
-      <i data-lucide="copy"></i>
-    </button>
-    <button class="btn-icon btn-delete" id="btnEliminarEvento" data-tooltip="Eliminar">
-      <i data-lucide="trash-2"></i>
-    </button>
-  </div>
-</section>
-
 
   <!-- Footer -->
   <footer>
@@ -211,8 +211,9 @@
     </div>
   </footer>
 
-  <!-- JS -->
-<script>
+  <!-- JS - Solo cargar el archivo externo, sin script inline -->
+  <script>
+    // Solo inicializar lucide icons
     lucide.createIcons();
   
     // Variables globales
