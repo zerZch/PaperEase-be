@@ -553,147 +553,123 @@ async function cargarEventos() {
 
     // Renderizar calendario MEJORADO - CORREGIDO
     function renderCalendar(date) {
-        console.log('Renderizando calendario para:', date);
-        console.log('Eventos disponibles:', eventosPorDia);
-        
-        const year = date.getFullYear();
-        const month = date.getMonth();
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDayIndex = new Date(year, month, 1).getDay();
+    const diasEnMes = new Date(year, month + 1, 0).getDate();
 
-        const firstDayIndex = new Date(year, month, 1).getDay();
-        const diasEnMes = new Date(year, month + 1, 0).getDate();
+    monthTitle.textContent = `${meses[month]} ${year}`;
+    calendarDaysContainer.innerHTML = '';
 
-        monthTitle.textContent = `${meses[month]} ${year}`;
-        calendarDaysContainer.innerHTML = '';
+    // Ajustar para semana que comienza en lunes
+    const offset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+    for (let i = 0; i < offset; i++) {
+        const empty = document.createElement('li');
+        empty.classList.add('calendar-day');
+        calendarDaysContainer.appendChild(empty);
+    }
+    // Días del mes
+    for (let day = 1; day <= diasEnMes; day++) {
+        const li = document.createElement('li');
+        li.classList.add('calendar-day');
+        li.dataset.day = day;
 
-        // Ajustar para semana que comienza en lunes
-        const offset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
-        for (let i = 0; i < offset; i++) {
-            const empty = document.createElement('li');
-            empty.classList.add('calendar-day');
-            calendarDaysContainer.appendChild(empty);
-        }
+        const dateKey = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+        li.innerHTML = `<div class="day-info"><h5>${day}</h5></div>`;
 
-        for (let day = 1; day <= diasEnMes; day++) {
-            const li = document.createElement('li');
-            li.classList.add('calendar-day');
-            li.dataset.day = day;
+        // Mostrar indicadores de eventos
+        if (eventosPorDia[dateKey] && eventosPorDia[dateKey].length > 0) {
+            li.classList.add('eventos');
 
-            const dateKey = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-            console.log('Verificando fecha:', dateKey);
-            
-            li.innerHTML = `<div class="day-info"><h5>${day}</h5></div>`;
+            // Crear contenedor de marcadores
+            const markersContainer = document.createElement('div');
+            markersContainer.style.display = 'flex';
+            markersContainer.style.gap = '2px';
 
-            // CORREGIDO: Mostrar indicadores de eventos
-            if (eventosPorDia[dateKey] && eventosPorDia[dateKey].length > 0) {
-                console.log('Eventos encontrados para', dateKey, ':', eventosPorDia[dateKey]);
-                li.classList.add('eventos');
+            // Limitar a máximo 4 puntos visibles
+            const eventosVisibles = eventosPorDia[dateKey].slice(0, 4);
+            const eventosRestantes = eventosPorDia[dateKey].length - eventosVisibles.length;
 
-                // Crear contenedor para los puntos
-                const markersContainer = document.createElement('div');
-                markersContainer.className = 'event-markers-container';
-                markersContainer.style.cssText = `
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 2px;
-                    justify-content: center;
-                    margin-top: 2px;
-                    max-width: 100%;
+            eventosVisibles.forEach(ev => {
+                const mark = document.createElement('span');
+                mark.className = 'event-marker';
+                mark.style.cssText = `
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 50%;
+                    background-color: ${ev.color};
+                    display: inline-block;
+                    border: 1px solid rgba(255,255,255,0.8);
+                    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
                 `;
-
-                // Limitar a máximo 4 puntos visibles
-                const eventosVisibles = eventosPorDia[dateKey].slice(0, 4);
-                const eventosRestantes = eventosPorDia[dateKey].length - eventosVisibles.length;
-
-                eventosVisibles.forEach(ev => {
-                    console.log('Creando marcador para evento:', ev.titulo, 'Color:', ev.color);
-                    const mark = document.createElement('span');
-                    mark.className = 'event-marker';
-                    mark.style.cssText = `
-                        width: 8px;
-                        height: 8px;
-                        border-radius: 50%;
-                        background-color: ${ev.color};
-                        display: inline-block;
-                        border: 1px solid rgba(255,255,255,0.8);
-                        box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-                        flex-shrink: 0;
-                    `;
-                    markersContainer.appendChild(mark);
-                });
-
-                // Si hay más eventos, mostrar un indicador "+N"
-                if (eventosRestantes > 0) {
-                    const moreIndicator = document.createElement('span');
-                    moreIndicator.className = 'event-more-indicator';
-                    moreIndicator.textContent = `+${eventosRestantes}`;
-                    moreIndicator.style.cssText = `
-                        font-size: 8px;
-                        color: #666;
-                        font-weight: bold;
-                        background: rgba(255,255,255,0.8);
-                        border-radius: 8px;
-                        padding: 1px 3px;
-                        margin-left: 2px;
-                        flex-shrink: 0;
-                    `;
-                    markersContainer.appendChild(moreIndicator);
-                }
-
-                li.appendChild(markersContainer);
-            }
-
-            li.addEventListener('click', () => {
-                const eventos = eventosPorDia[dateKey] || [];
-
-                if (eventos.length === 1) {
-                    // Si solo hay un evento, mostrar directamente los detalles
-                    mostrarDetalleEvento(eventos[0], dateKey, 0);
-                } else if (eventos.length > 1) {
-                    // Si hay múltiples eventos, mostrar modal para seleccionar
-                    listaEventos.innerHTML = '';
-                    eventos.forEach((evento, index) => {
-                        const li = document.createElement('li');
-                        li.style.cssText = `
-                            border-left: 4px solid ${evento.color}; 
-                            padding: 8px; 
-                            margin-bottom: 8px; 
-                            cursor: pointer;
-                            border-radius: 4px;
-                            transition: background-color 0.2s;
-                        `;
-                        li.innerHTML = `
-                            <strong>${evento.titulo}</strong><br>
-                            ${evento.descripcion ? `<em>${evento.descripcion}</em><br>` : ''}
-                            ${evento.horaInicio ? `Hora: ${evento.horaInicio}` : ''} ${evento.horaFin ? `- ${evento.horaFin}` : ''}<br>
-                            ${evento.lugar ? `Lugar: ${evento.lugar}<br>` : ''}
-                            Categoría: ${evento.categoria || 'N/A'}
-                        `;
-                        
-                        li.addEventListener('click', () => {
-                            mostrarDetalleEvento(evento, dateKey, index);
-                        });
-                        
-                        li.addEventListener('mouseenter', () => {
-                            li.style.backgroundColor = 'rgba(0,0,0,0.1)';
-                        });
-                        
-                        li.addEventListener('mouseleave', () => {
-                            li.style.backgroundColor = 'transparent';
-                        });
-                        
-                        listaEventos.appendChild(li);
-                    });
-                    modal.style.display = 'flex';
-                } else if (eventos.length === 0) {
-                    listaEventos.innerHTML = '<li>No hay eventos programados.</li>';
-                    modal.style.display = 'flex';
-                }
+                markersContainer.appendChild(mark);
             });
 
-            calendarDaysContainer.appendChild(li);
-        }
-    }
+            // Si hay más eventos, mostrar un indicador "+N"
+            if (eventosRestantes > 0) {
+                const moreIndicator = document.createElement('span');
+                moreIndicator.className = 'event-more-indicator';
+                moreIndicator.textContent = `+${eventosRestantes}`;
+                moreIndicator.style.cssText = `
+                    font-size: 8px;
+                    color: #666;
+                    font-weight: bold;
+                    background: rgba(255,255,255,0.8);
+                    border-radius: 8px;
+                    padding: 1px 3px;
+                    margin-left: 2px;
+                `;
+                markersContainer.appendChild(moreIndicator);
+            }
 
+            li.querySelector('.day-info').appendChild(markersContainer);
+        }
+
+        li.addEventListener('click', () => {
+            const eventos = eventosPorDia[dateKey] || [];
+
+            if (eventos.length === 1) {
+                mostrarDetalleEvento(eventos[0], dateKey, 0);
+            } else if (eventos.length > 1) {
+                listaEventos.innerHTML = '';
+                eventos.forEach((evento, index) => {
+                    const liEvento = document.createElement('li');
+                    liEvento.style.cssText = `
+                        border-left: 4px solid ${evento.color}; 
+                        padding: 8px; 
+                        margin-bottom: 8px; 
+                        cursor: pointer;
+                        border-radius: 4px;
+                        transition: background-color 0.2s;
+                    `;
+                    liEvento.innerHTML = `
+                        <strong>${evento.titulo}</strong><br>
+                        ${evento.descripcion ? `<em>${evento.descripcion}</em><br>` : ''}
+                        ${evento.horaInicio ? `Hora: ${evento.horaInicio}` : ''} ${evento.horaFin ? `- ${evento.horaFin}` : ''}<br>
+                        ${evento.lugar ? `Lugar: ${evento.lugar}<br>` : ''}
+                        Categoría: ${evento.categoria || 'N/A'}
+                    `;
+                    liEvento.addEventListener('click', () => {
+                        mostrarDetalleEvento(evento, dateKey, index);
+                    });
+                    liEvento.addEventListener('mouseenter', () => {
+                        liEvento.style.backgroundColor = 'rgba(0,0,0,0.1)';
+                    });
+                    liEvento.addEventListener('mouseleave', () => {
+                        liEvento.style.backgroundColor = 'transparent';
+                    });
+                    listaEventos.appendChild(liEvento);
+                });
+                modal.style.display = 'flex';
+            } else if (eventos.length === 0) {
+                listaEventos.innerHTML = '<li>No hay eventos programados.</li>';
+                modal.style.display = 'flex';
+            }
+        });
+
+        calendarDaysContainer.appendChild(li);
+    }
+}
     // Inicializar calendario cargando eventos
     cargarEventos();
 });

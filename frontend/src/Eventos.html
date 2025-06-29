@@ -212,7 +212,6 @@
   </footer>
 
   <!-- JS -->
-  <!-- JS -->
 <script>
     lucide.createIcons();
   
@@ -221,17 +220,18 @@
     let eventoActualSeleccionado = null;
     let fechaActualSeleccionada = null;
     
-    const eventosPorDia = {
-      '2025-06-05': [
-        { html: 'Feria de Salud – 10:00 a.m.<br>Chequeo médico gratuito', color: '#c084fc' }
-      ],
-      '2025-06-12': [
-        { html: 'Entrega de gafas – 9:00 a.m.', color: '#fde047' }
-      ],
-      '2025-06-20': [
-        { html: 'Campaña de valores – 1:00 p.m.', color: '#c084fc' }
-      ]
-    };
+    // 1) Cambiamos la estructura de eventosPorDia para almacenar objetos con html y color
+const eventosPorDia = {
+  '2025-06-05': [
+    { html: 'Feria de Salud – 10:00 a.m.<br>Chequeo médico gratuito', color: '#c084fc' }
+  ],
+  '2025-06-12': [
+    { html: 'Entrega de gafas – 9:00 a.m.', color: '#fde047' }
+  ],
+  '2025-06-20': [
+    { html: 'Campaña de valores – 1:00 p.m.', color: '#c084fc' }
+  ]
+};
     
     // Variables del DOM que se inicializarán en DOMContentLoaded
     let modal, closeModal, listaEventos, calendarDaysContainer, monthTitle, nextMonthBtn, previousMonthBtn;
@@ -302,6 +302,29 @@
             modal.style.display = 'none';
         }
     }
+    // Función para agregar evento con animación
+function addEventWithAnimation(dateKey, eventData) {
+    if (!eventosPorDia[dateKey]) eventosPorDia[dateKey] = [];
+    eventosPorDia[dateKey].push(eventData);
+    
+    // Re-renderizar el calendario
+    renderCalendar(currentDate);
+    
+    // Añadir animación a los nuevos eventos
+    setTimeout(() => {
+        const dayElement = document.querySelector(`[data-day="${dateKey.split('-')[2]}"]`);
+        if (dayElement) {
+            const eventIndicators = dayElement.querySelectorAll('.event-indicators > div');
+            const lastIndicator = eventIndicators[eventIndicators.length - 1];
+            if (lastIndicator) {
+                lastIndicator.style.transform = 'scale(1.6)';
+                setTimeout(() => {
+                    lastIndicator.style.transform = 'scale(1)';
+                }, 300);
+            }
+        }
+    }, 50);
+}
 
     // Función para crear un evento clickeable en el modal
     function crearEventoClickeableEnModal(evento, fecha, index) {
@@ -332,90 +355,7 @@
         return li;
     }
 
-    // Función renderCalendar CORREGIDA
-    function renderCalendar(date) {
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const firstDayIndex = new Date(year, month, 1).getDay();
-        const diasEnMes = new Date(year, month + 1, 0).getDate();
-        
-        monthTitle.textContent = `${meses[month]} ${year}`;
-        calendarDaysContainer.innerHTML = '';
-        
-        const offset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
-        
-        for (let i = 0; i < offset; i++) {
-            const empty = document.createElement('li');
-            empty.classList.add('calendar-day');
-            calendarDaysContainer.appendChild(empty);
-        }
-        
-        for (let day = 1; day <= diasEnMes; day++) {
-            const li = document.createElement('li');
-            li.classList.add('calendar-day');
-            li.dataset.day = day;
-            
-            const dateKey = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-            li.innerHTML = `<div class="day-info"><h5>${day}</h5></div>`;
-            
-            if (eventosPorDia[dateKey]) {
-                li.classList.add('evento');
-                eventosPorDia[dateKey].forEach(ev => {
-                    const mark = document.createElement('span');
-                    mark.className = 'event-marker';
-                    mark.style.backgroundColor = ev.color;
-                    li.appendChild(mark);
-                });
-            }
-            
-            // Event listener corregido
-            li.addEventListener('click', () => {
-                const lista = eventosPorDia[dateKey] || [];
-                fechaActualSeleccionada = dateKey;
-                
-                if (lista.length === 1) {
-                    // Si solo hay un evento, mostrar directamente los detalles
-                    mostrarDetalleEvento(lista[0], dateKey, 0);
-                } else if (lista.length > 1) {
-                    // Si hay múltiples eventos, mostrar modal para seleccionar
-                    listaEventos.innerHTML = '';
-                    lista.forEach((evento, index) => {
-                        const li = document.createElement('li');
-                        li.style.cssText = `
-                            border-left: 4px solid ${evento.color}; 
-                            padding: 8px; 
-                            margin-bottom: 8px; 
-                            cursor: pointer;
-                            border-radius: 4px;
-                            transition: background-color 0.2s;
-                        `;
-                        li.innerHTML = evento.html;
-                        
-                        li.addEventListener('click', () => {
-                            mostrarDetalleEvento(evento, dateKey, index);
-                        });
-                        
-                        li.addEventListener('mouseenter', () => {
-                            li.style.backgroundColor = 'rgba(0,0,0,0.1)';
-                        });
-                        
-                        li.addEventListener('mouseleave', () => {
-                            li.style.backgroundColor = 'transparent';
-                        });
-                        
-                        listaEventos.appendChild(li);
-                    });
-                    modal.style.display = 'flex';
-                } else {
-                    // No hay eventos, opcional: mostrar formulario para crear uno
-                    console.log(`No hay eventos para ${dateKey}`);
-                }
-            });
-            
-            calendarDaysContainer.appendChild(li);
-        }
-    }
-
+    
     // Función para cerrar paneles
     function cerrarPaneles() {
         const panelOverlay = document.getElementById('panelOverlay');
@@ -426,12 +366,8 @@
         panelDetalle?.classList.remove('open');
         panelFormulario?.classList.remove('open');
     }
-  
- 
-</script>
-  
- 
-</script>
+
+ </script>
 <script src="/src/js/eventos.js" defer></script>
 </body>
 </html>
