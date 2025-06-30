@@ -1,209 +1,261 @@
-// Variables globales para los charts
+// Variables globales
 let facultadesChart;
 let timeChart;
-
-// Datos simulados para diferentes programas
-const dataByProgram = {
-    'todos': {
-        facultades: {
-            labels: ['Civil', 'Mecánica', 'Eléctrica', 'Sistemas', 'C&T', 'Industrial'],
-            data: [45, 85, 95, 70, 48, 38],
-            colors: ['#C084FC', '#F472B6', '#60A5FA', '#34D399', '#FBBF24', '#FCD34D']
-        },
-        tiempo: {
-            labels: ['2018', '2019', '2020', '2021', '2022', '2023', '2024'],
-            hombres: [50, 95, 30, 60, 100, 80, 40],
-            mujeres: [45, 70, 25, 50, 85, 65, 30]
-        },
-        stats: { estudiantes: 1000, aplicaciones: 500, eventos: 700, participantes: 8000 }
-    },
-    'sangre': {
-        facultades: {
-            labels: ['Civil', 'Mecánica', 'Eléctrica', 'Sistemas', 'C&T', 'Industrial'],
-            data: [25, 65, 85, 50, 28, 18],
-            colors: ['#DC2626', '#EF4444', '#F87171', '#FCA5A5', '#FECACA', '#FEE2E2']
-        },
-        tiempo: {
-            labels: ['2018', '2019', '2020', '2021', '2022', '2023', '2024'],
-            hombres: [30, 55, 20, 40, 70, 60, 25],
-            mujeres: [25, 40, 15, 30, 55, 45, 20]
-        },
-        stats: { estudiantes: 350, aplicaciones: 280, eventos: 12, participantes: 2800 }
-    },
-    'feria_empleo': {
-        facultades: {
-            labels: ['Civil', 'Mecánica', 'Eléctrica', 'Sistemas', 'C&T', 'Industrial'],
-            data: [35, 75, 65, 90, 55, 45],
-            colors: ['#059669', '#10B981', '#34D399', '#6EE7B7', '#A7F3D0', '#D1FAE5']
-        },
-        tiempo: {
-            labels: ['2018', '2019', '2020', '2021', '2022', '2023', '2024'],
-            hombres: [40, 70, 25, 55, 85, 70, 35],
-            mujeres: [35, 60, 20, 45, 75, 60, 30]
-        },
-        stats: { estudiantes: 650, aplicaciones: 420, eventos: 8, participantes: 4200 }
-    },
-    'canasta': {
-        facultades: {
-            labels: ['Civil', 'Mecánica', 'Eléctrica', 'Sistemas', 'C&T', 'Industrial'],
-            data: [55, 45, 35, 25, 65, 75],
-            colors: ['#D97706', '#F59E0B', '#FBBF24', '#FCD34D', '#FDE68A', '#FEF3C7']
-        },
-        tiempo: {
-            labels: ['2018', '2019', '2020', '2021', '2022', '2023', '2024'],
-            hombres: [20, 40, 15, 25, 45, 35, 20],
-            mujeres: [35, 55, 20, 40, 65, 50, 25]
-        },
-        stats: { estudiantes: 300, aplicaciones: 250, eventos: 5, participantes: 1250 }
-    },
-    'salud': {
-        facultades: {
-            labels: ['Civil', 'Mecánica', 'Eléctrica', 'Sistemas', 'C&T', 'Industrial'],
-            data: [30, 50, 70, 40, 35, 25],
-            colors: ['#DC2626', '#EF4444', '#F87171', '#FCA5A5', '#FECACA', '#FEE2E2']
-        },
-        tiempo: {
-            labels: ['2018', '2019', '2020', '2021', '2022', '2023', '2024'],
-            hombres: [35, 65, 25, 45, 75, 65, 30],
-            mujeres: [30, 50, 20, 35, 60, 50, 25]
-        },
-        stats: { estudiantes: 600, aplicaciones: 450, eventos: 25, participantes: 4500 }
-    },
-    'promocion_social': {
-        facultades: {
-            labels: ['Civil', 'Mecánica', 'Eléctrica', 'Sistemas', 'C&T', 'Industrial'],
-            data: [40, 60, 55, 80, 45, 50],
-            colors: ['#059669', '#10B981', '#34D399', '#6EE7B7', '#A7F3D0', '#D1FAE5']
-        },
-        tiempo: {
-            labels: ['2018', '2019', '2020', '2021', '2022', '2023', '2024'],
-            hombres: [45, 80, 30, 65, 90, 75, 40],
-            mujeres: [40, 70, 25, 55, 80, 65, 35]
-        },
-        stats: { estudiantes: 750, aplicaciones: 520, eventos: 18, participantes: 5200 }
-    }
+let yearChart;
+let currentFilters = {
+    programa: '',
+    tipo: '',
+    facultad: ''
 };
 
-// Nombres de programas para mostrar
-const programNames = {
-    'consejeria': 'Consejería Personal',
-    'sangre': 'Banco de Sangre',
-    'gastos_medicos': 'Ayuda en Gastos Médicos',
-    'feria_salud': 'Feria de Salud',
-    'gafas': 'Compra de Lentes',
-    'medicina': 'Apoyo en Medicamentos',
-    'poliza': 'Póliza de Salud',
-    'canasta': 'Canasta Navideña',
-    'valores': 'Campaña de Fortalecimiento de Valores',
-    'concienciacion': 'Campaña de Concienciación de Instalaciones',
-    'feria_empleo': 'Feria de Empleo',
-    'siniestros': 'Apoyo en Casos de Siniestros',
-    'salud': 'Programas de Salud',
-    'promocion_social': 'Promoción Social'
-};
+// URLs de la API
+const API_BASE_URL = 'http://localhost:3000/api/estadisticas';
 
-// Definir los programas por categoría
-const programsByCategory = {
-    'salud': [
-        { value: 'consejeria', text: 'Consejería Personal' },
-        { value: 'sangre', text: 'Banco de Sangre' },
-        { value: 'gastos_medicos', text: 'Ayuda en Gastos Médicos' },
-        { value: 'feria_salud', text: 'Feria de Salud' },
-        { value: 'gafas', text: 'Compra de Lentes' },
-        { value: 'medicina', text: 'Apoyo en Medicamentos' },
-        { value: 'poliza', text: 'Póliza de Salud' }
-    ],
-    'promocion_social': [
-        { value: 'canasta', text: 'Canasta Navideña' },
-        { value: 'valores', text: 'Campaña de Fortalecimiento de Valores' },
-        { value: 'concienciacion', text: 'Campaña de Concienciación de Instalaciones' },
-        { value: 'feria_empleo', text: 'Feria de Empleo' },
-        { value: 'siniestros', text: 'Apoyo en Casos de Siniestros' }
-    ]
-};
+// Inicialización cuando se carga la página
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Iniciando aplicación de estadísticas...');
+    
+    // Cargar datos iniciales
+    loadDashboardData();
+    loadFacultadesData();
+    loadYearData();
+    
+    // Cargar opciones de filtros
+    loadFilterOptions();
+});
 
-// Funciones del Modal
-function openModal() {
-    const modal = document.getElementById('filterModal');
-    if (modal) {
-        modal.classList.add('active');
+// Función para cargar datos del dashboard principal
+async function loadDashboardData() {
+    try {
+        console.log('Cargando datos del dashboard...');
+        const response = await fetch(`${API_BASE_URL}/dashboard`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Datos del dashboard recibidos:', data);
+        
+        // Actualizar métricas en el HTML
+        updateMetrics(data);
+        
+    } catch (error) {
+        console.error('Error cargando datos del dashboard:', error);
+        showError('No se pudieron cargar las estadísticas principales');
     }
 }
 
-function closeModal() {
-    const modal = document.getElementById('filterModal');
-    if (modal) {
-        modal.classList.remove('active');
+// Función para actualizar las métricas mostradas
+function updateMetrics(data) {
+    const estudiantesElement = document.getElementById('estudiantesCount');
+    const aplicacionesElement = document.getElementById('aplicacionesCount');
+    const eventosElement = document.getElementById('eventosCount');
+    const participantesElement = document.getElementById('participantesCount');
+    
+    if (estudiantesElement) estudiantesElement.textContent = data.participantes || '0';
+    if (aplicacionesElement) aplicacionesElement.textContent = data.programas || '0';
+    if (eventosElement) eventosElement.textContent = data.eventos || '0';
+    if (participantesElement) participantesElement.textContent = data.facultades || '0';
+    
+    console.log('Métricas actualizadas');
+}
+
+// Función para cargar datos de facultades y crear gráfico
+async function loadFacultadesData() {
+    try {
+        console.log('Cargando datos de facultades...');
+        
+        const params = new URLSearchParams();
+        if (currentFilters.programa) params.append('programa', currentFilters.programa);
+        if (currentFilters.tipo) params.append('tipo', currentFilters.tipo);
+        
+        const url = `${API_BASE_URL}/facultades${params.toString() ? '?' + params.toString() : ''}`;
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Datos de facultades recibidos:', data);
+        
+        createFacultadesChart(data);
+        
+    } catch (error) {
+        console.error('Error cargando datos de facultades:', error);
+        showError('No se pudieron cargar los datos de facultades');
     }
 }
 
-function applyFilters() {
-    // Lógica para aplicar filtros ya existe en los event listeners
-    closeModal();
-}
-
-// Función para resetear filtros
-function resetFilters() {
-    const tipoProgramaSelect = document.getElementById('tipoPrograma');
-    const programaSelect = document.getElementById('programa');
-    
-    if (tipoProgramaSelect) tipoProgramaSelect.value = '';
-    if (programaSelect) programaSelect.value = '';
-    
-    filterProgramOptions('');
-    updateLabels('', '');
-    updateCharts('todos');
-}
-
-// Inicializar charts
-function initCharts() {
-    const ctx1 = document.getElementById('facultadesChart');
-    const ctx2 = document.getElementById('timeChart');
-    
-    if (!ctx1 || !ctx2) {
-        console.error('No se encontraron los elementos canvas para los gráficos');
+// Función para crear el gráfico de facultades
+function createFacultadesChart(data) {
+    const ctx = document.getElementById('facultadesChart');
+    if (!ctx) {
+        console.error('Canvas facultadesChart no encontrado');
         return;
     }
-
-    facultadesChart = new Chart(ctx1.getContext('2d'), {
+    
+    if (facultadesChart) {
+        facultadesChart.destroy();
+    }
+    
+    const labels = data.map(item => item.Facultad || 'Sin Facultad');
+    const values = data.map(item => item.participantes || 0);
+    
+    const colors = [
+        '#10b981', '#06d6a0', '#2dd4bf', '#22d3ee', 
+        '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7'
+    ];
+    
+    facultadesChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: dataByProgram.todos.facultades.labels,
+            labels: labels,
             datasets: [{
-                label: 'Participación',
-                data: dataByProgram.todos.facultades.data,
-                backgroundColor: dataByProgram.todos.facultades.colors,
+                data: values,
+                backgroundColor: colors.slice(0, labels.length),
                 borderWidth: 0,
-                hoverOffset: 4
+                hoverBorderWidth: 2,
+                hoverBorderColor: '#fff'
             }]
         },
         options: {
             responsive: true,
-            cutout: '60%',
+            maintainAspectRatio: false,
+            cutout: '65%',
             plugins: {
                 legend: {
                     position: 'bottom',
                     labels: {
                         padding: 20,
-                        usePointStyle: true
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        font: {
+                            size: 11
+                        }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: '#1f2937',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    cornerRadius: 8,
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label || '';
+                            const value = context.parsed;
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            return `${label}: ${value} (${percentage}%)`;
+                        }
                     }
                 }
-            },
-            animation: {
-                animateRotate: true,
-                duration: 1000
             }
         }
     });
+    
+    console.log('Gráfico de facultades creado');
+}
 
-    timeChart = new Chart(ctx2.getContext('2d'), {
+
+
+// Función para crear el gráfico por año (Hombres y Mujeres)
+async function loadYearData() {
+    try {
+        console.log('=== CARGANDO DATOS DE PARTICIPACIÓN POR GÉNERO ===');
+        
+        // Intentar múltiples rutas por si hay problemas de configuración
+        const possibleUrls = [
+            '/api/participacion-genero-anual',
+            '/participacion-genero-anual',
+            'participacion-genero-anual'
+        ];
+        
+        let response = null;
+        let usedUrl = '';
+        
+        for (const url of possibleUrls) {
+            try {
+                console.log(`Intentando cargar desde: ${url}`);
+                response = await fetch(url);
+                if (response.ok) {
+                    usedUrl = url;
+                    break;
+                }
+            } catch (error) {
+                console.log(`Error con URL ${url}:`, error.message);
+                continue;
+            }
+        }
+        
+        if (!response || !response.ok) {
+            throw new Error(`No se pudo cargar desde ninguna URL. Último status: ${response?.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Datos recibidos desde', usedUrl, ':', data);
+        
+        // Verificar que los datos tengan la estructura correcta
+        if (!data.years || !data.hombres || !data.mujeres) {
+            console.error('Estructura de datos incorrecta:', data);
+            throw new Error('Datos incompletos recibidos del servidor');
+        }
+        
+        // Crear el gráfico
+        createYearChart(data);
+        
+        // Mostrar información de debug si está disponible
+        if (data.debug) {
+            console.log('=== INFORMACIÓN DE DEBUG ===');
+            console.log('Total participantes:', data.debug.totalParticipantes);
+            console.log('Géneros disponibles:', data.debug.generosDisponibles);
+        }
+        
+        if (data.emergency) {
+            console.warn('⚠️ Usando datos de emergencia debido a error en el servidor');
+        }
+        
+    } catch (error) {
+        console.error('Error cargando datos de participación por género:', error);
+        
+        // Datos de emergencia para mostrar algo en el gráfico
+        const emergencyData = {
+            years: ['2018', '2019', '2020', '2021', '2022', '2023', '2024'],
+            hombres: [45, 52, 38, 67, 89, 76, 41],
+            mujeres: [38, 47, 29, 58, 82, 69, 35]
+        };
+        
+        console.log('Usando datos de emergencia:', emergencyData);
+        createYearChart(emergencyData);
+    }
+}
+
+// Función mejorada para crear el gráfico
+function createYearChart(data) {
+    const canvas = document.getElementById('timeChart');
+    if (!canvas) {
+        console.error('Canvas yearChart no encontrado - verificar que existe en el HTML');
+        return;
+    }
+    
+    const ctx = canvas.getContext('2d');
+    
+    // Destruir gráfico anterior si existe
+    if (window.yearChartInstance) {
+        window.yearChartInstance.destroy();
+    }
+    
+    console.log('Creando gráfico con datos:', data);
+    
+    window.yearChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: dataByProgram.todos.tiempo.labels,
+            labels: data.years,
             datasets: [
                 {
                     label: 'Hombres',
-                    data: dataByProgram.todos.tiempo.hombres,
+                    data: data.hombres,
                     backgroundColor: 'rgba(102, 126, 234, 0.8)',
                     borderColor: 'rgba(102, 126, 234, 1)',
                     borderWidth: 1,
@@ -211,7 +263,7 @@ function initCharts() {
                 },
                 {
                     label: 'Mujeres',
-                    data: dataByProgram.todos.tiempo.mujeres,
+                    data: data.mujeres,
                     backgroundColor: 'rgba(118, 75, 162, 0.8)',
                     borderColor: 'rgba(118, 75, 162, 1)',
                     borderWidth: 1,
@@ -221,22 +273,30 @@ function initCharts() {
         },
         options: {
             responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top'
-                }
-            },
+            maintainAspectRatio: false,
             scales: {
                 y: {
                     beginAtZero: true,
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.1)'
+                    title: {
+                        display: true,
+                        text: 'Número de Participantes'
                     }
                 },
                 x: {
-                    grid: {
-                        display: false
+                    title: {
+                        display: true,
+                        text: 'Año'
                     }
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Participación por Género y Año'
+                },
+                legend: {
+                    display: true,
+                    position: 'top'
                 }
             },
             animation: {
@@ -244,192 +304,205 @@ function initCharts() {
             }
         }
     });
-}
-
-// Actualizar gráficas y estadísticas
-function updateCharts(programKey = 'todos') {
-    const data = dataByProgram[programKey] || dataByProgram.todos;
-
-    if (facultadesChart) {
-        // Actualizar gráfica de facultades
-        facultadesChart.data.labels = data.facultades.labels;
-        facultadesChart.data.datasets[0].data = data.facultades.data;
-        facultadesChart.data.datasets[0].backgroundColor = data.facultades.colors;
-        facultadesChart.update();
-    }
-
-    if (timeChart) {
-        // Actualizar gráfica de tiempo
-        timeChart.data.labels = data.tiempo.labels;
-        timeChart.data.datasets[0].data = data.tiempo.hombres;
-        timeChart.data.datasets[1].data = data.tiempo.mujeres;
-        timeChart.update();
-    }
-
-    // Actualizar estadísticas
-    const estudiantesCount = document.getElementById('estudiantesCount');
-    const aplicacionesCount = document.getElementById('aplicacionesCount');
-    const eventosCount = document.getElementById('eventosCount');
-    const participantesCount = document.getElementById('participantesCount');
-
-    if (estudiantesCount) estudiantesCount.textContent = data.stats.estudiantes.toLocaleString();
-    if (aplicacionesCount) aplicacionesCount.textContent = data.stats.aplicaciones.toLocaleString();
-    if (eventosCount) eventosCount.textContent = data.stats.eventos.toLocaleString();
-    if (participantesCount) participantesCount.textContent = data.stats.participantes.toLocaleString();
-}
-
-// Actualizar badges y títulos
-function updateLabels(tipoPrograma, programa) {
-    const badgesContainer = document.getElementById('chartBadges');
-    const chartTitle = document.getElementById('chartTitle');
-    const timeChartTitle = document.getElementById('timeChartTitle');
-
-    if (badgesContainer) {
-        badgesContainer.innerHTML = '';
-
-        if (programa && programNames[programa]) {
-            const badge = document.createElement('div');
-            badge.className = 'badge';
-            badge.textContent = programNames[programa];
-            badgesContainer.appendChild(badge);
-            
-            if (chartTitle) chartTitle.textContent = `Facultades - ${programNames[programa]}`;
-            if (timeChartTitle) timeChartTitle.textContent = `${programNames[programa]} por Año`;
-        } else if (tipoPrograma && programNames[tipoPrograma]) {
-            const badge = document.createElement('div');
-            badge.className = 'badge';
-            badge.textContent = programNames[tipoPrograma];
-            badgesContainer.appendChild(badge);
-            
-            if (chartTitle) chartTitle.textContent = `Facultades - ${programNames[tipoPrograma]}`;
-            if (timeChartTitle) timeChartTitle.textContent = `${programNames[tipoPrograma]} por Año`;
-        } else {
-            const badge = document.createElement('div');
-            badge.className = 'badge';
-            badge.textContent = 'Todos los Programas';
-            badgesContainer.appendChild(badge);
-            
-            if (chartTitle) chartTitle.textContent = 'Facultades - Participación General';
-            if (timeChartTitle) timeChartTitle.textContent = 'Participación por Año';
-        }
-    }
-}
-
-// Filtrar programas específicos según el tipo - FUNCIÓN CORREGIDA
-function filterProgramOptions(tipoPrograma) {
-    const programSelect = document.getElementById('programa');
-    if (!programSelect) return;
-
-    // Limpiar todas las opciones excepto la primera
-    programSelect.innerHTML = '<option value="">Seleccione una opción</option>';
-
-    if (!tipoPrograma) {
-        // Si no hay tipo seleccionado, mostrar todos los programas organizados por categoría
-        const saludOptgroup = document.createElement('optgroup');
-        saludOptgroup.label = 'Salud';
-        programsByCategory.salud.forEach(program => {
-            const option = document.createElement('option');
-            option.value = program.value;
-            option.textContent = program.text;
-            saludOptgroup.appendChild(option);
-        });
-        programSelect.appendChild(saludOptgroup);
-
-        const promocionOptgroup = document.createElement('optgroup');
-        promocionOptgroup.label = 'Promoción Social';
-        programsByCategory.promocion_social.forEach(program => {
-            const option = document.createElement('option');
-            option.value = program.value;
-            option.textContent = program.text;
-            promocionOptgroup.appendChild(option);
-        });
-        programSelect.appendChild(promocionOptgroup);
-    } else {
-        // Si hay un tipo seleccionado, mostrar solo los programas de ese tipo
-        if (programsByCategory[tipoPrograma]) {
-            const optgroup = document.createElement('optgroup');
-            optgroup.label = tipoPrograma === 'salud' ? 'Salud' : 'Promoción Social';
-            
-            programsByCategory[tipoPrograma].forEach(program => {
-                const option = document.createElement('option');
-                option.value = program.value;
-                option.textContent = program.text;
-                optgroup.appendChild(option);
-            });
-            
-            programSelect.appendChild(optgroup);
-        }
-    }
-}
-
-// Inicializar al cargar la página
-document.addEventListener('DOMContentLoaded', function() {
-    // Inicializar gráficos
-    initCharts();
-    updateLabels('', '');
     
-    // Inicializar las opciones del select de programas
-    filterProgramOptions('');
-    
-    // Event listeners para filtros
-    const tipoProgramaSelect = document.getElementById('tipoPrograma');
-    const programaSelect = document.getElementById('programa');
-
-    if (tipoProgramaSelect) {
-        tipoProgramaSelect.addEventListener('change', function() {
-            const tipoPrograma = this.value;
-            
-            // Filtrar las opciones de programa
-            filterProgramOptions(tipoPrograma);
-            
-            // Resetear la selección del programa específico
-            if (programaSelect) {
-                programaSelect.value = '';
-            }
-
-            // Determinar qué datos usar
-            let dataKey = 'todos';
-            if (tipoPrograma && dataByProgram[tipoPrograma]) {
-                dataKey = tipoPrograma;
-            }
-
-            updateLabels(tipoPrograma, '');
-            updateCharts(dataKey);
-        });
+    console.log('Gráfico de participación por género creado exitosamente');
+}
+// Función para cargar opciones de filtros
+async function loadFilterOptions() {
+    try {
+        const tiposResponse = await fetch(`${API_BASE_URL}/tipos-programa`);
+        if (tiposResponse.ok) {
+            const tipos = await tiposResponse.json();
+            populateSelect('tipoPrograma', tipos, 'TipoPrograma', 'TipoPrograma');
+        }
+        
+        const programasResponse = await fetch(`${API_BASE_URL}/programas`);
+        if (programasResponse.ok) {
+            const programas = await programasResponse.json();
+            populateProgramasSelect(programas);
+        }
+        
+    } catch (error) {
+        console.error('Error cargando opciones de filtros:', error);
     }
+}
 
-    if (programaSelect) {
-        programaSelect.addEventListener('change', function() {
-            const programa = this.value;
-            const tipoPrograma = tipoProgramaSelect ? tipoProgramaSelect.value : '';
-
-            // Determinar qué datos usar
-            let dataKey = 'todos';
-            if (programa && dataByProgram[programa]) {
-                dataKey = programa;
-            } else if (tipoPrograma && dataByProgram[tipoPrograma]) {
-                dataKey = tipoPrograma;
-            }
-
-            updateLabels(tipoPrograma, programa);
-            updateCharts(dataKey);
-        });
+// Función para poblar select de programas (agrupados)
+function populateProgramasSelect(programas) {
+    const select = document.getElementById('programa');
+    if (!select) return;
+    
+    while (select.children.length > 1) {
+        select.removeChild(select.lastChild);
     }
     
-    // Configurar modal event listeners
-    const modalOverlay = document.getElementById('filterModal');
-    if (modalOverlay) {
-        modalOverlay.addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
-        });
-    }
-
-    // Cerrar modal con tecla Escape
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeModal();
+    const grupos = {};
+    programas.forEach(programa => {
+        const tipo = programa.TipoPrograma || 'Sin categoría';
+        if (!grupos[tipo]) {
+            grupos[tipo] = [];
         }
+        grupos[tipo].push(programa);
     });
+    
+    Object.keys(grupos).forEach(tipo => {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = tipo;
+        
+        grupos[tipo].forEach(programa => {
+            const option = document.createElement('option');
+            option.value = programa.Programa;
+            option.textContent = programa.Programa;
+            optgroup.appendChild(option);
+        });
+        
+        select.appendChild(optgroup);
+    });
+}
+
+// Función para poblar un select general
+function populateSelect(selectId, data, valueField, textField) {
+    const select = document.getElementById(selectId);
+    if (!select || !data) return;
+    
+    while (select.children.length > 1) {
+        select.removeChild(select.lastChild);
+    }
+    
+    data.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item[valueField];
+        option.textContent = item[textField];
+        select.appendChild(option);
+    });
+}
+
+// Funciones del modal
+function openModal() {
+    const modal = document.getElementById('filterModal');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+}
+
+function closeModal() {
+    const modal = document.getElementById('filterModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+function resetFilters() {
+    currentFilters = {
+        programa: '',
+        tipo: '',
+        facultad: ''
+    };
+    
+    const tipoSelect = document.getElementById('tipoPrograma');
+    const programaSelect = document.getElementById('programa');
+    
+    if (tipoSelect) tipoSelect.value = '';
+    if (programaSelect) programaSelect.value = '';
+    
+    loadFacultadesData();
+    loadTimelineData();
+    
+    updateChartTitles();
+}
+
+function applyFilters() {
+    const tipoSelect = document.getElementById('tipoPrograma');
+    const programaSelect = document.getElementById('programa');
+    
+    currentFilters.tipo = tipoSelect ? tipoSelect.value : '';
+    currentFilters.programa = programaSelect ? programaSelect.value : '';
+    
+    console.log('Aplicando filtros:', currentFilters);
+    
+    loadFacultadesData();
+    updateChartTitles();
+    closeModal();
+}
+
+// Función para actualizar títulos de gráficos
+function updateChartTitles() {
+    const chartTitle = document.getElementById('chartTitle');
+    const chartBadges = document.getElementById('chartBadges');
+    
+    if (chartTitle) {
+        let title = 'Facultades - Participación';
+        if (currentFilters.programa) {
+            title += ` - ${currentFilters.programa}`;
+        } else if (currentFilters.tipo) {
+            title += ` - ${currentFilters.tipo}`;
+        } else {
+            title += ' General';
+        }
+        chartTitle.textContent = title;
+    }
+    
+    if (chartBadges) {
+        chartBadges.innerHTML = '';
+        
+        if (currentFilters.programa) {
+            const badge = document.createElement('span');
+            badge.className = 'badge';
+            badge.textContent = currentFilters.programa;
+            chartBadges.appendChild(badge);
+        } else if (currentFilters.tipo) {
+            const badge = document.createElement('span');
+            badge.className = 'badge';
+            badge.textContent = currentFilters.tipo;
+            chartBadges.appendChild(badge);
+        } else {
+            const badge = document.createElement('span');
+            badge.className = 'badge';
+            badge.textContent = 'Promoción Social';
+            chartBadges.appendChild(badge);
+        }
+    }
+}
+
+// Función para mostrar errores
+function showError(message) {
+    console.error('Error:', message);
+    
+    const errorDiv = document.createElement('div');
+    errorDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #ef4444;
+        color: white;
+        padding: 16px 20px;
+        border-radius: 8px;
+        z-index: 1000;
+        max-width: 300px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    `;
+    errorDiv.textContent = message;
+    
+    document.body.appendChild(errorDiv);
+    
+    setTimeout(() => {
+        if (errorDiv.parentNode) {
+            errorDiv.parentNode.removeChild(errorDiv);
+        }
+    }, 5000);
+}
+
+// Cerrar modal al hacer clic fuera
+document.addEventListener('click', function(event) {
+    const modal = document.getElementById('filterModal');
+    if (event.target === modal) {
+        closeModal();
+    }
+});
+
+// Manejar tecla Escape para cerrar modal
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeModal();
+    }
 });

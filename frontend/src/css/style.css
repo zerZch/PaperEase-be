@@ -364,78 +364,6 @@ button, a {
 
 /* FORMULARIO */
 
-.form-section {
-  padding: 2rem 0 1rem;
-  background-color: #f9fafb;
-}
-
-.formulario {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  max-width: 600px;
-  margin: 0 auto;
-
-}
-
-.form-section h2 {
-  font-size: 2rem;
-  color: var(--color-primario);
-  font-weight: 700;
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-.form-section p {
-  font-size: 1rem;
-  color: #555;
-  margin-bottom: 2rem;
-  max-width: 600px;
-  text-align: center;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group label {
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: var(--color-primario);
-}
-
-.form-group input,
-.form-group select {
-  padding: 0.75rem 1rem;
-  font-size: 1rem;
-  border-radius: 0.5rem;
-  border: 1px solid #ccc;
-}
-
-.form-group input:focus,
-.form-group select:focus {
-  border-color: var(--color-secundario);
-  outline: none;
-}
-
-.cta-primary {
-  margin-top: 1rem;
-  align-self: center;
-  padding: 0.75rem 2rem;
-  border-radius: 9999px;
-  background-color: var(--color-primario);
-  color: white;
-  font-weight: bold;
-  border: none;
-  cursor: pointer;
-}
-
-.cta-primary:hover {
-  background-color: var(--color-secundario);
-}
 
 /* Footer ajuste */
 footer {
@@ -1634,3 +1562,17 @@ input[type="radio"] + .color-amarillo:hover {
   font-weight: bold;
 }
 
+@keyframes fadeInDots {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.calendar-day.eventos:hover .event-marker {
+  transform: scale(1.3);
+}

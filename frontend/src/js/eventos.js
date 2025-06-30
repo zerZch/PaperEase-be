@@ -15,22 +15,26 @@ const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
 const coloresCategorias = {
     'Programa de Salud': '#c084fc',
     'Promoción Social': '#fde047',
+    'default': '#007bff',
+    'programa de salud': '#c084fc',
+    'promoción social': '#fde047',
+    'promocion social': '#fde047',
 };
 
 // Función para obtener color por categoría
 function obtenerColorPorCategoria(categoria) {
-    return coloresCategorias[categoria] || coloresCategorias['Promoción Social'];
+    if (!categoria || typeof categoria !== 'string') return coloresCategorias['default'];
+    const normal = categoria.trim();
+    return coloresCategorias[normal] ||
+           coloresCategorias[normal.toLowerCase()] ||
+           coloresCategorias[normal.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')] ||
+           coloresCategorias['default'];
 }
 
 // Función para formatear fecha
 function formatearFecha(fechaStr) {
     const fecha = new Date(fechaStr + 'T00:00:00');
-    const opciones = { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-    };
+    const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     return fecha.toLocaleDateString('es-ES', opciones);
 }
 
@@ -39,12 +43,9 @@ function cerrarPaneles() {
     const panelOverlay = document.getElementById('panelOverlay');
     const panelDetalle = document.getElementById('panelEventoDetalle');
     const panelFormulario = document.getElementById('panelEventoFormulario');
-    
     panelOverlay?.classList.remove('active');
     panelDetalle?.classList.remove('open');
     panelFormulario?.classList.remove('open');
-    
-    // Limpiar datos de edición
     if (formCrearEvento) {
         delete formCrearEvento.dataset.editMode;
         delete formCrearEvento.dataset.editId;
@@ -54,8 +55,6 @@ function cerrarPaneles() {
 // Función para mostrar detalles del evento
 function mostrarDetalleEvento(evento, fecha, index = 0) {
     eventoActualSeleccionado = { ...evento, index, fecha };
-    
-    // Actualizar contenido del panel
     const eventoTitulo = document.getElementById('eventoTitulo');
     const eventoFecha = document.getElementById('eventoFecha');
     const eventoHorario = document.getElementById('eventoHorario');
@@ -63,7 +62,6 @@ function mostrarDetalleEvento(evento, fecha, index = 0) {
     const eventoDescripcion = document.getElementById('eventoDescripcion');
     const eventoCategoria = document.getElementById('eventoCategoria');
     const eventoCategoriaTexto = document.getElementById('eventoCategoriaTexto');
-    
     if (eventoTitulo) eventoTitulo.textContent = evento.titulo;
     if (eventoFecha) eventoFecha.textContent = formatearFecha(fecha);
     if (eventoHorario) eventoHorario.textContent = `${evento.horaInicio || ''} - ${evento.horaFin || ''}`;
@@ -71,20 +69,13 @@ function mostrarDetalleEvento(evento, fecha, index = 0) {
     if (eventoDescripcion) eventoDescripcion.textContent = evento.descripcion || 'Sin descripción';
     if (eventoCategoria) eventoCategoria.style.backgroundColor = evento.color;
     if (eventoCategoriaTexto) eventoCategoriaTexto.textContent = evento.categoria || 'Sin categoría';
-    
-    // Mostrar panel
     const panelOverlay = document.getElementById('panelOverlay');
     const panelEventoDetalle = document.getElementById('panelEventoDetalle');
-    
     if (panelOverlay && panelEventoDetalle) {
         panelOverlay.classList.add('active');
         panelEventoDetalle.classList.add('open');
     }
-    
-    // Cerrar modal del calendario si está abierto
-    if (modal) {
-        modal.style.display = 'none';
-    }
+    if (modal) modal.style.display = 'none';
 }
 
 // Función para renderizar el calendario
@@ -93,61 +84,67 @@ function renderCalendar(date) {
     const month = date.getMonth();
     const firstDayIndex = new Date(year, month, 1).getDay();
     const diasEnMes = new Date(year, month + 1, 0).getDate();
-    
     monthTitle.textContent = `${meses[month]} ${year}`;
     calendarDaysContainer.innerHTML = '';
-    
-    // Ajustar para semana que comienza en lunes
     const offset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
-    
-    // Días vacíos al inicio
     for (let i = 0; i < offset; i++) {
         const empty = document.createElement('li');
         empty.classList.add('calendar-day');
         calendarDaysContainer.appendChild(empty);
     }
-    
-    // Días del mes
     for (let day = 1; day <= diasEnMes; day++) {
         const li = document.createElement('li');
         li.classList.add('calendar-day');
         li.dataset.day = day;
-        
         const dateKey = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-        
-        // Crear estructura del día
-        const dayInfo = document.createElement('div');
-        dayInfo.className = 'day-info';
-        dayInfo.innerHTML = `<h5>${day}</h5>`;
-        li.appendChild(dayInfo);
-        
-        // Agregar marcadores de eventos
-        if (eventosPorDia[dateKey]) {
+        li.innerHTML = `<div class="day-info"><h5>${day}</h5></div>`;
+        if (eventosPorDia[dateKey] && eventosPorDia[dateKey].length > 0) {
             li.classList.add('eventos');
-            
-            eventosPorDia[dateKey].forEach(ev => {
+            const markersContainer = document.createElement('div');
+            markersContainer.style.display = 'flex';
+            markersContainer.style.gap = '2px';
+            const eventosVisibles = eventosPorDia[dateKey].slice(0, 4);
+            const eventosRestantes = eventosPorDia[dateKey].length - eventosVisibles.length;
+            eventosVisibles.forEach(ev => {
                 const mark = document.createElement('span');
                 mark.className = 'event-marker';
-                mark.style.backgroundColor = ev.color;
-                mark.title = ev.titulo;
-                li.appendChild(mark);
+                mark.style.cssText = `
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 50%;
+                    background-color: ${ev.color};
+                    display: inline-block;
+                    border: 1px solid rgba(255,255,255,0.8);
+                    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+                `;
+                markersContainer.appendChild(mark);
             });
+            if (eventosRestantes > 0) {
+                const moreIndicator = document.createElement('span');
+                moreIndicator.className = 'event-more-indicator';
+                moreIndicator.textContent = `+${eventosRestantes}`;
+                moreIndicator.style.cssText = `
+                    font-size: 8px;
+                    color: #666;
+                    font-weight: bold;
+                    background: rgba(255,255,255,0.8);
+                    border-radius: 8px;
+                    padding: 1px 3px;
+                    margin-left: 2px;
+                `;
+                markersContainer.appendChild(moreIndicator);
+            }
+            li.querySelector('.day-info').appendChild(markersContainer);
         }
-        
-        // Event listener para el día
         li.addEventListener('click', () => {
             const eventos = eventosPorDia[dateKey] || [];
-            fechaActualSeleccionada = dateKey;
-            
             if (eventos.length === 1) {
-                // Si solo hay un evento, mostrar directamente los detalles
                 mostrarDetalleEvento(eventos[0], dateKey, 0);
             } else if (eventos.length > 1) {
-                // Si hay múltiples eventos, mostrar modal para seleccionar
                 listaEventos.innerHTML = '';
                 eventos.forEach((evento, index) => {
-                    const li = document.createElement('li');
-                    li.style.cssText = `
+                    const liEvento = document.createElement('li');
+                    liEvento.style.cssText = `
                         border-left: 4px solid ${evento.color}; 
                         padding: 8px; 
                         margin-bottom: 8px; 
@@ -155,69 +152,65 @@ function renderCalendar(date) {
                         border-radius: 4px;
                         transition: background-color 0.2s;
                     `;
-                    li.innerHTML = `
+                    liEvento.innerHTML = `
                         <strong>${evento.titulo}</strong><br>
                         ${evento.descripcion ? `<em>${evento.descripcion}</em><br>` : ''}
                         ${evento.horaInicio ? `Hora: ${evento.horaInicio}` : ''} ${evento.horaFin ? `- ${evento.horaFin}` : ''}<br>
                         ${evento.lugar ? `Lugar: ${evento.lugar}<br>` : ''}
                         Categoría: ${evento.categoria || 'N/A'}
                     `;
-                    
-                    li.addEventListener('click', () => {
+                    liEvento.addEventListener('click', () => {
                         mostrarDetalleEvento(evento, dateKey, index);
                     });
-                    
-                    li.addEventListener('mouseenter', () => {
-                        li.style.backgroundColor = 'rgba(0,0,0,0.1)';
+                    liEvento.addEventListener('mouseenter', () => {
+                        liEvento.style.backgroundColor = 'rgba(0,0,0,0.1)';
                     });
-                    
-                    li.addEventListener('mouseleave', () => {
-                        li.style.backgroundColor = 'transparent';
+                    liEvento.addEventListener('mouseleave', () => {
+                        liEvento.style.backgroundColor = 'transparent';
                     });
-                    
-                    listaEventos.appendChild(li);
+                    listaEventos.appendChild(liEvento);
                 });
                 modal.style.display = 'flex';
-            } else {
-                // No hay eventos
-                listaEventos.innerHTML = '<li>No hay eventos programados para este día.</li>';
+            } else if (eventos.length === 0) {
+                listaEventos.innerHTML = '<li>No hay eventos programados.</li>';
                 modal.style.display = 'flex';
             }
         });
-        
         calendarDaysContainer.appendChild(li);
     }
 }
-
+    function addEventWithAnimation(dateKey) {
+    setTimeout(() => {
+        const day = dateKey.split('-')[2];
+        const dayElement = document.querySelector(`[data-day="${parseInt(day)}"]`);
+        if (dayElement) {
+            const eventIndicators = dayElement.querySelectorAll('.event-marker');
+            const lastIndicator = eventIndicators[eventIndicators.length - 1];
+            if (lastIndicator) {
+                lastIndicator.style.transform = 'scale(1.6)';
+                lastIndicator.style.transition = 'transform 0.3s ease';
+                setTimeout(() => {
+                    lastIndicator.style.transform = 'scale(1)';
+                }, 300);
+            }
+        }
+    }, 100);
+}
 // Función para cargar eventos desde el backend
 async function cargarEventos() {
     try {
-        console.log('Cargando eventos desde el backend...');
         const res = await fetch('http://localhost:3000/api/eventos');
-        
-        if (!res.ok) {
-            throw new Error(`Error HTTP: ${res.status}`);
-        }
-        
+        addEventWithAnimation(fecha); // esto llama la animación del día afectado
+        if (!res.ok) throw new Error('Error cargando eventos');
         const eventos = await res.json();
-        console.log('Eventos cargados:', eventos);
-
-        // Limpiar eventos existentes
         eventosPorDia = {};
-
-        // Procesar eventos de la base de datos
         eventos.forEach(ev => {
-            const yearRaw = ev.year || ev.Year || ev.Año || '2025';
-            const year = yearRaw.toString().padStart(4, '0');
-            const mes = ev.Mes.toString().padStart(2, '0');
-            const dia = ev.Dia.toString().padStart(2, '0');
+            const year = (ev.year || ev.Year || '2025').toString().padStart(4, '0');
+            const mes = (ev.Mes || ev.mes || 1).toString().padStart(2, '0');
+            const dia = (ev.Dia || ev.dia || 1).toString().padStart(2, '0');
             const fechaKey = `${year}-${mes}-${dia}`;
-
             if (!eventosPorDia[fechaKey]) eventosPorDia[fechaKey] = [];
-
-            // Obtener color basado en la categoría
             const colorEvento = obtenerColorPorCategoria(ev.Categoria);
-
             eventosPorDia[fechaKey].push({
                 id: ev.Id_Eventos,
                 titulo: ev.Titulo,
@@ -233,14 +226,8 @@ async function cargarEventos() {
                 fecha: fechaKey
             });
         });
-
-        console.log('Eventos procesados:', eventosPorDia);
         renderCalendar(currentDate);
-        
     } catch (error) {
-        console.error('Error cargando eventos:', error);
-        
-        // Mostrar mensaje de error al usuario
         const toast = document.getElementById('toast');
         if (toast) {
             toast.textContent = 'Error cargando eventos. Verifica la conexión al servidor.';
@@ -262,8 +249,6 @@ function mostrarToast(mensaje) {
 
 // Event listeners principales
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM cargado, inicializando eventos...');
-    
     // Inicializar variables del DOM
     modal = document.getElementById('calendarModalOverlay');
     closeModal = document.getElementById('calendarCloseModal');
@@ -276,136 +261,25 @@ document.addEventListener('DOMContentLoaded', () => {
     panelEvento = document.getElementById("panelEventoFormulario");
     btnCancelar = document.querySelector(".btn-cancelar");
     formCrearEvento = document.getElementById('formCrearEvento');
-    
-    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-                   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
-    
-// Mapeo de categorías a colores - CORREGIDO
-const coloresCategorias = {
-    'Programa de Salud': '#c084fc',
-    'Promoción Social': '#fde047',
-    'default': '#007bff', // ✅ AGREGADO: Color por defecto
-    // Puedes agregar más categorías aquí
-    'programa de salud': '#c084fc', // ✅ AGREGADO: Versión en minúsculas
-    'promoción social': '#fde047',  // ✅ AGREGADO: Versión en minúsculas
-    'promocion social': '#fde047',  // ✅ AGREGADO: Sin tilde
-};
-
-// Función inversa: de color a nombre de categoría
-function obtenerCategoriaPorColor(color) {
-    for (const [categoria, hex] of Object.entries(coloresCategorias)) {
-        if (hex === color && categoria !== 'default') return categoria;
-    }
-    return 'Sin categoría';
-}
-
-// Function to get color by category MEJORADA
-function obtenerColorPorCategoria(categoria) {
-    console.log('🎨 Categoria recibida:', categoria, 'Tipo:', typeof categoria);
-    
-    if (!categoria || typeof categoria !== 'string') {
-        console.log('🎨 Usando color por defecto - categoria vacía o inválida');
-        return coloresCategorias['default'];
-    }
-
-    const categoriaNormalizada = categoria.trim();
-    console.log('🎨 Categoria normalizada:', categoriaNormalizada);
-
-    // Si ya es un color hexadecimal válido
-    if (/^#[0-9A-Fa-f]{6}$/.test(categoriaNormalizada)) {
-        console.log('🎨 Es color hex válido:', categoriaNormalizada);
-        return categoriaNormalizada;
-    }
-
-    // ✅ MEJORADO: Buscar con diferentes variaciones
-    let colorEncontrado = null;
-    
-    // 1. Buscar exacto
-    colorEncontrado = coloresCategorias[categoriaNormalizada];
-    
-    // 2. Si no encuentra, buscar en minúsculas
-    if (!colorEncontrado) {
-        colorEncontrado = coloresCategorias[categoriaNormalizada.toLowerCase()];
-    }
-    
-    // 3. Si no encuentra, buscar sin tildes
-    if (!colorEncontrado) {
-        const sinTildes = categoriaNormalizada.toLowerCase()
-            .replace(/á/g, 'a')
-            .replace(/é/g, 'e')
-            .replace(/í/g, 'i')
-            .replace(/ó/g, 'o')
-            .replace(/ú/g, 'u')
-            .replace(/ñ/g, 'n');
-        colorEncontrado = coloresCategorias[sinTildes];
-    }
-    
-    // 4. Si aún no encuentra, usar default
-    if (!colorEncontrado) {
-        colorEncontrado = coloresCategorias['default'];
-        console.log('⚠️ Categoria no encontrada, usando default para:', categoriaNormalizada);
-    }
-    
-    console.log('🎨 Color final encontrado:', colorEncontrado);
-    return colorEncontrado;
-}
-
-// ✅ NUEVA: Función para verificar y mostrar todas las categorías encontradas
-function analizarCategoriasEnDatos(eventos) {
-    console.log('📊 ANÁLISIS DE CATEGORÍAS EN LA BASE DE DATOS:');
-    const categoriasEncontradas = new Set();
-    
-    eventos.forEach(ev => {
-        const programa = ev.Programa || ev.programa || '';
-        const categoria = ev.Categoria || ev.categoria || '';
-        
-        if (programa) categoriasEncontradas.add(programa);
-        if (categoria) categoriasEncontradas.add(categoria);
-    });
-    
-    console.log('📊 Categorías únicas encontradas:', Array.from(categoriasEncontradas));
-    console.log('📊 Colores disponibles:', Object.keys(coloresCategorias));
-    
-    // Verificar cuáles no tienen color asignado
-    Array.from(categoriasEncontradas).forEach(cat => {
-        const color = obtenerColorPorCategoria(cat);
-        const tieneColorEspecifico = color !== coloresCategorias['default'];
-        console.log(`📊 "${cat}" → ${color} ${tieneColorEspecifico ? '✅' : '⚠️ (usando default)'}`);
-    });
-}
-    let currentDate = new Date();
-    let eventosPorDia = {};
-    let eventoActualSeleccionado = null;
-
-    // Event listeners para navegación del calendario
     nextMonthBtn?.addEventListener('click', () => {
         currentDate.setMonth(currentDate.getMonth() + 1);
         renderCalendar(currentDate);
     });
-
     previousMonthBtn?.addEventListener('click', () => {
         currentDate.setMonth(currentDate.getMonth() - 1);
         renderCalendar(currentDate);
     });
-
-    // Event listeners para el modal
     closeModal?.addEventListener('click', () => {
         modal.style.display = 'none';
     });
-
     modal?.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.style.display = 'none';
-        }
+        if (e.target === modal) modal.style.display = 'none';
     });
-    
-    // Event listeners para crear evento
     btnCrearEvento?.addEventListener("click", () => {
         panelEvento?.classList.add("open");
         document.getElementById('panelOverlay')?.classList.add('active');
     });
-
     btnCancelar?.addEventListener("click", cerrarPaneles);
 
     // Event listener para el formulario - VERSIÓN CORREGIDA CON MEJOR MANEJO DE FECHAS
@@ -631,7 +505,8 @@ function analizarCategoriasEnDatos(eventos) {
             }
         }
     });
-    
+
+
     // Eliminar evento
     document.getElementById('btnEliminarEvento')?.addEventListener('click', async () => {
         if (eventoActualSeleccionado && confirm('¿Estás seguro de que quieres eliminar este evento?')) {
@@ -666,274 +541,7 @@ function analizarCategoriasEnDatos(eventos) {
             modal.style.display = 'none';
         }
     });
-async function cargarEventos() {
-    try {
-        console.log('Cargando eventos...');
-        const res = await fetch('http://localhost:3000/api/eventos');
-        if (!res.ok) throw new Error('Error cargando eventos');
-        const eventos = await res.json();
-        console.log('Eventos recibidos:', eventos);
-
-        // ✅ NUEVO: Analizar categorías antes de procesar
-        analizarCategoriasEnDatos(eventos);
-
-        eventosPorDia = {};
-
-        eventos.forEach(ev => {
-            console.log('--- Procesando evento:', ev.Titulo || ev.titulo);
-            
-            // Construir fecha
-            const yearRaw = ev.year || ev.Year || ev.Año || new Date().getFullYear();
-            const year = yearRaw.toString();
-            const mes = (ev.Mes || ev.mes || 1).toString().padStart(2, '0');
-            const dia = (ev.Dia || ev.dia || 1).toString().padStart(2, '0');
-            const fechaKey = `${year}-${mes}-${dia}`;
-            
-            if (!eventosPorDia[fechaKey]) eventosPorDia[fechaKey] = [];
-
-            // Obtener categoría/programa
-            const programa = ev.Programa || ev.programa || '';
-            const categoria = ev.Categoria || ev.categoria || '';
-            
-            // Usar categoría si existe, sino programa, sino default
-            const categoriaFinal = categoria || programa || 'default';
-            console.log('🏷️ Categoría final para colorear:', categoriaFinal);
-            
-            // Obtener color
-            const colorEvento = obtenerColorPorCategoria(categoriaFinal);
-            console.log('🎨 Color asignado:', colorEvento);
-
-            // Obtener nombre legible
-            const nombreCategoria = /^#[0-9A-Fa-f]{6}$/.test(categoriaFinal)
-                ? obtenerCategoriaPorColor(categoriaFinal)
-                : categoriaFinal;
-
-            const eventoFormateado = {
-                id: ev.Id_Eventos || ev.id,
-                html: `
-                    <strong>${ev.Titulo || ev.titulo}</strong><br>
-                    ${ev.Descripcion ? `<em>${ev.Descripcion}</em><br>` : ''}
-                    ${ev.HoraInicio ? `Hora: ${ev.HoraInicio}` : ''} ${ev.HoraFin ? `- ${ev.HoraFin}` : ''}<br>
-                    ${ev.Lugar ? `Lugar: ${ev.Lugar}<br>` : ''}
-                    ${programa ? `Programa: ${programa}<br>` : ''}
-                    Categoría: ${nombreCategoria}
-                `,
-                color: colorEvento,
-                titulo: ev.Titulo || ev.titulo,
-                lugar: ev.Lugar || ev.lugar,
-                horaInicio: ev.HoraInicio || ev.horaInicio,
-                horaFin: ev.HoraFin || ev.horaFin,
-                descripcion: ev.Descripcion || ev.descripcion,
-                categoria: nombreCategoria,
-                facultad: ev.Facultad || ev.facultad,
-                programa: programa,
-                imagen: ev.Imagen || ev.imagen,
-                fecha: fechaKey
-            };
-            
-            console.log('✅ Evento formateado con color:', {
-                titulo: eventoFormateado.titulo,
-                categoria: eventoFormateado.categoria,
-                color: eventoFormateado.color
-            });
-            
-            eventosPorDia[fechaKey].push(eventoFormateado);
-        });
-
-        console.log('📅 Eventos por día final:', eventosPorDia);
-        renderCalendar(currentDate);
-    } catch (error) {
-        console.error('Error cargando eventos:', error);
-        const toast = document.getElementById('toast');
-        if (toast) {
-            toast.textContent = 'Error cargando eventos. Verifica la conexión al servidor.';
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 5000);
-        }
-    }
-}
-    // Función para formatear fecha
-    function formatearFecha(fechaStr) {
-        const fecha = new Date(fechaStr + 'T00:00:00');
-        const opciones = { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-        };
-        return fecha.toLocaleDateString('es-ES', opciones);
-    }
-
-    // Función para mostrar detalles del evento
-    function mostrarDetalleEvento(evento, fecha, index = 0) {
-        eventoActualSeleccionado = { ...evento, index, fecha };
-        
-        // Actualizar contenido del panel si existe
-        const eventoTitulo = document.getElementById('eventoTitulo');
-        const eventoFecha = document.getElementById('eventoFecha');
-        const eventoHorario = document.getElementById('eventoHorario');
-        const eventoLugar = document.getElementById('eventoLugar');
-        const eventoDescripcion = document.getElementById('eventoDescripcion');
-        const eventoCategoria = document.getElementById('eventoCategoria');
-        
-        if (eventoTitulo) eventoTitulo.textContent = evento.titulo;
-        if (eventoFecha) eventoFecha.textContent = formatearFecha(fecha);
-        if (eventoHorario) eventoHorario.textContent = `${evento.horaInicio || ''} - ${evento.horaFin || ''}`;
-        if (eventoLugar) eventoLugar.textContent = evento.lugar || 'Sin especificar';
-        if (eventoDescripcion) eventoDescripcion.textContent = evento.descripcion || 'Sin descripción';
-        if (eventoCategoria) eventoCategoria.style.backgroundColor = evento.color;
-        
-        // Mostrar panel si existe
-        const panelOverlay = document.getElementById('panelOverlay');
-        const panelEventoDetalle = document.getElementById('panelEventoDetalle');
-        
-        if (panelOverlay && panelEventoDetalle) {
-            panelOverlay.classList.add('active');
-            panelEventoDetalle.classList.add('open');
-        }
-        
-        // Cerrar modal del calendario si está abierto
-        if (modal) {
-            modal.style.display = 'none';
-        }
-    }
-
-    // Función para cerrar paneles
-    function cerrarPaneles() {
-        const panelOverlay = document.getElementById('panelOverlay');
-        const panelDetalle = document.getElementById('panelEventoDetalle');
-        const panelFormulario = document.getElementById('panelEventoFormulario');
-        
-        panelOverlay?.classList.remove('active');
-        panelDetalle?.classList.remove('open');
-        panelFormulario?.classList.remove('open');
-        
-        // Limpiar datos de edición
-        if (formCrearEvento) {
-            delete formCrearEvento.dataset.editMode;
-            delete formCrearEvento.dataset.editId;
-        }
-    }
-
-    // Renderizar calendario MEJORADO - CORREGIDO
-    function renderCalendar(date) {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const firstDayIndex = new Date(year, month, 1).getDay();
-    const diasEnMes = new Date(year, month + 1, 0).getDate();
-
-    monthTitle.textContent = `${meses[month]} ${year}`;
-    calendarDaysContainer.innerHTML = '';
-
-    // Ajustar para semana que comienza en lunes
-    const offset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
-    for (let i = 0; i < offset; i++) {
-        const empty = document.createElement('li');
-        empty.classList.add('calendar-day');
-        calendarDaysContainer.appendChild(empty);
-    }
-    // Días del mes
-    for (let day = 1; day <= diasEnMes; day++) {
-        const li = document.createElement('li');
-        li.classList.add('calendar-day');
-        li.dataset.day = day;
-
-        const dateKey = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-        li.innerHTML = `<div class="day-info"><h5>${day}</h5></div>`;
-
-        // Mostrar indicadores de eventos
-        if (eventosPorDia[dateKey] && eventosPorDia[dateKey].length > 0) {
-            li.classList.add('eventos');
-
-            // Crear contenedor de marcadores
-            const markersContainer = document.createElement('div');
-            markersContainer.style.display = 'flex';
-            markersContainer.style.gap = '2px';
-
-            // Limitar a máximo 4 puntos visibles
-            const eventosVisibles = eventosPorDia[dateKey].slice(0, 4);
-            const eventosRestantes = eventosPorDia[dateKey].length - eventosVisibles.length;
-
-            eventosVisibles.forEach(ev => {
-                const mark = document.createElement('span');
-                mark.className = 'event-marker';
-                mark.style.cssText = `
-                    width: 8px;
-                    height: 8px;
-                    border-radius: 50%;
-                    background-color: ${ev.color};
-                    display: inline-block;
-                    border: 1px solid rgba(255,255,255,0.8);
-                    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-                `;
-                markersContainer.appendChild(mark);
-            });
-
-            // Si hay más eventos, mostrar un indicador "+N"
-            if (eventosRestantes > 0) {
-                const moreIndicator = document.createElement('span');
-                moreIndicator.className = 'event-more-indicator';
-                moreIndicator.textContent = `+${eventosRestantes}`;
-                moreIndicator.style.cssText = `
-                    font-size: 8px;
-                    color: #666;
-                    font-weight: bold;
-                    background: rgba(255,255,255,0.8);
-                    border-radius: 8px;
-                    padding: 1px 3px;
-                    margin-left: 2px;
-                `;
-                markersContainer.appendChild(moreIndicator);
-            }
-
-            li.querySelector('.day-info').appendChild(markersContainer);
-        }
-
-        li.addEventListener('click', () => {
-            const eventos = eventosPorDia[dateKey] || [];
-
-            if (eventos.length === 1) {
-                mostrarDetalleEvento(eventos[0], dateKey, 0);
-            } else if (eventos.length > 1) {
-                listaEventos.innerHTML = '';
-                eventos.forEach((evento, index) => {
-                    const liEvento = document.createElement('li');
-                    liEvento.style.cssText = `
-                        border-left: 4px solid ${evento.color}; 
-                        padding: 8px; 
-                        margin-bottom: 8px; 
-                        cursor: pointer;
-                        border-radius: 4px;
-                        transition: background-color 0.2s;
-                    `;
-                    liEvento.innerHTML = `
-                        <strong>${evento.titulo}</strong><br>
-                        ${evento.descripcion ? `<em>${evento.descripcion}</em><br>` : ''}
-                        ${evento.horaInicio ? `Hora: ${evento.horaInicio}` : ''} ${evento.horaFin ? `- ${evento.horaFin}` : ''}<br>
-                        ${evento.lugar ? `Lugar: ${evento.lugar}<br>` : ''}
-                        Categoría: ${evento.categoria || 'N/A'}
-                    `;
-                    liEvento.addEventListener('click', () => {
-                        mostrarDetalleEvento(evento, dateKey, index);
-                    });
-                    liEvento.addEventListener('mouseenter', () => {
-                        liEvento.style.backgroundColor = 'rgba(0,0,0,0.1)';
-                    });
-                    liEvento.addEventListener('mouseleave', () => {
-                        liEvento.style.backgroundColor = 'transparent';
-                    });
-                    listaEventos.appendChild(liEvento);
-                });
-                modal.style.display = 'flex';
-            } else if (eventos.length === 0) {
-                listaEventos.innerHTML = '<li>No hay eventos programados.</li>';
-                modal.style.display = 'flex';
-            }
-        });
-
-        calendarDaysContainer.appendChild(li);
-    }
-}
+    
     // Inicializar calendario cargando eventos
     cargarEventos();
 });
