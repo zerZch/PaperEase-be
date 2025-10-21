@@ -10,7 +10,7 @@ const formularioRoutes = require('./formulario');
 
 // Configurar CORS
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5500', 'http://127.0.0.1:5500'],
+  origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5500'],
   credentials: true
 }));
 
@@ -29,18 +29,13 @@ app.use('/api/eventos', eventosRouter);         // http://localhost:3000/api/eve
 app.use('/api/estadisticas', estadisticasRoutes); // http://localhost:3000/api/estadisticas
 app.use('/api', formularioRoutes);
 // Servir archivos estáticos
-app.use('/public', express.static(path.join(__dirname, '../frontend/public')));
-app.use('/src', express.static(path.join(__dirname, '../frontend/src')));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Servir archivos estáticos
 app.use('/public', express.static(path.join(__dirname, '../frontend/public')));
 app.use('/src', express.static(path.join(__dirname, '../frontend/src')));
+// También exponer el contenido de frontend/src en la raíz para que rutas como
+// /Estadisticas_Dashboard.html funcionen directamente.
+app.use(express.static(path.join(__dirname, '../frontend/src')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-// AGREGAR ESTAS LÍNEAS:
-app.use('/css', express.static(path.join(__dirname, '../frontend/src/css')));
-app.use('/js', express.static(path.join(__dirname, '../frontend/src/js')));
-app.use('/imagenes', express.static(path.join(__dirname, '../frontend/src/imagenes'))); 
 
 // Página principal
 app.get('/', (req, res) => {
