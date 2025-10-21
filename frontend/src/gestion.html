@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestión de Solicitudes • PaperEase</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/gestion.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+
+<!-- Header reutilizado -->
+<header>
+  <div class="container">
+    <div class="logo-container">
+      <img src="imagenes/logo.png" alt="PaperEase Logo" class="logo" />
+      <span class="logo-text">PaperEase</span>
+    </div>
+    <nav class="nav">
+      <a href="MenuPE.html">Inicio</a>
+      <a href="Programas.html">Requisitos</a>
+      <a href="Estadisticas_Dashboard.html">Estadísticas</a>
+      <a href="eventos.html">Eventos</a>
+      <a href="gestion.html" class="active">Gestión</a>
+    </nav>
+  </div>
+</header>
+
+<main class="main-gestion">
+  <div class="container">
+    <!-- Header Section -->
+    <div class="gestion-header">
+      <div class="header-title">
+        <h1 class="page-title">Gestión de Solicitudes</h1>
+        <p class="header-subtitle">Evalúa y gestiona las solicitudes de estudiantes</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-filtros" id="btnFiltros">
+          <svg data-lucide="filter"></svg>
+          Filtrar
+        </button>
+        <div class="search-box">
+          <svg data-lucide="search"></svg>
+          <input type="text" id="searchInput" placeholder="Buscar por nombre o cédula...">
+        </div>
+      </div>
+    </div>
+
+    <!-- Estadísticas Rápidas -->
+    <div class="stats-quick">
+      <div class="stat-item">
+        <div class="stat-icon pending">
+          <svg data-lucide="clock"></svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Pendientes</span>
+          <span class="stat-value" id="countPending">0</span>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon approved">
+          <svg data-lucide="check-circle"></svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Aprobadas</span>
+          <span class="stat-value" id="countApproved">0</span>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon rejected">
+          <svg data-lucide="x-circle"></svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Rechazadas</span>
+          <span class="stat-value" id="countRejected">0</span>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon high-priority">
+          <svg data-lucide="alert-circle"></svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Prioridad Alta</span>
+          <span class="stat-value" id="countHighPriority">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vista de Lista y Panel de Detalle -->
+    <div class="gestion-container">
+      <!-- Panel Izquierdo: Lista de Solicitudes -->
+      <section class="solicitudes-list-panel">
+        <div class="list-header">
+          <h2>Solicitudes</h2>
+          <div class="view-options">
+            <button class="view-btn active" data-view="pendientes" title="Ver pendientes">
+              <svg data-lucide="clock"></svg>
+            </button>
+            <button class="view-btn" data-view="todas" title="Ver todas">
+              <svg data-lucide="list"></svg>
+            </button>
+          </div>
+        </div>
+        <div class="solicitudes-list" id="solicitudesList">
+          <!-- Se llena dinámicamente con JS -->
+        </div>
+      </section>
+
+      <!-- Panel Derecho: Detalles de Solicitud -->
+      <section class="solicitud-detail-panel">
+        <div class="detail-header">
+          <h2>Detalles de Solicitud</h2>
+          <button class="btn-close" id="btnCloseDetail">
+            <svg data-lucide="x"></svg>
+          </button>
+        </div>
+
+        <div class="detail-content" id="detailContent">
+          <div class="empty-state">
+            <svg data-lucide="inbox"></svg>
+            <p>Selecciona una solicitud para ver los detalles</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<!-- Modal de Filtros -->
+<div class="modal-overlay" id="filterModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Filtrar Solicitudes</h3>
+      <button class="close-button" id="btnCloseFilterModal">
+        <svg data-lucide="x"></svg>
+      </button>
+    </div>
+
+    <div class="filter-group">
+      <label for="filterStatus">Estado:</label>
+      <select id="filterStatus" class="filter-select">
+        <option value="">Todos los estados</option>
+        <option value="pendiente">Pendiente</option>
+        <option value="aprobada">Aprobada</option>
+        <option value="rechazada">Rechazada</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="filterPriority">Prioridad:</label>
+      <select id="filterPriority" class="filter-select">
+        <option value="">Todas las prioridades</option>
+        <option value="alta">Alta</option>
+        <option value="media">Media</option>
+        <option value="baja">Baja</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="filterPrograma">Programa:</label>
+      <select id="filterPrograma" class="filter-select">
+        <option value="">Todos los programas</option>
+        <option value="Banco de Sangre">Banco de Sangre</option>
+        <option value="Canasta Navideña">Canasta Navideña</option>
+        <option value="Feria de Salud">Feria de Salud</option>
+      </select>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-reset" id="btnResetFilters">Reiniciar</button>
+      <button class="btn-apply" id="btnApplyFilters">Aplicar Filtros</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast-notification"></div>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-flex container">
+    <p>© 2025 PaperEase • Universidad Tecnológica de Panamá</p>
+    <div class="footer-links">
+      <a href="#">Ayuda</a>
+      <a href="#">Privacidad</a>
+      <a href="#">Términos</a>
+    </div>
+  </div>
+</footer>
+
+<script src="js/gestion.js"></script>
+</body>
+</html>

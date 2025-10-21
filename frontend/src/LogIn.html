@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login • PaperEase</title>
+  <link rel="stylesheet" href="css/login.css"/>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="src/js/login.js" defer></script>
+</head>
+
+<body>
+  <div class="login-container">
+    <!-- Sección Izquierda -->
+    <div class="login-left">
+      <div class="logo-big">📄</div>
+      <h1>PaperEase</h1>
+      <p>Gestiona tu bienestar estudiantil de forma ágil y eficiente. Acceso rápido a programas, solicitudes y eventos.</p>
+    </div>
+
+    <!-- Sección Derecha -->
+    <div class="login-right">
+      <div class="login-form-wrapper">
+        <div class="form-header">
+          <h2>Iniciar Sesión</h2>
+          <p id="roleDesc">Selecciona tu rol para continuar</p>
+        </div>
+
+        <div id="messageContainer" class="message"></div>
+
+        <!-- Selector de Roles -->
+        <div class="role-selector">
+          <button class="role-btn active" data-role="estudiante">
+            <span>👨‍🎓</span>
+            Estudiante
+          </button>
+          <button class="role-btn" data-role="trabajadora">
+            <span>👩‍💼</span>
+            Trabajadora Social
+          </button>
+        </div>
+
+        <!-- Formulario de Login -->
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="email">Correo Electrónico</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="tu.correo@utp.ac.pa"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Contraseña</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="••••••••"
+              required
+            />
+          </div>
+
+          <div class="remember-forgot">
+            <label>
+              <input type="checkbox" id="rememberMe" />
+              Recuérdame
+            </label>
+            <a href="#forgot">¿Olvidaste tu contraseña?</a>
+          </div>
+
+          <button type="submit" class="btn-login" id="btnLogin">
+            Iniciar Sesión
+          </button>
+        </form>
+
+        <div class="login-footer">
+          ¿No tienes cuenta? <a href="#register">Regístrate aquí</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
