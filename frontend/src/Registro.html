@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registro • PaperEase</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/registro.js" defer></script>
+</head>
+
+<body>
+  <div class="login-container">
+    <!-- Sección Izquierda -->
+    <div class="login-left">
+      <div class="logo-big">📄</div>
+      <h1>PaperEase</h1>
+      <p>Únete a nuestra plataforma y gestiona tu bienestar estudiantil de forma ágil y eficiente.</p>
+    </div>
+
+    <!-- Sección Derecha -->
+    <div class="login-right">
+      <div class="login-form-wrapper">
+        <div class="form-header">
+          <h2>Crear Cuenta</h2>
+          <p id="roleDesc">Selecciona tu rol y completa tus datos</p>
+        </div>
+
+        <div id="messageContainer" class="message"></div>
+
+        <!-- Selector de Roles -->
+        <div class="role-selector">
+          <button class="role-btn active" data-role="estudiante" type="button">
+            <span>👨‍🎓</span>
+            Estudiante
+          </button>
+          <button class="role-btn" data-role="trabajadora" type="button">
+            <span>👩‍💼</span>
+            Trabajadora Social
+          </button>
+        </div>
+
+        <!-- Formulario de Registro -->
+        <form id="registroForm">
+          <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input
+              type="text"
+              id="nombre"
+              name="nombre"
+              placeholder="Tu nombre"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="apellido">Apellido</label>
+            <input
+              type="text"
+              id="apellido"
+              name="apellido"
+              placeholder="Tu apellido"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Correo Electrónico</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="tu.correo@utp.ac.pa"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Contraseña</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="••••••••"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword">Confirmar Contraseña</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              placeholder="••••••••"
+              required
+            />
+          </div>
+
+          <button type="submit" class="btn-login" id="btnRegistro">
+            Crear Cuenta
+          </button>
+        </form>
+
+        <div class="login-footer">
+          ¿Ya tienes cuenta? <a href="LogIn.html">Inicia sesión aquí</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

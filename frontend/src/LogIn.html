@@ -4,9 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login • PaperEase</title>
-  <link rel="stylesheet" href="css/login.css"/>
   <link rel="stylesheet" href="css/style.css">
-  <script src="src/js/login.js" defer></script>
+  <script src="js/login.js" defer></script>
 </head>
 
 <body>
@@ -23,22 +22,10 @@
       <div class="login-form-wrapper">
         <div class="form-header">
           <h2>Iniciar Sesión</h2>
-          <p id="roleDesc">Selecciona tu rol para continuar</p>
+          <p id="roleDesc">Ingresa tus credenciales para continuar</p>
         </div>
 
         <div id="messageContainer" class="message"></div>
-
-        <!-- Selector de Roles -->
-        <div class="role-selector">
-          <button class="role-btn active" data-role="estudiante">
-            <span>👨‍🎓</span>
-            Estudiante
-          </button>
-          <button class="role-btn" data-role="trabajadora">
-            <span>👩‍💼</span>
-            Trabajadora Social
-          </button>
-        </div>
 
         <!-- Formulario de Login -->
         <form id="loginForm">
@@ -78,7 +65,7 @@
         </form>
 
         <div class="login-footer">
-          ¿No tienes cuenta? <a href="#register">Regístrate aquí</a>
+          ¿No tienes cuenta? <a href="Registro.html">Regístrate aquí</a>
         </div>
       </div>
     </div>
