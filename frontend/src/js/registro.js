@@ -64,13 +64,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Obtener valores del formulario
     const nombre = document.getElementById('nombre').value.trim();
+    const apellido = document.getElementById('apellido').value.trim();
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
 
     // Validaciones
     if (!nombre) {
-      showMessage('Por favor, ingresa tu nombre completo', 'error');
+      showMessage('Por favor, ingresa tu nombre', 'error');
+      return;
+    }
+
+    if (!apellido) {
+      showMessage('Por favor, ingresa tu apellido', 'error');
       return;
     }
 
