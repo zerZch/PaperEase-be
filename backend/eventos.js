@@ -10,6 +10,15 @@ router.get('/', (req, res) => {
   });
 });
 
+// Obtener un evento específico por ID
+router.get('/:id', (req, res) => {
+  db.query('SELECT * FROM eventos WHERE Id_Eventos = ?', [req.params.id], (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (result.length === 0) return res.status(404).json({ error: 'Evento no encontrado' });
+    res.json(result[0]);
+  });
+});
+
 // Crear evento
 router.post('/', (req, res) => {
   const {
