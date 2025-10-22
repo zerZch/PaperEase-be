@@ -37,9 +37,9 @@ app.use('/src', express.static(path.join(__dirname, '../frontend/src')));
 app.use(express.static(path.join(__dirname, '../frontend/src')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Página principal
+// Página principal - Redirigir a registro
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/src/menuPE.html'));
+  res.sendFile(path.join(__dirname, '../frontend/src/Registro.html'));
 });
 
 // Ruta de prueba para verificar que el servidor funciona
