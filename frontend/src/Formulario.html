@@ -138,7 +138,29 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('.formulario');
     const messageDiv = document.getElementById('message');
     const loadingDiv = document.getElementById('loading');
-    
+
+    // Leer parámetros de la URL y preseleccionar valores
+    const urlParams = new URLSearchParams(window.location.search);
+    const tipoParam = urlParams.get('tipo');
+    const programaParam = urlParams.get('programa');
+
+    if (tipoParam) {
+        const tipoProgramaSelect = document.getElementById('tipoPrograma');
+        tipoProgramaSelect.value = tipoParam;
+        tipoProgramaSelect.setAttribute('data-preselected', 'true');
+        // Disparar evento change para actualizar opciones de programa
+        tipoProgramaSelect.dispatchEvent(new Event('change'));
+    }
+
+    if (programaParam) {
+        // Esperar un momento para que se actualicen las opciones
+        setTimeout(() => {
+            const programaSelect = document.getElementById('programa');
+            programaSelect.value = programaParam;
+            programaSelect.setAttribute('data-preselected', 'true');
+        }, 100);
+    }
+
     // Función para mostrar mensajes
     function showMessage(message, isError = false) {
         messageDiv.style.display = 'block';
