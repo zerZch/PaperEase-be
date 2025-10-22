@@ -62,40 +62,36 @@ document.addEventListener('DOMContentLoaded', () => {
     btnLogin.textContent = 'Iniciando sesión...';
 
     try {
-      // Aquí se haría la llamada al backend para autenticar
-      // Por ahora, simulamos una autenticación exitosa
-
-      // Simulación de llamada al servidor
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      // Verificar si el usuario existe en localStorage (simulación)
-      const currentUser = localStorage.getItem('currentUser');
-
-      let userData;
-      if (currentUser) {
-        userData = JSON.parse(currentUser);
-
-        // Verificar que el email coincida
-        if (userData.email !== email) {
-          showMessage('Correo electrónico o contraseña incorrectos', 'error');
-          btnLogin.disabled = false;
-          btnLogin.classList.remove('loading');
-          btnLogin.textContent = 'Iniciar Sesión';
-          return;
-        }
-      } else {
-        // Si no hay usuario registrado, crear uno temporal
-        // En producción, esto debería fallar y pedir registro
-        userData = {
+      // Llamada al backend para autenticar
+      const response = await fetch('http://localhost:3000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           email: email,
-          rol: 'estudiante', // Por defecto estudiante
-          nombre: email.split('@')[0]
-        };
+          password: password
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Si hay error, mostrar mensaje
+        showMessage(data.error || 'Credenciales inválidas', 'error');
+
+        // Rehabilitar botón
+        btnLogin.disabled = false;
+        btnLogin.classList.remove('loading');
+        btnLogin.textContent = 'Iniciar Sesión';
+        return;
       }
 
-      // Guardar estado de sesión
+      // Login exitoso - Guardar datos en localStorage
+      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('currentUser', JSON.stringify(data.usuario));
       localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('userRole', userData.rol);
+      localStorage.setItem('userRole', data.usuario.tipoUsuario);
 
       // Recordar email si está marcado
       if (rememberMe) {
@@ -110,9 +106,11 @@ document.addEventListener('DOMContentLoaded', () => {
       // Esperar un momento antes de redirigir
       setTimeout(() => {
         // Redirigir según el rol del usuario
-        if (userData.rol === 'estudiante') {
+        if (data.usuario.rol === 1) {
+          // Estudiante
           window.location.href = 'MenuPE.html';
-        } else if (userData.rol === 'trabajadora') {
+        } else if (data.usuario.rol === 2) {
+          // Trabajador Social
           window.location.href = 'gestion.html';
         } else {
           // Por defecto, ir al menú principal

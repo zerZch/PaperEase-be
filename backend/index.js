@@ -1,12 +1,14 @@
 const express = require('express');
 const path = require('path');
 const multer = require('multer');
+const session = require('express-session');
 const app = express();
 const novedadesRouter = require('./novedades.js');
 const eventosRouter = require('./eventos.js');
 const cors = require('cors');
 const estadisticasRoutes = require('./estadisticas.js');
 const formularioRoutes = require('./formulario');
+const authRoutes = require('./auth.js');
 
 // Configurar CORS
 app.use(cors({
@@ -16,6 +18,18 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Configurar sesiones
+app.use(session({
+  secret: 'paperease-secret-key-2025', // CAMBIAR en producción
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false, // Cambiar a true en producción con HTTPS
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24 horas
+  }
+}));
 
 // Middleware de logging para debugging
 app.use((req, res, next) => {
@@ -28,6 +42,7 @@ app.use('/api/novedades', novedadesRouter);     // http://localhost:3000/api/nov
 app.use('/api/eventos', eventosRouter);         // http://localhost:3000/api/eventos
 app.use('/api/estadisticas', estadisticasRoutes); // http://localhost:3000/api/estadisticas
 app.use('/api', formularioRoutes);
+app.use('/api/auth', authRoutes);               // http://localhost:3000/api/auth
 // Servir archivos estáticos
 // Servir archivos estáticos
 app.use('/public', express.static(path.join(__dirname, '../frontend/public')));

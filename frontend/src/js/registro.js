@@ -95,24 +95,39 @@ document.addEventListener('DOMContentLoaded', () => {
     btnRegistro.textContent = 'Creando cuenta...';
 
     try {
-      // Aquí se haría la llamada al backend para registrar el usuario
-      // Por ahora, simulamos un registro exitoso
+      // Llamada al backend para registrar el usuario
+      const response = await fetch('http://localhost:3000/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nombre: nombre,
+          apellido: apellido,
+          email: email,
+          password: password,
+          rol: selectedRole === 'estudiante' ? 1 : 2
+        })
+      });
 
-      // Simulación de llamada al servidor
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const data = await response.json();
 
-      // Crear objeto de usuario
-      const userData = {
-        nombre: nombre,
-        email: email,
-        rol: selectedRole,
-        fechaRegistro: new Date().toISOString()
-      };
+      if (!response.ok) {
+        // Si hay error, mostrar mensaje
+        showMessage(data.error || 'Error al crear la cuenta', 'error');
 
-      // Guardar en localStorage (temporal, en producción se guardaría en el servidor)
-      localStorage.setItem('currentUser', JSON.stringify(userData));
+        // Rehabilitar botón
+        btnRegistro.disabled = false;
+        btnRegistro.classList.remove('loading');
+        btnRegistro.textContent = 'Crear Cuenta';
+        return;
+      }
+
+      // Registro exitoso - Guardar datos en localStorage
+      localStorage.setItem('authToken', data.token || '');
+      localStorage.setItem('currentUser', JSON.stringify(data.usuario));
       localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('userRole', selectedRole);
+      localStorage.setItem('userRole', data.usuario.tipoUsuario);
 
       // Mostrar mensaje de éxito
       showMessage('¡Cuenta creada exitosamente! Redirigiendo...', 'success');
@@ -120,10 +135,10 @@ document.addEventListener('DOMContentLoaded', () => {
       // Esperar un momento antes de redirigir
       setTimeout(() => {
         // Redirigir según el rol seleccionado
-        if (selectedRole === 'estudiante') {
+        if (data.usuario.rol === 1) {
           // Redirigir al menú principal para estudiantes
           window.location.href = 'MenuPE.html';
-        } else if (selectedRole === 'trabajadora') {
+        } else if (data.usuario.rol === 2) {
           // Redirigir a la página de gestión para trabajadoras sociales
           window.location.href = 'gestion.html';
         }
