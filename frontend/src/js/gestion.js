@@ -93,10 +93,8 @@ function configurarEventListeners() {
 
       const view = btn.getAttribute('data-view');
       if (view === 'pendientes') {
-        // Filtrar solo pendientes
         mostrarSoloPendientes();
       } else {
-        // Mostrar todas
         renderizarSolicitudes(solicitudes);
       }
     });
@@ -152,14 +150,34 @@ function renderizarSolicitudes(lista) {
     return;
   }
 
-  solicitudesList.innerHTML = lista.map(solicitud => `
-    <div class="solicitud-card" data-id="${solicitud.id_formulario}" onclick="seleccionarSolicitud('${solicitud.id_formulario}')">
+  solicitudesList.innerHTML = lista.map(solicitud => {
+    // Determinar clase de badge según el estado
+    const estadoBadge = solicitud.Estado === 'aprobada' ? 'badge-aprobada'
+      : solicitud.Estado === 'rechazada' ? 'badge-rechazada'
+      : 'badge-pendiente';
+
+    const estadoTexto = solicitud.Estado === 'aprobada' ? 'Aprobada'
+      : solicitud.Estado === 'rechazada' ? 'Rechazada'
+      : 'Pendiente';
+
+    // Determinar icono de prioridad
+    const prioridadIcon = solicitud.Prioridad === 'alta'
+      ? '<svg data-lucide="alert-circle" class="priority-icon priority-alta"></svg>'
+      : solicitud.Prioridad === 'baja'
+      ? '<svg data-lucide="circle" class="priority-icon priority-baja"></svg>'
+      : '';
+
+    return `
+    <div class="solicitud-card ${solicitud.Estado}" data-id="${solicitud.id_formulario}" onclick="seleccionarSolicitud('${solicitud.id_formulario}')">
       <div class="solicitud-header">
         <div class="solicitud-info">
-          <h3 class="solicitud-nombre">${solicitud.Nombre} ${solicitud.Apellido}</h3>
+          <h3 class="solicitud-nombre">
+            ${prioridadIcon}
+            ${solicitud.Nombre} ${solicitud.Apellido}
+          </h3>
           <p class="solicitud-cedula">${solicitud.Cedula}</p>
         </div>
-        <span class="badge badge-pendiente">Pendiente</span>
+        <span class="badge ${estadoBadge}">${estadoTexto}</span>
       </div>
 
       <div class="solicitud-details">
@@ -179,10 +197,12 @@ function renderizarSolicitudes(lista) {
 
       <div class="solicitud-footer">
         <span class="solicitud-id">${solicitud.id_formulario}</span>
-        ${solicitud.Archivo ? '<svg data-lucide="paperclip" class="has-attachment"></svg>' : ''}
+        <div class="footer-icons">
+          ${solicitud.Archivo ? '<svg data-lucide="paperclip" class="has-attachment"></svg>' : ''}
+        </div>
       </div>
     </div>
-  `).join('');
+  `}).join('');
 
   lucide.createIcons();
 }
@@ -215,13 +235,36 @@ function seleccionarSolicitud(id) {
 function mostrarDetalle(solicitud) {
   console.log('📄 Mostrando detalle de solicitud:', solicitud);
 
+  const estadoBadge = solicitud.Estado === 'aprobada' ? 'badge-aprobada'
+    : solicitud.Estado === 'rechazada' ? 'badge-rechazada'
+    : 'badge-pendiente';
+
+  const estadoTexto = solicitud.Estado === 'aprobada' ? 'Aprobada'
+    : solicitud.Estado === 'rechazada' ? 'Rechazada'
+    : 'Pendiente';
+
+  const prioridadBadge = solicitud.Prioridad === 'alta' ? 'badge-prioridad-alta'
+    : solicitud.Prioridad === 'baja' ? 'badge-prioridad-baja'
+    : 'badge-prioridad-media';
+
+  const prioridadTexto = solicitud.Prioridad === 'alta' ? 'Alta'
+    : solicitud.Prioridad === 'baja' ? 'Baja'
+    : 'Media';
+
+  const fecha = solicitud.FechaCreacion
+    ? new Date(solicitud.FechaCreacion).toLocaleDateString('es-PA')
+    : 'N/A';
+
   detailContent.innerHTML = `
     <div class="detail-scroll">
       <!-- Encabezado -->
       <div class="detail-section">
         <div class="detail-section-header">
           <h3>Información del Estudiante</h3>
-          <span class="badge badge-pendiente">Pendiente</span>
+          <div class="badges-group">
+            <span class="badge ${estadoBadge}">${estadoTexto}</span>
+            <span class="badge ${prioridadBadge}">${prioridadTexto}</span>
+          </div>
         </div>
 
         <div class="info-grid">
@@ -241,6 +284,10 @@ function mostrarDetalle(solicitud) {
             <label>Facultad</label>
             <p>${solicitud.Facultad || 'No especificado'}</p>
           </div>
+          <div class="info-item">
+            <label>Fecha de Solicitud</label>
+            <p>${fecha}</p>
+          </div>
         </div>
       </div>
 
@@ -259,6 +306,31 @@ function mostrarDetalle(solicitud) {
             <label>Programa</label>
             <p>${solicitud.Programa || 'No especificado'}</p>
           </div>
+        </div>
+      </div>
+
+      <!-- Gestión de Prioridad -->
+      <div class="detail-section">
+        <div class="detail-section-header">
+          <h3>Prioridad</h3>
+        </div>
+
+        <div class="priority-controls">
+          <button class="btn-priority ${solicitud.Prioridad === 'alta' ? 'active' : ''}"
+                  onclick="cambiarPrioridad('${solicitud.id_formulario}', 'alta')">
+            <svg data-lucide="alert-circle"></svg>
+            Alta
+          </button>
+          <button class="btn-priority ${solicitud.Prioridad === 'media' ? 'active' : ''}"
+                  onclick="cambiarPrioridad('${solicitud.id_formulario}', 'media')">
+            <svg data-lucide="minus-circle"></svg>
+            Media
+          </button>
+          <button class="btn-priority ${solicitud.Prioridad === 'baja' ? 'active' : ''}"
+                  onclick="cambiarPrioridad('${solicitud.id_formulario}', 'baja')">
+            <svg data-lucide="circle"></svg>
+            Baja
+          </button>
         </div>
       </div>
 
@@ -287,16 +359,28 @@ function mostrarDetalle(solicitud) {
         `}
       </div>
 
+      <!-- Notas del Trabajador Social -->
+      ${solicitud.NotasTrabajador ? `
+        <div class="detail-section">
+          <div class="detail-section-header">
+            <h3>Notas del Trabajador Social</h3>
+          </div>
+          <p class="notes-text">${solicitud.NotasTrabajador}</p>
+        </div>
+      ` : ''}
+
       <!-- Acciones -->
       <div class="detail-actions">
-        <button class="btn-action btn-approve" onclick="aprobarSolicitud('${solicitud.id_formulario}')">
-          <svg data-lucide="check"></svg>
-          Aprobar
-        </button>
-        <button class="btn-action btn-reject" onclick="rechazarSolicitud('${solicitud.id_formulario}')">
-          <svg data-lucide="x"></svg>
-          Rechazar
-        </button>
+        ${solicitud.Estado === 'pendiente' ? `
+          <button class="btn-action btn-approve" onclick="aprobarSolicitud('${solicitud.id_formulario}')">
+            <svg data-lucide="check"></svg>
+            Aprobar
+          </button>
+          <button class="btn-action btn-reject" onclick="rechazarSolicitud('${solicitud.id_formulario}')">
+            <svg data-lucide="x"></svg>
+            Rechazar
+          </button>
+        ` : ''}
         <button class="btn-action btn-secondary" onclick="descargarPDF('${solicitud.id_formulario}')">
           <svg data-lucide="file-down"></svg>
           Descargar PDF
@@ -321,7 +405,6 @@ function cerrarDetalle() {
 
   solicitudSeleccionada = null;
 
-  // Remover selección activa
   document.querySelectorAll('.solicitud-card').forEach(card => {
     card.classList.remove('active');
   });
@@ -363,8 +446,13 @@ function aplicarFiltros() {
   solicitudesFiltradas = solicitudes.filter(s => {
     let cumpleFiltros = true;
 
-    // Por ahora, todos los filtros se consideran pendientes
-    // ya que la tabla no tiene campos de estado/prioridad
+    if (filterStatus && s.Estado !== filterStatus) {
+      cumpleFiltros = false;
+    }
+
+    if (filterPriority && s.Prioridad !== filterPriority) {
+      cumpleFiltros = false;
+    }
 
     if (filterPrograma && s.Programa !== filterPrograma) {
       cumpleFiltros = false;
@@ -395,21 +483,18 @@ function resetearFiltros() {
 // MOSTRAR SOLO PENDIENTES
 // ============================================
 function mostrarSoloPendientes() {
-  // Por ahora, todas se consideran pendientes
-  // ya que la tabla no tiene campo de estado
-  renderizarSolicitudes(solicitudes);
+  solicitudesFiltradas = solicitudes.filter(s => s.Estado === 'pendiente');
+  renderizarSolicitudes(solicitudesFiltradas);
 }
 
 // ============================================
 // ACTUALIZAR ESTADÍSTICAS
 // ============================================
 function actualizarEstadisticas() {
-  // Por ahora, todas se consideran pendientes
-  // ya que la tabla no tiene campo de estado
-  const totalPendientes = solicitudes.length;
-  const totalAprobadas = 0;
-  const totalRechazadas = 0;
-  const totalPrioridad = 0;
+  const totalPendientes = solicitudes.filter(s => s.Estado === 'pendiente').length;
+  const totalAprobadas = solicitudes.filter(s => s.Estado === 'aprobada').length;
+  const totalRechazadas = solicitudes.filter(s => s.Estado === 'rechazada').length;
+  const totalPrioridad = solicitudes.filter(s => s.Prioridad === 'alta').length;
 
   countPending.textContent = totalPendientes;
   countApproved.textContent = totalAprobadas;
@@ -418,24 +503,144 @@ function actualizarEstadisticas() {
 }
 
 // ============================================
-// ACCIONES DE SOLICITUD
+// APROBAR SOLICITUD
 // ============================================
-function aprobarSolicitud(id) {
-  console.log('✅ Aprobando solicitud:', id);
-  mostrarToast('Funcionalidad de aprobación en desarrollo');
-  // TODO: Implementar endpoint para aprobar solicitud
+async function aprobarSolicitud(id) {
+  const notas = prompt('Notas (opcional):');
+
+  try {
+    console.log('✅ Aprobando solicitud:', id);
+
+    const response = await fetch(`${API_URL}/gestion/solicitud/${id}/aprobar`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ notas })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Error al aprobar solicitud');
+    }
+
+    mostrarToast('✅ Solicitud aprobada exitosamente');
+
+    // Actualizar localmente
+    const solicitud = solicitudes.find(s => s.id_formulario === id);
+    if (solicitud) {
+      solicitud.Estado = 'aprobada';
+      if (notas) solicitud.NotasTrabajador = notas;
+    }
+
+    // Refrescar vista
+    renderizarSolicitudes(solicitudesFiltradas);
+    actualizarEstadisticas();
+    if (solicitudSeleccionada && solicitudSeleccionada.id_formulario === id) {
+      mostrarDetalle(solicitud);
+    }
+
+  } catch (error) {
+    console.error('❌ Error:', error);
+    mostrarToast('❌ ' + error.message, true);
+  }
 }
 
-function rechazarSolicitud(id) {
-  console.log('❌ Rechazando solicitud:', id);
-  mostrarToast('Funcionalidad de rechazo en desarrollo');
-  // TODO: Implementar endpoint para rechazar solicitud
+// ============================================
+// RECHAZAR SOLICITUD
+// ============================================
+async function rechazarSolicitud(id) {
+  const notas = prompt('Motivo del rechazo (opcional):');
+
+  try {
+    console.log('❌ Rechazando solicitud:', id);
+
+    const response = await fetch(`${API_URL}/gestion/solicitud/${id}/rechazar`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ notas })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Error al rechazar solicitud');
+    }
+
+    mostrarToast('❌ Solicitud rechazada');
+
+    // Actualizar localmente
+    const solicitud = solicitudes.find(s => s.id_formulario === id);
+    if (solicitud) {
+      solicitud.Estado = 'rechazada';
+      if (notas) solicitud.NotasTrabajador = notas;
+    }
+
+    // Refrescar vista
+    renderizarSolicitudes(solicitudesFiltradas);
+    actualizarEstadisticas();
+    if (solicitudSeleccionada && solicitudSeleccionada.id_formulario === id) {
+      mostrarDetalle(solicitud);
+    }
+
+  } catch (error) {
+    console.error('❌ Error:', error);
+    mostrarToast('❌ ' + error.message, true);
+  }
 }
 
+// ============================================
+// CAMBIAR PRIORIDAD
+// ============================================
+async function cambiarPrioridad(id, prioridad) {
+  try {
+    console.log(`🔔 Cambiando prioridad de ${id} a: ${prioridad}`);
+
+    const response = await fetch(`${API_URL}/gestion/solicitud/${id}/prioridad`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ prioridad })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Error al cambiar prioridad');
+    }
+
+    mostrarToast(`Prioridad cambiada a ${prioridad}`);
+
+    // Actualizar localmente
+    const solicitud = solicitudes.find(s => s.id_formulario === id);
+    if (solicitud) {
+      solicitud.Prioridad = prioridad;
+    }
+
+    // Refrescar vista
+    renderizarSolicitudes(solicitudesFiltradas);
+    actualizarEstadisticas();
+    if (solicitudSeleccionada && solicitudSeleccionada.id_formulario === id) {
+      mostrarDetalle(solicitud);
+    }
+
+  } catch (error) {
+    console.error('❌ Error:', error);
+    mostrarToast('❌ ' + error.message, true);
+  }
+}
+
+// ============================================
+// DESCARGAR PDF
+// ============================================
 function descargarPDF(id) {
   console.log('📄 Descargando PDF de solicitud:', id);
-  mostrarToast('Funcionalidad de descarga en desarrollo');
-  // TODO: Implementar generación de PDF
+  window.open(`${API_URL}/gestion/solicitud/${id}/pdf`, '_blank');
+  mostrarToast('📄 Generando PDF...');
 }
 
 // ============================================
@@ -463,10 +668,15 @@ function mostrarError(mensaje) {
   lucide.createIcons();
 }
 
-function mostrarToast(mensaje) {
+function mostrarToast(mensaje, esError = false) {
   const toast = document.getElementById('toast');
   toast.textContent = mensaje;
   toast.classList.add('show');
+  if (esError) {
+    toast.classList.add('error');
+  } else {
+    toast.classList.remove('error');
+  }
 
   setTimeout(() => {
     toast.classList.remove('show');
@@ -476,7 +686,6 @@ function mostrarToast(mensaje) {
 // ============================================
 // ESTILOS ADICIONALES NECESARIOS
 // ============================================
-// Agregar estilos en línea para componentes faltantes
 if (!document.querySelector('#gestion-dynamic-styles')) {
   const style = document.createElement('style');
   style.id = 'gestion-dynamic-styles';
@@ -513,6 +722,22 @@ if (!document.querySelector('#gestion-dynamic-styles')) {
       font-size: 16px;
       font-weight: 600;
       color: #111827;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .priority-icon {
+      width: 16px;
+      height: 16px;
+    }
+
+    .priority-icon.priority-alta {
+      color: #ef4444;
+    }
+
+    .priority-icon.priority-baja {
+      color: #10b981;
     }
 
     .solicitud-cedula {
@@ -531,6 +756,36 @@ if (!document.querySelector('#gestion-dynamic-styles')) {
     .badge-pendiente {
       background: #fef3c7;
       color: #92400e;
+    }
+
+    .badge-aprobada {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .badge-rechazada {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .badge-prioridad-alta {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .badge-prioridad-media {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .badge-prioridad-baja {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .badges-group {
+      display: flex;
+      gap: 8px;
     }
 
     .solicitud-details {
@@ -568,10 +823,60 @@ if (!document.querySelector('#gestion-dynamic-styles')) {
       font-family: monospace;
     }
 
+    .footer-icons {
+      display: flex;
+      gap: 8px;
+    }
+
     .has-attachment {
       width: 16px;
       height: 16px;
       color: #3b82f6;
+    }
+
+    .priority-controls {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-priority {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border: 2px solid #e5e7eb;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .btn-priority svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .btn-priority:hover {
+      border-color: #3b82f6;
+      background: #eff6ff;
+    }
+
+    .btn-priority.active {
+      border-color: #3b82f6;
+      background: #3b82f6;
+      color: white;
+    }
+
+    .notes-text {
+      padding: 12px;
+      background: #f9fafb;
+      border-radius: 6px;
+      color: #374151;
+      line-height: 1.6;
     }
 
     .empty-state {
@@ -796,6 +1101,10 @@ if (!document.querySelector('#gestion-dynamic-styles')) {
       opacity: 1;
     }
 
+    .toast-notification.error {
+      background: #dc2626;
+    }
+
     .modal-overlay {
       display: none;
       position: fixed;
@@ -816,4 +1125,4 @@ if (!document.querySelector('#gestion-dynamic-styles')) {
   document.head.appendChild(style);
 }
 
-console.log('✅ Módulo de gestión cargado');
+console.log('✅ Módulo de gestión cargado con todas las funcionalidades');

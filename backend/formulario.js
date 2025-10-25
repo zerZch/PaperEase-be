@@ -353,9 +353,9 @@ router.post('/formulario', upload.single('archivo'), (req, res) => {
 // RUTA PARA VER TODAS LAS SOLICITUDES
 router.get('/solicitudes', (req, res) => {
   console.log('🔍 Obteniendo todas las solicitudes...');
-  
+
   const sql = `
-    SELECT 
+    SELECT
       fe.id_formulario,
       fe.Nombre,
       fe.Apellido,
@@ -364,7 +364,12 @@ router.get('/solicitudes', (req, res) => {
       f.Facultad,
       tp.TipoPrograma,
       p.Programa,
-      fe.Archivo
+      fe.Archivo,
+      fe.Estado,
+      fe.Prioridad,
+      fe.FechaCreacion,
+      fe.FechaModificacion,
+      fe.NotasTrabajador
     FROM formulario_estudiante fe
     LEFT JOIN genero g ON fe.IdGenero = g.IdGenero
     LEFT JOIN facultad f ON fe.IdFacultad = f.IdFacultad
