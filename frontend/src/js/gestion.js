@@ -111,7 +111,7 @@ async function cargarSolicitudes() {
     console.log('📥 Cargando solicitudes desde el backend...');
     mostrarCargando(true);
 
-    const response = await fetch(`${API_URL}/formulario/solicitudes`);
+    const response = await fetch(`${API_URL}/solicitudes`);
 
     if (!response.ok) {
       throw new Error(`Error ${response.status}: ${response.statusText}`);
