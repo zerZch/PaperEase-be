@@ -411,4 +411,52 @@ router.get('/count', (req, res) => {
   });
 });
 
+// ============================================
+// RUTA PARA OBTENER SOLICITUDES DE UN ESTUDIANTE
+// GET /api/mis-solicitudes/:cedula
+// ============================================
+router.get('/mis-solicitudes/:cedula', (req, res) => {
+  const { cedula } = req.params;
+
+  console.log(`🔍 Obteniendo solicitudes del estudiante con cédula: ${cedula}`);
+
+  const sql = `
+    SELECT
+      fe.id_formulario,
+      fe.Nombre,
+      fe.Apellido,
+      fe.Cedula,
+      g.Genero,
+      f.Facultad,
+      tp.TipoPrograma,
+      p.Programa,
+      fe.Archivo,
+      fe.Estado,
+      fe.Prioridad,
+      fe.FechaCreacion,
+      fe.FechaModificacion,
+      fe.NotasTrabajador
+    FROM formulario_estudiante fe
+    LEFT JOIN genero g ON fe.IdGenero = g.IdGenero
+    LEFT JOIN facultad f ON fe.IdFacultad = f.IdFacultad
+    LEFT JOIN tipoprograma tp ON fe.IdTipoP = tp.IdTipoP
+    LEFT JOIN programa p ON fe.IdPrograma = p.IdPrograma
+    WHERE fe.Cedula = ?
+    ORDER BY fe.FechaCreacion DESC
+  `;
+
+  conexion.query(sql, [cedula], (err, results) => {
+    if (err) {
+      console.error('❌ Error al obtener solicitudes del estudiante:', err);
+      return res.status(500).json({
+        error: 'Error en la base de datos',
+        sql_error: err.message
+      });
+    }
+
+    console.log(`✅ ${results.length} solicitudes obtenidas para cédula ${cedula}`);
+    res.json(results);
+  });
+});
+
 module.exports = router;
