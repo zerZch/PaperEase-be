@@ -64,7 +64,31 @@
           </div>
 
           <div class="form-group">
-            <label for="email">Correo Electrónico</label>
+            <label for="cedula">Cédula</label>
+            <input
+              type="text"
+              id="cedula"
+              name="cedula"
+              placeholder="8-123-4567"
+              required
+            />
+          </div>
+
+          <div class="form-group" id="facultadGroup">
+            <label for="facultad">Facultad</label>
+            <select id="facultad" name="facultad">
+              <option value="">Selecciona tu facultad</option>
+              <option value="1">Facultad de Ciencias y Tecnología</option>
+              <option value="2">Facultad de Ingeniería Civil</option>
+              <option value="3">Facultad de Ingeniería Eléctrica</option>
+              <option value="4">Facultad de Ingeniería Industrial</option>
+              <option value="5">Facultad de Ingeniería Mecánica</option>
+              <option value="6">Facultad de Ingeniería de Sistemas Computacionales</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Correo Electrónico Institucional</label>
             <input
               type="email"
               id="email"
