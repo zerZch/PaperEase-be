@@ -1908,4 +1908,73 @@ body {
   box-shadow: 0 2px 8px rgba(0, 123, 131, .3);
   transform: translateY(-50%) translateX(0) scale(1.02);
 }
+/* ====== Reestructura visual del header del calendario ====== */
+.calendar-header .header-container {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* título centrado */
+  gap: 12px;
+  position: relative;
+  padding: 1rem 1.5rem;
+}
+
+/* Flechas de navegación */
+.calendar-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: #ffffff;
+  transition: transform 0.15s ease;
+}
+.calendar-button:hover {
+  transform: scale(1.1);
+}
+
+/* Título del mes */
+.calendar-header .container-heading {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #fff;
+}
+
+/* ====== Botón Crear Evento ====== */
+.btn-crear-evento {
+  position: absolute;
+  right: 1.5rem;     /* lo coloca a la derecha */
+  top: 50%;
+  transform: translateY(-50%);  /* centrado verticalmente */
+  background: linear-gradient(135deg, #0ea5b3, #00949d);
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.3rem;
+  border-radius: 30px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 123, 131, 0.3);
+  transition: all 0.2s ease;
+  z-index: 2; /* para que quede sobre el fondo, pero detrás de las flechas */
+}
+
+/* Hover: hace que el gradiente se mueva y brille más */
+.btn-crear-evento:hover {
+  background: linear-gradient(135deg, #0aa6ff, #13b8a5);
+  transform: translateY(-50%) scale(1.03);
+  box-shadow: 0 6px 14px rgba(0, 123, 131, 0.4);
+}
+
+/* Responsive: en móviles el botón baja debajo del título */
+@media (max-width: 768px) {
+  .calendar-header .header-container {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .btn-crear-evento {
+    position: static;
+    transform: none;
+    align-self: flex-end;
+    margin-top: 8px;
+  }
+}
 
