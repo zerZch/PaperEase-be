@@ -1090,15 +1090,6 @@ body {
   overflow: hidden;
   min-height: 600px;
 }
-  display: flex;
-  width: 100%;
-  max-width: 1200px;
-  background: white;
-  border-radius: 2rem;
-  box-shadow: 0 20px 60px rgba(77, 134, 156, 0.15);
-  overflow: hidden;
-  min-height: 600px;
-}
 
 .login-left {
   background: linear-gradient(135deg, var(--color-primario), var(--color-secundario));
