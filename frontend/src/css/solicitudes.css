@@ -230,23 +230,38 @@
 .stat-icon svg {
   width: 28px;
   height: 28px;
-  color: white;
 }
 
 .stat-icon.total {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: rgba(77, 134, 156, 0.2);
+}
+
+.stat-icon.total svg {
+  color: var(--color-primario);
 }
 
 .stat-icon.pending {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background-color: rgba(249, 158, 11, 0.2);
+}
+
+.stat-icon.pending svg {
+  color: var(--color-warning);
 }
 
 .stat-icon.approved {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background-color: rgba(16, 185, 129, 0.2);
+}
+
+.stat-icon.approved svg {
+  color: var(--color-success);
 }
 
 .stat-icon.rejected {
-  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  background-color: rgba(239, 68, 68, 0.2);
+}
+
+.stat-icon.rejected svg {
+  color: var(--color-error);
 }
 
 .stat-content {

@@ -8,11 +8,9 @@ const API_URL = 'http://localhost:3000/api';
 let solicitudes = [];
 let solicitudesFiltradas = [];
 let cedulaEstudiante = '';
+let currentUser = null;
 
 // Elementos del DOM
-const loginModal = document.getElementById('loginModal');
-const cedulaInput = document.getElementById('cedulaInput');
-const btnLogin = document.getElementById('btnLogin');
 const filtersSection = document.getElementById('filtersSection');
 const statsSection = document.getElementById('statsSection');
 const solicitudesContainer = document.getElementById('solicitudesContainer');
@@ -37,6 +35,28 @@ const statRechazada = document.getElementById('statRechazada');
 document.addEventListener('DOMContentLoaded', () => {
   console.log('🚀 Iniciando Dashboard de Solicitudes del Estudiante...');
 
+  // Verificar autenticación (solo estudiantes)
+  if (typeof requireEstudiante === 'function') {
+    requireEstudiante();
+  }
+
+  // Obtener usuario actual
+  if (typeof getCurrentUser === 'function') {
+    currentUser = getCurrentUser();
+    if (currentUser && currentUser.cedula) {
+      cedulaEstudiante = currentUser.cedula;
+      console.log(`👤 Usuario autenticado: ${currentUser.nombre} ${currentUser.apellido} (${cedulaEstudiante})`);
+    } else {
+      console.error('❌ No se pudo obtener la cédula del usuario');
+      mostrarEstado('error', 'No se pudo obtener la información del usuario. Por favor, inicia sesión nuevamente.');
+      return;
+    }
+  } else {
+    console.error('❌ authHelper.js no está cargado');
+    mostrarEstado('error', 'Error de configuración. Por favor, recarga la página.');
+    return;
+  }
+
   // Cargar iconos de Lucide
   if (typeof lucide !== 'undefined') {
     lucide.createIcons();
@@ -45,27 +65,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Event listeners
   configurarEventListeners();
 
-  // Verificar si hay cédula guardada en sessionStorage
-  const cedulaGuardada = sessionStorage.getItem('cedulaEstudiante');
-  if (cedulaGuardada) {
-    cedulaInput.value = cedulaGuardada;
-    autenticarEstudiante();
-  }
+  // Cargar solicitudes automáticamente
+  cargarSolicitudes();
 });
 
 // ============================================
 // CONFIGURAR EVENT LISTENERS
 // ============================================
 function configurarEventListeners() {
-  // Login
-  btnLogin.addEventListener('click', autenticarEstudiante);
-
-  cedulaInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      autenticarEstudiante();
-    }
-  });
-
   // Búsqueda
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
@@ -97,34 +104,6 @@ function configurarEventListeners() {
       }
     });
   }
-}
-
-// ============================================
-// AUTENTICAR ESTUDIANTE
-// ============================================
-function autenticarEstudiante() {
-  const cedula = cedulaInput.value.trim();
-
-  if (!cedula) {
-    mostrarToast('Por favor, ingresa tu cédula', 'error');
-    return;
-  }
-
-  // Validar formato básico de cédula
-  const cedulaRegex = /^[\d\-]+$/;
-  if (!cedulaRegex.test(cedula)) {
-    mostrarToast('Formato de cédula inválido', 'error');
-    return;
-  }
-
-  cedulaEstudiante = cedula;
-  sessionStorage.setItem('cedulaEstudiante', cedula);
-
-  // Ocultar modal de login
-  loginModal.classList.remove('active');
-
-  // Cargar solicitudes
-  cargarSolicitudes();
 }
 
 // ============================================

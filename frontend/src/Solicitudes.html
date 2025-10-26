@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/solicitudes.css">
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="js/authHelper.js"></script>
 </head>
 <body>
 
@@ -21,8 +22,10 @@
       <a href="MenuPE.html">Inicio</a>
       <a href="Programas.html">Requisitos</a>
       <a href="Formulario.html">Solicitud</a>
-      <a href="Solicitudes.html" class="active">Mis Solicitudes</a>
+      <a href="Solicitudes.html" class="active" id="linkMisSolicitudes">Mis Solicitudes</a>
+      <a href="Estadisticas_Dashboard.html">Estadísticas</a>
       <a href="eventos.html">Eventos</a>
+      <a href="gestion.html" id="linkGestion" style="display: none;">Gestión</a>
     </nav>
   </div>
 </header>
@@ -37,33 +40,8 @@
       </div>
     </div>
 
-    <!-- Modal de Identificación (temporal) -->
-    <div class="modal-overlay active" id="loginModal">
-      <div class="modal-identificacion">
-        <div class="modal-header">
-          <h3>Identifícate</h3>
-          <p>Ingresa tu cédula para ver tus solicitudes</p>
-        </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="cedulaInput">Cédula:</label>
-            <input
-              type="text"
-              id="cedulaInput"
-              placeholder="Ej: 8-1234-567"
-              autocomplete="off"
-            />
-          </div>
-          <button class="btn-primary" id="btnLogin">
-            <svg data-lucide="log-in"></svg>
-            Consultar Solicitudes
-          </button>
-        </div>
-      </div>
-    </div>
-
     <!-- Filtros y Búsqueda -->
-    <div class="filters-section" id="filtersSection" style="display: none;">
+    <div class="filters-section" id="filtersSection">
       <div class="search-box">
         <svg data-lucide="search"></svg>
         <input type="text" id="searchInput" placeholder="Buscar por programa...">
@@ -89,7 +67,7 @@
     </div>
 
     <!-- Estadísticas Rápidas -->
-    <div class="stats-section" id="statsSection" style="display: none;">
+    <div class="stats-section" id="statsSection">
       <div class="stat-card">
         <div class="stat-icon total">
           <svg data-lucide="file-text"></svg>
@@ -129,7 +107,7 @@
     </div>
 
     <!-- Lista de Solicitudes -->
-    <div class="solicitudes-container" id="solicitudesContainer" style="display: none;">
+    <div class="solicitudes-container" id="solicitudesContainer">
       <!-- Se llena dinámicamente con JS -->
     </div>
 
