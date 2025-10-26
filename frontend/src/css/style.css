@@ -1165,12 +1165,17 @@ body {
 
 .login-right {
   flex: 1;
-  padding: 2.5rem 2rem;
+  padding: 3rem 2.5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   background: white;
   overflow-y: auto;
+}
+
+/* Padding compacto solo para Registro */
+body:has(.registro-form) .login-right {
+  padding: 2.5rem 2rem;
 }
 
 .login-form-wrapper {
@@ -1179,31 +1184,60 @@ body {
   width: 100%;
 }
 
+/* Tamaños de header para Login (más grandes) */
+.login-form ~ .login-footer,
+.login-form {
+  max-width: 450px;
+}
+
 .form-header {
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .form-header h2 {
-  font-size: 1.85rem;
+  font-size: 2rem;
   color: var(--color-primario);
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.5rem;
   font-weight: 700;
 }
 
 .form-header p {
   color: #666;
+  font-size: 0.95rem;
+}
+
+/* Tamaños compactos solo para Registro */
+.registro-form ~ .login-footer,
+.registro-form ~ .form-header {
+  margin-bottom: 1.5rem;
+}
+
+.registro-form .form-header h2 {
+  font-size: 1.85rem;
+  margin-bottom: 0.4rem;
+}
+
+.registro-form .form-header p {
   font-size: 0.9rem;
 }
 
 .role-selector {
   display: flex;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  gap: 1rem;
+  margin-bottom: 2rem;
   background: var(--color-fondo-claro);
-  padding: 0.75rem;
+  padding: 1rem;
   border-radius: 1rem;
   box-shadow: 0 4px 12px rgba(77, 134, 156, 0.08);
+}
+
+/* Role selector compacto solo para Registro */
+.registro-form ~ .login-footer ~ .role-selector,
+body:has(.registro-form) .role-selector {
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem;
 }
 
 .role-btn {
@@ -1260,11 +1294,27 @@ body {
   grid-column: 1 / -1;
 }
 
-.form-group {
+/* Tamaños por defecto para Login (más grandes) */
+.login-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.login-form .form-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-primario);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* Tamaños compactos para Registro */
+.registro-form .form-group {
   margin-bottom: 0;
 }
 
-.form-group label {
+.registro-form .form-group label {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -1286,7 +1336,19 @@ body {
   align-items: center;
 }
 
-.input-icon {
+/* Iconos dentro de inputs - tamaño original para Login */
+.login-form .input-icon {
+  position: absolute;
+  left: 1rem;
+  width: 20px;
+  height: 20px;
+  color: #9ca3af;
+  pointer-events: none;
+  transition: color 0.3s ease;
+}
+
+/* Iconos dentro de inputs - tamaño compacto para Registro */
+.registro-form .input-icon {
   position: absolute;
   left: 0.875rem;
   width: 18px;
@@ -1296,12 +1358,26 @@ body {
   transition: color 0.3s ease;
 }
 
-.input-wrapper:focus-within .input-icon {
+.login-form .input-wrapper:focus-within .input-icon,
+.registro-form .input-wrapper:focus-within .input-icon {
   color: var(--color-primario);
 }
 
-.form-group input,
-.form-group select {
+/* Inputs - tamaño original para Login */
+.login-form .form-group input {
+  width: 100%;
+  padding: 0.875rem 1rem 0.875rem 3rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.875rem;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  background: white;
+}
+
+/* Inputs - tamaño compacto para Registro */
+.registro-form .form-group input,
+.registro-form .form-group select {
   width: 100%;
   padding: 0.75rem 0.875rem 0.75rem 2.75rem;
   border: 2px solid #e5e7eb;
@@ -1312,7 +1388,7 @@ body {
   background: white;
 }
 
-.form-group select {
+.registro-form .form-group select {
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%234D869C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
@@ -1321,19 +1397,23 @@ body {
   padding-right: 3rem;
 }
 
-.form-group input:hover,
-.form-group select:hover {
+.login-form .form-group input:hover,
+.registro-form .form-group input:hover,
+.registro-form .form-group select:hover {
   border-color: #d1d5db;
 }
 
-.form-group input:focus,
-.form-group select:focus {
+.login-form .form-group input:focus,
+.registro-form .form-group input:focus,
+.registro-form .form-group select:focus {
   outline: none;
   border-color: var(--color-primario);
   box-shadow: 0 0 0 4px rgba(77, 134, 156, 0.1);
 }
 
-.form-group input::placeholder {
+.login-form .form-group input::placeholder,
+.registro-form .form-group input::placeholder,
+.registro-form .form-group select::placeholder {
   color: #9ca3af;
 }
 
@@ -1379,22 +1459,30 @@ body {
 
 .btn-login {
   width: 100%;
-  padding: 0.875rem;
+  padding: 1rem;
   background: linear-gradient(135deg, var(--color-primario), var(--color-secundario));
   color: white;
   border: none;
-  border-radius: 0.75rem;
-  font-size: 1rem;
+  border-radius: 0.875rem;
+  font-size: 1.05rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   box-shadow: 0 6px 20px rgba(77, 134, 156, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+}
+
+/* Botón compacto solo para Registro */
+.registro-form .btn-login {
+  padding: 0.875rem;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .btn-login:hover {
@@ -1435,14 +1523,21 @@ body {
 }
 
 .message {
-  padding: 0.875rem 1rem;
-  border-radius: 0.75rem;
-  margin-bottom: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 0.875rem;
+  margin-bottom: 1.5rem;
   font-weight: 500;
-  font-size: 0.9rem;
   display: none;
   animation: slideIn 0.3s ease;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Mensajes compactos solo para Registro */
+.registro-form ~ .message {
+  padding: 0.875rem 1rem;
+  border-radius: 0.75rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
 }
 
 .message.show {
@@ -1516,8 +1611,17 @@ body {
     gap: 1rem;
   }
 
-  .form-group input,
-  .form-group select {
+  .login-form .form-group input,
+  .registro-form .form-group input,
+  .registro-form .form-group select {
     font-size: 16px; /* Previene zoom en iOS */
+  }
+
+  .login-right {
+    padding: 2rem 1.5rem;
+  }
+
+  body:has(.registro-form) .login-right {
+    padding: 2rem 1.5rem;
   }
 }
