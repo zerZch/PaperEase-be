@@ -62,6 +62,9 @@ function mostrarDetalleEvento(evento, fecha, index = 0) {
     const eventoDescripcion = document.getElementById('eventoDescripcion');
     const eventoCategoria = document.getElementById('eventoCategoria');
     const eventoCategoriaTexto = document.getElementById('eventoCategoriaTexto');
+    const eventoImagenContainer = document.getElementById('eventoImagenContainer');
+    const eventoImagen = document.getElementById('eventoImagen');
+
     if (eventoTitulo) eventoTitulo.textContent = evento.titulo;
     if (eventoFecha) eventoFecha.textContent = formatearFecha(fecha);
     if (eventoHorario) eventoHorario.textContent = `${evento.horaInicio || ''} - ${evento.horaFin || ''}`;
@@ -69,6 +72,15 @@ function mostrarDetalleEvento(evento, fecha, index = 0) {
     if (eventoDescripcion) eventoDescripcion.textContent = evento.descripcion || 'Sin descripción';
     if (eventoCategoria) eventoCategoria.style.backgroundColor = evento.color;
     if (eventoCategoriaTexto) eventoCategoriaTexto.textContent = evento.categoria || 'Sin categoría';
+
+    // Mostrar imagen si existe
+    if (evento.imagen && eventoImagen && eventoImagenContainer) {
+        eventoImagen.src = evento.imagen;
+        eventoImagenContainer.style.display = 'block';
+    } else if (eventoImagenContainer) {
+        eventoImagenContainer.style.display = 'none';
+    }
+
     const panelOverlay = document.getElementById('panelOverlay');
     const panelEventoDetalle = document.getElementById('panelEventoDetalle');
     if (panelOverlay && panelEventoDetalle) {
@@ -262,6 +274,27 @@ document.addEventListener('DOMContentLoaded', () => {
     btnCancelar = document.querySelector(".btn-cancelar");
     formCrearEvento = document.getElementById('formCrearEvento');
 
+    // Vista previa de imagen
+    const inputImagen = document.getElementById('imagen');
+    const previewContainer = document.getElementById('preview-imagen');
+    const imgPreview = document.getElementById('img-preview');
+
+    if (inputImagen) {
+        inputImagen.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    imgPreview.src = event.target.result;
+                    previewContainer.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                previewContainer.style.display = 'none';
+            }
+        });
+    }
+
     nextMonthBtn?.addEventListener('click', () => {
         currentDate.setMonth(currentDate.getMonth() + 1);
         renderCalendar(currentDate);
@@ -282,14 +315,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     btnCancelar?.addEventListener("click", cerrarPaneles);
 
-    // Event listener para el formulario - VERSIÓN CORREGIDA CON MEJOR MANEJO DE FECHAS
+    // Event listener para el formulario - CON SOPORTE DE IMÁGENES
     formCrearEvento.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         console.log('Formulario enviado');
-        
+
         const formData = new FormData(formCrearEvento);
-        
+
         // Obtener valores del formulario
         const fecha = formData.get('fecha');
         const titulo = formData.get('titulo');
@@ -298,106 +331,100 @@ document.addEventListener('DOMContentLoaded', () => {
         const horaFin = formData.get('horaFin');
         const descripcion = formData.get('descripcion');
         const color = formData.get('color');
-        
+        const imagenFile = formData.get('imagen');
+
         console.log('Datos del formulario:', {
-            fecha, titulo, lugar, horaInicio, horaFin, descripcion, color
+            fecha, titulo, lugar, horaInicio, horaFin, descripcion, color, imagen: imagenFile?.name
         });
-        
+
         // Validación básica
         if (!fecha || !titulo) {
             alert('Por favor completa la fecha y el título del evento');
             return;
         }
-        
-        // CORREGIDO: Parsear fecha correctamente
-        const fechaParts = fecha.split('-'); // formato YYYY-MM-DD
+
+        // Parsear fecha correctamente
+        const fechaParts = fecha.split('-');
         const year = parseInt(fechaParts[0]);
-        const mes = parseInt(fechaParts[1]); // Ya viene en formato 1-12
+        const mes = parseInt(fechaParts[1]);
         const dia = parseInt(fechaParts[2]);
-        
-        console.log('Fecha parseada CORREGIDA:', { dia, mes, year });
-        
-        // Preparar datos para enviar al backend
-        const eventoData = {
-            Titulo: titulo,
-            Descripcion: descripcion || '',
-            Lugar: lugar || '',
-            HoraInicio: horaInicio || '',
-            HoraFin: horaFin || '',
-            Categoria: color || '',
-            Dia: dia,
-            Mes: mes, // Sin sumar 1 porque ya viene correcto del input date
-            year: year,
-            Facultad: null,
-            Programa: null,
-            Imagen: null
-        };
-        
-        console.log('Datos a enviar CORREGIDOS:', eventoData);
-        
+
+        console.log('Fecha parseada:', { dia, mes, year });
+
+        // Preparar FormData para enviar (incluyendo archivo)
+        const submitFormData = new FormData();
+        submitFormData.append('Titulo', titulo);
+        submitFormData.append('Descripcion', descripcion || '');
+        submitFormData.append('Lugar', lugar || '');
+        submitFormData.append('HoraInicio', horaInicio || '');
+        submitFormData.append('HoraFin', horaFin || '');
+        submitFormData.append('Categoria', color || '');
+        submitFormData.append('Dia', dia);
+        submitFormData.append('Mes', mes);
+        submitFormData.append('year', year);
+        submitFormData.append('Facultad', '');
+        submitFormData.append('Programa', '');
+
+        // Solo agregar imagen si se seleccionó una
+        if (imagenFile && imagenFile.size > 0) {
+            submitFormData.append('imagen', imagenFile);
+        }
+
         try {
             const isEditMode = formCrearEvento.dataset.editMode === 'true';
             let response;
             let url;
-            
+
             if (isEditMode) {
                 const eventId = formCrearEvento.dataset.editId;
                 url = `http://localhost:3000/api/eventos/${eventId}`;
                 console.log('Actualizando evento ID:', eventId);
-                
+
                 response = await fetch(url, {
                     method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(eventoData)
+                    body: submitFormData // Enviar como FormData, no JSON
                 });
             } else {
                 url = 'http://localhost:3000/api/eventos';
                 console.log('Creando nuevo evento');
-                
+
                 response = await fetch(url, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(eventoData)
+                    body: submitFormData // Enviar como FormData, no JSON
                 });
             }
-            
+
             console.log('Respuesta del servidor:', response.status, response.statusText);
-            
+
             if (!response.ok) {
                 const errorText = await response.text();
                 console.error('Error del servidor:', errorText);
                 throw new Error(`Error ${response.status}: ${response.statusText} - ${errorText}`);
             }
-            
+
             const result = await response.json();
             console.log('Resultado:', result);
-            
+
             if (result.success) {
                 console.log('Evento guardado exitosamente');
-                
+
                 // Recargar eventos y actualizar calendario
-                if (typeof cargarEventos === 'function') {
-                    await cargarEventos();
-                }
-                
-                // Resetear formulario
+                await cargarEventos();
+
+                // Resetear formulario y vista previa
                 formCrearEvento.reset();
-                
-                // Cerrar paneles si existe la función
-                if (typeof cerrarPaneles === 'function') {
-                    cerrarPaneles();
-                }
-                
+                const previewContainer = document.getElementById('preview-imagen');
+                if (previewContainer) previewContainer.style.display = 'none';
+
+                // Cerrar paneles
+                cerrarPaneles();
+
                 // Limpiar modo de edición
                 if (isEditMode) {
                     delete formCrearEvento.dataset.editMode;
                     delete formCrearEvento.dataset.editId;
                 }
-                
+
                 // Mostrar el toast
                 const toast = document.getElementById('toast');
                 if (toast) {
@@ -406,14 +433,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     setTimeout(() => {
                         toast.classList.remove('show');
                     }, 3000);
-                } else {
-                    alert(`Evento "${titulo}" ${isEditMode ? 'actualizado' : 'creado'} con éxito`);
                 }
             } else {
                 console.error('El servidor respondió pero no fue exitoso');
                 alert('Error: El servidor no pudo procesar la solicitud');
             }
-            
+
         } catch (error) {
             console.error('Error completo:', error);
             alert(`Error al guardar el evento: ${error.message}`);

@@ -111,7 +111,19 @@
           <label for="descripcion">Descripción</label>
           <textarea id="descripcion" name="descripcion" placeholder="Ej: Actividades de chequeo médico gratuito..."></textarea>
         </div>
-    
+
+        <!-- Imagen del Evento -->
+        <div class="form-group">
+          <label for="imagen">Imagen del Evento (opcional)</label>
+          <input type="file" id="imagen" name="imagen" accept="image/*" />
+          <small style="color: #666; font-size: 0.85rem; display: block; margin-top: 0.5rem;">
+            Formatos: JPG, PNG, GIF. Máximo 5MB
+          </small>
+          <div id="preview-imagen" style="margin-top: 1rem; display: none;">
+            <img id="img-preview" src="" alt="Vista previa" style="max-width: 100%; height: auto; border-radius: 0.5rem; border: 2px solid #e5e7eb;" />
+          </div>
+        </div>
+
         <!-- Color -->
         <div class="form-group colores-evento">
           <label>Color del Evento</label>
@@ -177,6 +189,14 @@
           <div class="evento-detail-value">
             <span id="eventoCategoria" style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; margin-right: 8px; background-color: #3b82f6;"></span>
             <span id="eventoCategoriaTexto">Tecnología</span>
+          </div>
+        </div>
+
+        <!-- Imagen del Evento -->
+        <div class="evento-detail-item" id="eventoImagenContainer" style="display: none;">
+          <div class="evento-detail-label">Imagen del Evento</div>
+          <div class="evento-detail-value">
+            <img id="eventoImagen" src="" alt="Imagen del evento" style="max-width: 100%; height: auto; border-radius: 0.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
           </div>
         </div>
       </div>

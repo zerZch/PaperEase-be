@@ -1,6 +1,36 @@
 const express = require('express');
 const router = express.Router();
 const db = require('./conexion');
+const multer = require('multer');
+const path = require('path');
+
+// Configuración de multer para subida de imágenes
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, 'uploads'));
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, 'evento-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const fileFilter = (req, file, cb) => {
+  // Aceptar solo imágenes
+  if (file.mimetype.startsWith('image/')) {
+    cb(null, true);
+  } else {
+    cb(new Error('Solo se permiten archivos de imagen'), false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB máximo
+  }
+});
 
 // Obtener todos los eventos
 router.get('/', (req, res) => {
@@ -19,48 +49,79 @@ router.get('/:id', (req, res) => {
   });
 });
 
-// Crear evento
-router.post('/', (req, res) => {
+// Crear evento (con soporte para imágenes)
+router.post('/', upload.single('imagen'), (req, res) => {
   const {
     Titulo, Descripcion, Lugar, HoraInicio, HoraFin,
-    Categoria, Dia, Mes, year, Facultad, Programa, Imagen
+    Categoria, Dia, Mes, year, Facultad, Programa
   } = req.body;
 
-  const query = `INSERT INTO eventos 
-    (Titulo, Descripcion, Lugar, HoraInicio, HoraFin, Categoria, Dia, Mes, year, Facultad, Programa, Imagen) 
+  // Construir la URL de la imagen si se subió un archivo
+  const imagenUrl = req.file ? `/uploads/${req.file.filename}` : null;
+
+  const query = `INSERT INTO eventos
+    (Titulo, Descripcion, Lugar, HoraInicio, HoraFin, Categoria, Dia, Mes, year, Facultad, Programa, Imagen)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
   const values = [
-    Titulo, Descripcion, Lugar, HoraInicio, HoraFin,
-    Categoria, Dia, Mes, year, Facultad, Programa, Imagen
+    Titulo, Descripcion || null, Lugar || null, HoraInicio || null, HoraFin || null,
+    Categoria || null, parseInt(Dia), parseInt(Mes), parseInt(year),
+    Facultad || null, Programa || null, imagenUrl
   ];
 
   db.query(query, values, (err, result) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json({ success: true, id: result.insertId });
+    if (err) {
+      console.error('Error al insertar evento:', err);
+      return res.status(500).json({ error: err.message });
+    }
+    res.json({ success: true, id: result.insertId, imagen: imagenUrl });
   });
 });
 
-// Actualizar evento
-router.put('/:id', (req, res) => {
+// Actualizar evento (con soporte para imágenes)
+router.put('/:id', upload.single('imagen'), (req, res) => {
   const {
     Titulo, Descripcion, Lugar, HoraInicio, HoraFin,
-    Categoria, Dia, Mes, year, Facultad, Programa, Imagen
+    Categoria, Dia, Mes, year, Facultad, Programa
   } = req.body;
 
-  const query = `UPDATE eventos SET 
-    Titulo = ?, Descripcion = ?, Lugar = ?, HoraInicio = ?, HoraFin = ?, Categoria = ?, 
-    Dia = ?, Mes = ?, year = ?, Facultad = ?, Programa = ?, Imagen = ?
-    WHERE Id_Eventos = ?`;
+  // Si se subió una nueva imagen, usar su URL; si no, mantener la actual o null
+  let query, values;
 
-  const values = [
-    Titulo, Descripcion, Lugar, HoraInicio, HoraFin,
-    Categoria, Dia, Mes, year, Facultad, Programa, Imagen,
-    req.params.id
-  ];
+  if (req.file) {
+    // Se subió nueva imagen
+    const imagenUrl = `/uploads/${req.file.filename}`;
+    query = `UPDATE eventos SET
+      Titulo = ?, Descripcion = ?, Lugar = ?, HoraInicio = ?, HoraFin = ?, Categoria = ?,
+      Dia = ?, Mes = ?, year = ?, Facultad = ?, Programa = ?, Imagen = ?
+      WHERE Id_Eventos = ?`;
+
+    values = [
+      Titulo, Descripcion || null, Lugar || null, HoraInicio || null, HoraFin || null,
+      Categoria || null, parseInt(Dia), parseInt(Mes), parseInt(year),
+      Facultad || null, Programa || null, imagenUrl,
+      req.params.id
+    ];
+  } else {
+    // No se subió nueva imagen, no actualizar el campo Imagen
+    query = `UPDATE eventos SET
+      Titulo = ?, Descripcion = ?, Lugar = ?, HoraInicio = ?, HoraFin = ?, Categoria = ?,
+      Dia = ?, Mes = ?, year = ?, Facultad = ?, Programa = ?
+      WHERE Id_Eventos = ?`;
+
+    values = [
+      Titulo, Descripcion || null, Lugar || null, HoraInicio || null, HoraFin || null,
+      Categoria || null, parseInt(Dia), parseInt(Mes), parseInt(year),
+      Facultad || null, Programa || null,
+      req.params.id
+    ];
+  }
 
   db.query(query, values, (err) => {
-    if (err) return res.status(500).json({ error: err.message });
+    if (err) {
+      console.error('Error al actualizar evento:', err);
+      return res.status(500).json({ error: err.message });
+    }
     res.json({ success: true });
   });
 });
