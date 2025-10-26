@@ -570,9 +570,10 @@ header .container {
   border-radius: 1rem;
 }
 
-/* === CALENDARIO RESPONSIVE === */
+/* === CALENDARIO RESPONSIVE (AJUSTE DE ESPACIO SUPERIOR REAL) === */
 .eventos-section {
-  padding: var(--section-padding) var(--container-padding);
+  margin-top: 90px !important; /* fuerza separación real del navbar */
+  padding: 40px var(--container-padding) 40px var(--container-padding);
   background-color: var(--color-fondo-claro);
 }
 
@@ -580,7 +581,8 @@ header .container {
   font-size: var(--text-3xl);
   font-weight: 700;
   color: var(--color-primario);
-  margin-bottom: clamp(0.25rem, 1vw, 0.5rem);
+  margin-top: 0;
+  margin-bottom: 15px;
   text-align: center;
 }
 
@@ -589,7 +591,7 @@ header .container {
   color: var(--color-primario);
   font-weight: 400;
   text-align: center;
-  margin-bottom: clamp(1rem, 3vw, 2rem);
+  margin-bottom: 35px;
 }
 
 .calendar {
@@ -598,6 +600,7 @@ header .container {
   max-width: min(1000px, 100%);
   margin: 0 auto;
 }
+
 
 .calendar-header {
   position: relative;
@@ -2072,4 +2075,21 @@ body {
   grid-column: auto !important;
   justify-self: auto !important;
   z-index: 2 !important;
+}
+/* --- Separación real entre el navbar (header sticky) y el título --- */
+header{
+  /* crea un espacio bajo la barra de navegación */
+  --nav-gap: 48px;
+  margin-bottom: var(--nav-gap) !important;
+}
+
+/* empuja la sección donde está el H1 "Calendario de Eventos" */
+.calendar-intro{
+  margin-top: var(--nav-gap) !important;     /* por si el margin del header es sobrescrito */
+  padding-top: 0 !important;                 /* opcional: evita dobles rellenos */
+}
+
+/* si usas otra envoltura, cubre también el caso */
+main > .calendar-intro.container{
+  margin-top: var(--nav-gap) !important;
 }
