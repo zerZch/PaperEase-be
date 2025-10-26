@@ -27,6 +27,7 @@ router.post('/register', async (req, res) => {
     cedula,
     idGenero,
     idFacultad,
+    facultad,
     fechaNacimiento,
     departamento,
     oficina
@@ -40,10 +41,21 @@ router.post('/register', async (req, res) => {
     });
   }
 
-  // Validar formato de email
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  // Validar cédula obligatoria
+  if (!cedula) {
+    return res.status(400).json({ error: 'La cédula es obligatoria' });
+  }
+
+  // Validar formato de cédula
+  const cedulaRegex = /^\d{1,2}-\d{1,5}-\d{1,6}$/;
+  if (!cedulaRegex.test(cedula.trim())) {
+    return res.status(400).json({ error: 'Formato de cédula inválido. Use el formato: 8-123-4567' });
+  }
+
+  // Validar formato de email institucional
+  const emailRegex = /^[^\s@]+@utp\.ac\.pa$/;
   if (!emailRegex.test(email)) {
-    return res.status(400).json({ error: 'Formato de email inválido' });
+    return res.status(400).json({ error: 'Debe usar un correo institucional (@utp.ac.pa)' });
   }
 
   // Validar longitud de contraseña
@@ -57,6 +69,12 @@ router.post('/register', async (req, res) => {
   }
 
   const rolNumerico = parseInt(rol);
+
+  // Validar que estudiantes tengan facultad
+  const facultadFinal = facultad || idFacultad;
+  if (rolNumerico === 1 && !facultadFinal) {
+    return res.status(400).json({ error: 'Los estudiantes deben seleccionar una facultad' });
+  }
 
   try {
     // Verificar si el email ya existe en estudiantes
@@ -104,9 +122,9 @@ router.post('/register', async (req, res) => {
         hashedPassword,
         nombre,
         apellido,
-        cedula || null,
+        cedula,
         idGenero || null,
-        idFacultad || null,
+        facultadFinal,
         fechaNacimiento || null
       ]);
 
@@ -141,7 +159,7 @@ router.post('/register', async (req, res) => {
         hashedPassword,
         nombre,
         apellido,
-        cedula || null,
+        cedula,
         idGenero || null,
         departamento || null,
         oficina || null

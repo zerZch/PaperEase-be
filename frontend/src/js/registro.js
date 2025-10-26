@@ -27,10 +27,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Actualizar texto descriptivo según el rol
       const roleDesc = document.getElementById('roleDesc');
+      const facultadGroup = document.getElementById('facultadGroup');
+      const facultadSelect = document.getElementById('facultad');
+
       if (selectedRole === 'estudiante') {
         roleDesc.textContent = 'Regístrate como estudiante para acceder a programas y servicios';
+        facultadGroup.style.display = 'block';
+        facultadSelect.required = true;
       } else {
         roleDesc.textContent = 'Regístrate como trabajadora social para gestionar programas';
+        facultadGroup.style.display = 'none';
+        facultadSelect.required = false;
+        facultadSelect.value = ''; // Limpiar selección
       }
     });
   });
@@ -46,10 +54,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 5000);
   }
 
-  // Función para validar email
+  // Función para validar email institucional
   function validateEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@utp\.ac\.pa$/;
     return emailRegex.test(email);
+  }
+
+  // Función para validar formato de cédula
+  function validateCedula(cedula) {
+    // Formato: N-NNN-NNNN o NN-NNNN-NNNN o variantes similares
+    const cedulaRegex = /^\d{1,2}-\d{1,5}-\d{1,6}$/;
+    return cedulaRegex.test(cedula.trim());
   }
 
   // Función para validar contraseña
@@ -65,6 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Obtener valores del formulario
     const nombre = document.getElementById('nombre').value.trim();
     const apellido = document.getElementById('apellido').value.trim();
+    const cedula = document.getElementById('cedula').value.trim();
+    const facultad = document.getElementById('facultad').value;
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
@@ -80,8 +97,24 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    if (!cedula) {
+      showMessage('Por favor, ingresa tu cédula', 'error');
+      return;
+    }
+
+    if (!validateCedula(cedula)) {
+      showMessage('Por favor, ingresa una cédula válida (formato: 8-123-4567)', 'error');
+      return;
+    }
+
+    // Validar facultad solo si es estudiante
+    if (selectedRole === 'estudiante' && !facultad) {
+      showMessage('Por favor, selecciona tu facultad', 'error');
+      return;
+    }
+
     if (!validateEmail(email)) {
-      showMessage('Por favor, ingresa un correo electrónico válido', 'error');
+      showMessage('Por favor, ingresa un correo electrónico institucional válido (@utp.ac.pa)', 'error');
       return;
     }
 
@@ -101,19 +134,28 @@ document.addEventListener('DOMContentLoaded', () => {
     btnRegistro.textContent = 'Creando cuenta...';
 
     try {
+      // Preparar datos para enviar
+      const datosRegistro = {
+        nombre: nombre,
+        apellido: apellido,
+        cedula: cedula,
+        email: email,
+        password: password,
+        rol: selectedRole === 'estudiante' ? 1 : 2
+      };
+
+      // Agregar facultad solo si es estudiante
+      if (selectedRole === 'estudiante') {
+        datosRegistro.facultad = parseInt(facultad);
+      }
+
       // Llamada al backend para registrar el usuario
       const response = await fetch('http://localhost:3000/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          nombre: nombre,
-          apellido: apellido,
-          email: email,
-          password: password,
-          rol: selectedRole === 'estudiante' ? 1 : 2
-        })
+        body: JSON.stringify(datosRegistro)
       });
 
       const data = await response.json();
