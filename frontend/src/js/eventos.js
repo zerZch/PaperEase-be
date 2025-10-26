@@ -212,7 +212,6 @@ function renderCalendar(date) {
 async function cargarEventos() {
     try {
         const res = await fetch('http://localhost:3000/api/eventos');
-        addEventWithAnimation(fecha); // esto llama la animación del día afectado
         if (!res.ok) throw new Error('Error cargando eventos');
         const eventos = await res.json();
         eventosPorDia = {};
