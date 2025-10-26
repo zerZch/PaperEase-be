@@ -1071,12 +1071,12 @@ footer {
 }
 
 /* === ESTILOS DE LOGIN Y REGISTRO === */
-body {
+.body-login-registro{
   align-items: center;
   justify-content: center;
+  display: flex;
   padding: 1rem;
   min-height: 100vh;
-  display: flex;
   background: linear-gradient(135deg, #EEF7FF 0%, #CDE8E5 100%);
 }
 
