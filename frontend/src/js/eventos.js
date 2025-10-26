@@ -298,10 +298,12 @@ document.addEventListener('DOMContentLoaded', () => {
     nextMonthBtn?.addEventListener('click', () => {
         currentDate.setMonth(currentDate.getMonth() + 1);
         renderCalendar(currentDate);
+        console.log('Mes siguiente:', meses[currentDate.getMonth()], currentDate.getFullYear());
     });
     previousMonthBtn?.addEventListener('click', () => {
         currentDate.setMonth(currentDate.getMonth() - 1);
         renderCalendar(currentDate);
+        console.log('Mes anterior:', meses[currentDate.getMonth()], currentDate.getFullYear());
     });
     closeModal?.addEventListener('click', () => {
         modal.style.display = 'none';
@@ -569,4 +571,14 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Inicializar calendario cargando eventos
     cargarEventos();
+
+    // Inicializar iconos de Lucide después de cargar el DOM
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+        console.log('Iconos de Lucide inicializados');
+    }
+
+    // Debug: verificar que los botones existen
+    console.log('Botón siguiente:', nextMonthBtn);
+    console.log('Botón anterior:', previousMonthBtn);
 });
