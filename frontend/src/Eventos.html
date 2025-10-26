@@ -5,23 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Eventos • PaperEase</title>
 
-  <!-- Rutas RELATIVAS para que el JS/CSS carguen aunque abras el HTML directo -->
+  <!-- Rutas RELATIVAS -->
   <link rel="stylesheet" href="./css/style.css" />
 
   <!-- Iconos -->
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 
-  <!-- Tu script del calendario -->
+  <!-- Script del calendario -->
   <script src="./js/eventos.js" defer></script>
 </head>
 
 <body>
-
-  <!-- Header reutilizado -->
+  <!-- Header principal -->
   <header>
     <div class="container">
       <div class="logo-container">
-        <!-- Ruta relativa del logo -->
         <img src="./imagenes/logo.png" alt="PaperEase Logo" class="logo" />
         <span class="logo-text">PaperEase</span>
       </div>
@@ -44,27 +42,23 @@
 
   <main>
     <section class="calendar">
-      <!-- HEAD CALENDARIO -->
+      <!-- Encabezado del calendario -->
       <header class="calendar-header">
         <div class="header-container">
-          <!-- CAMBIO SEGURO: añadí type="button" e IDs para robustez -->
-          <button id="prevMonth" type="button"
-                  class="calendar-button calendar-button-previous"
-                  data-lucide="chevron-left" title="Mes anterior" aria-label="Mes anterior">
+          <button id="prevMonth" type="button" class="calendar-button calendar-button-previous" aria-label="Mes anterior">
             <span>‹</span>
           </button>
 
           <h3 class="container-heading" id="calendarMonthTitle">Octubre 2025</h3>
 
-          <button id="nextMonth" type="button"
-                  class="calendar-button calendar-button-next"
-                  data-lucide="chevron-right" title="Mes siguiente" aria-label="Mes siguiente">
+          <button id="nextMonth" type="button" class="calendar-button calendar-button-next" aria-label="Mes siguiente">
             <span>›</span>
           </button>
-        </div>
 
-        <!-- También type="button" para evitar submits involuntarios si alguna vez esto cae dentro de un form -->
-        <button class="btn-crear-evento" id="crearEvento" type="button">+ Crear evento</button>
+          <button class="btn-crear-evento" id="crearEvento" type="button">
+            + Crear evento
+          </button>
+        </div>
       </header>
 
       <!-- Días de la semana -->
@@ -91,29 +85,25 @@
       </div>
     </div>
 
-    <!-- Panel de Formulario (derecha) -->
+    <!-- Panel de Formulario -->
     <section class="evento-formulario" id="panelEventoFormulario">
       <h2>Añadir Evento</h2>
       <form id="formCrearEvento">
-        <!-- Nombre del Evento -->
         <div class="form-group">
           <label for="titulo">Nombre del Evento</label>
           <input type="text" id="titulo" name="titulo" placeholder="Ej: Feria de Salud" required />
         </div>
 
-        <!-- Lugar -->
         <div class="form-group">
           <label for="lugar">Lugar del Evento</label>
           <input type="text" id="lugar" name="lugar" placeholder="Ej: Gimnasio UTP" required />
         </div>
 
-        <!-- Fecha -->
         <div class="form-group">
           <label for="fecha">Fecha</label>
           <input type="date" id="fecha" name="fecha" required />
         </div>
 
-        <!-- Hora de Inicio y Fin -->
         <div class="hora-rango">
           <div class="grupo-hora">
             <label for="horaInicio">Hora de Inicio</label>
@@ -126,25 +116,20 @@
           </div>
         </div>
 
-        <!-- Descripción -->
         <div class="form-group">
           <label for="descripcion">Descripción</label>
           <textarea id="descripcion" name="descripcion" placeholder="Ej: Actividades de chequeo médico gratuito..."></textarea>
         </div>
 
-        <!-- Imagen del Evento -->
         <div class="form-group">
           <label for="imagen">Imagen del Evento (opcional)</label>
           <input type="file" id="imagen" name="imagen" accept="image/*" />
-          <small style="color: #666; font-size: 0.85rem; display: block; margin-top: 0.5rem;">
-            Formatos: JPG, PNG, GIF. Máximo 5MB
-          </small>
+          <small style="color: #666; font-size: 0.85rem;">Formatos: JPG, PNG, GIF. Máximo 5MB</small>
           <div id="preview-imagen" style="margin-top: 1rem; display: none;">
-            <img id="img-preview" src="" alt="Vista previa" style="max-width: 100%; height: auto; border-radius: 0.5rem; border: 2px solid #e5e7eb;" />
+            <img id="img-preview" src="" alt="Vista previa" style="max-width: 100%; height: auto; border-radius: 0.5rem;" />
           </div>
         </div>
 
-        <!-- Color -->
         <div class="form-group colores-evento">
           <label>Color del Evento</label>
           <label>
@@ -159,7 +144,6 @@
           </label>
         </div>
 
-        <!-- Botones -->
         <div class="acciones">
           <button type="button" class="btn-cancelar">Cancelar</button>
           <button type="submit" class="btn-guardar">Guardar</button>
@@ -167,10 +151,8 @@
       </form>
     </section>
 
-    <!-- Overlay para cerrar paneles -->
     <div class="panel-overlay" id="panelOverlay"></div>
-    
-    <!-- Panel de detalles del evento (izquierda) -->
+
     <section class="evento-detalle" id="panelEventoDetalle">
       <div class="panel-header">
         <h2 class="panel-title">Detalles del Evento</h2>
@@ -179,29 +161,24 @@
 
       <div class="evento-info">
         <h3 class="evento-title" id="eventoTitulo">Conferencia de Tecnología 2024</h3>
-
         <div class="evento-detail-item">
           <div class="evento-detail-label">Fecha</div>
           <div class="evento-detail-value" id="eventoFecha">15 de Marzo, 2024</div>
         </div>
-
         <div class="evento-detail-item">
           <div class="evento-detail-label">Horario</div>
           <div class="evento-detail-value" id="eventoHorario">09:00 AM - 05:00 PM</div>
         </div>
-
         <div class="evento-detail-item">
           <div class="evento-detail-label">Lugar</div>
           <div class="evento-detail-value" id="eventoLugar">Centro de Convenciones Tech Hub</div>
         </div>
-
         <div class="evento-detail-item">
           <div class="evento-detail-label">Descripción</div>
           <div class="evento-detail-value" id="eventoDescripcion">
-            Una conferencia anual que reúne a los mejores profesionales de la tecnología para compartir conocimientos sobre las últimas tendencias e innovaciones del sector.
+            Una conferencia anual que reúne a los mejores profesionales de la tecnología.
           </div>
         </div>
-
         <div class="evento-detail-item">
           <div class="evento-detail-label">Categoría</div>
           <div class="evento-detail-value">
@@ -209,17 +186,8 @@
             <span id="eventoCategoriaTexto">Tecnología</span>
           </div>
         </div>
-
-        <!-- Imagen del Evento -->
-        <div class="evento-detail-item" id="eventoImagenContainer" style="display: none;">
-          <div class="evento-detail-label">Imagen del Evento</div>
-          <div class="evento-detail-value">
-            <img id="eventoImagen" src="" alt="Imagen del evento" style="max-width: 100%; height: auto; border-radius: 0.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" />
-          </div>
-        </div>
       </div>
 
-      <!-- Acciones secundarias abajo -->
       <div class="evento-actions">
         <button class="btn-icon btn-edit" id="btnEditarEvento" data-tooltip="Editar">
           <i data-lucide="edit"></i>
@@ -234,10 +202,8 @@
     </section>
   </main>
 
-  <!-- Toast de Confirmación -->
   <div id="toast" class="calendar-toast"></div>
 
-  <!-- Footer -->
   <footer>
     <div class="footer-flex container">
       <p>© 2025 PaperEase • Universidad Tecnológica de Panamá</p>
@@ -248,6 +214,5 @@
       </div>
     </div>
   </footer>
-
 </body>
 </html>

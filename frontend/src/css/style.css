@@ -1871,3 +1871,41 @@ body {
     max-width: none;
   }
 }
+.calendar-header .header-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+}
+
+/* que el título quede centrado visualmente entre flechas */
+.calendar-header .container-heading {
+  margin: 0 auto;
+}
+
+/* Botón con color PaperEase */
+.btn-crear-evento {
+  background-color: #007b83; /* tono azul verdoso PaperEase */
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.1rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+
+/* alinearlo al extremo derecho del header */
+.calendar-header .btn-crear-evento {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.btn-crear-evento:hover {
+  background-color: #00949d;
+  box-shadow: 0 2px 8px rgba(0, 123, 131, .3);
+  transform: translateY(-50%) translateX(0) scale(1.02);
+}
+
