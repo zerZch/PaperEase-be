@@ -1977,4 +1977,73 @@ body {
     margin-top: 8px;
   }
 }
+/* ===== Header del calendario en 4 columnas: prev | title | next | button ===== */
+.calendar-header .header-container{
+  display: grid;
+  grid-template-columns: 48px 1fr 48px auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+}
+
+/* Flechas y título bien ubicados */
+.calendar-button-previous{ grid-column: 1; justify-self: start; }
+.calendar-header .container-heading{ grid-column: 2; justify-self: center; margin: 0; font-weight: 800; }
+.calendar-button-next{ grid-column: 3; justify-self: end; }
+
+/* ===== Botón Crear evento (sin absoluto, NO se superpone) ===== */
+.calendar-header .btn-crear-evento{
+  grid-column: 4;
+  justify-self: end;
+
+  /* reset de cualquier regla vieja que lo dejara absoluto */
+  position: static;
+  right: auto; top: auto; transform: none;
+  
+  /* estilo y gradiente PaperEase */
+  --pe-start: #0ea5b3;   /* turquesa PaperEase */
+  --pe-end:   #00c2a8;   /* verde-agua brillante */
+  background: linear-gradient(135deg, var(--pe-start), var(--pe-end));
+  color: #fff;
+  border: 0;
+  padding: 0.7rem 1.2rem;
+  border-radius: 999px;           /* chip/pastilla */
+  font-weight: 700;
+  letter-spacing: .2px;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  cursor: pointer;
+  box-shadow: 0 8px 22px rgba(14,165,179,.28);
+  transition: transform .15s ease, box-shadow .2s ease, background-position .25s ease;
+  background-size: 140% 140%;
+  background-position: 0% 50%;
+}
+.calendar-header .btn-crear-evento:hover{
+  transform: translateY(-1px);
+  background-position: 100% 50%;
+  box-shadow: 0 12px 28px rgba(14,165,179,.36);
+}
+.calendar-header .btn-crear-evento:active{
+  transform: translateY(0);
+}
+
+/* Ícono Lucide (si usas <i data-lucide="plus"></i> dentro del botón) */
+.calendar-header .btn-crear-evento svg{
+  width: 18px; height: 18px; stroke-width: 2.5;
+}
+
+/* ===== Responsive: en móvil el botón baja y no pisa nada ===== */
+@media (max-width: 768px){
+  .calendar-header .header-container{
+    grid-template-columns: 48px 1fr 48px;
+    grid-auto-rows: auto;
+    row-gap: 10px;
+  }
+  .calendar-header .btn-crear-evento{
+    grid-column: 1 / -1;
+    justify-self: end;   /* a la derecha, en la fila de abajo */
+  }
+}
 
