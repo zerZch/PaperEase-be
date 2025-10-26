@@ -1871,270 +1871,205 @@ body {
     max-width: none;
   }
 }
-.calendar-header .header-container {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  position: relative;
+/* === CORRECCIÓN FINAL — BOTÓN A LA ESQUINA DERECHA === */
+
+/* Asegura que el header tenga posición relativa */
+.calendar-header {
+  position: relative !important;
 }
 
-/* que el título quede centrado visualmente entre flechas */
+/* Centra el título (sin afectar las flechas) */
 .calendar-header .container-heading {
-  margin: 0 auto;
+  position: absolute !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  top: 50% !important;
+  translate: 0 -50%;
+  color: #fff !important;
+  margin: 0 !important;
+  font-weight: 800 !important;
+  letter-spacing: .3px !important;
+  text-align: center !important;
 }
 
-/* Botón con color PaperEase */
-.btn-crear-evento {
-  background-color: #007b83; /* tono azul verdoso PaperEase */
-  color: #fff;
-  border: none;
-  padding: 0.6rem 1.1rem;
-  border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease;
-}
+/* Flechas siguen normales */
+.calendar-button-previous { position: relative; z-index: 2; }
+.calendar-button-next     { position: relative; z-index: 2; }
 
-/* alinearlo al extremo derecho del header */
+/* Botón pegado a la esquina */
 .calendar-header .btn-crear-evento {
-  position: absolute;
-  right: 1rem;
-  top: 50%;
-  transform: translateY(-50%);
+  position: absolute !important;
+  right: 20px !important; /* ajusta a 0 si lo quieres literalmente tocando el borde */
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  margin: 0 !important;
+  z-index: 3 !important;
+
+  background: linear-gradient(135deg, #2a7d91, #1fb6c8) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 999px !important;
+  padding: .7rem 1.5rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  box-shadow: 0 8px 20px rgba(31,182,200,.25) !important;
+  transition: transform .2s ease, box-shadow .2s ease !important;
 }
 
-.btn-crear-evento:hover {
-  background-color: #00949d;
-  box-shadow: 0 2px 8px rgba(0, 123, 131, .3);
-  transform: translateY(-50%) translateX(0) scale(1.02);
+.calendar-header .btn-crear-evento:hover {
+  transform: translateY(-50%) scale(1.05) !important;
+  box-shadow: 0 12px 25px rgba(31,182,200,.35) !important;
 }
-/* ====== Reestructura visual del header del calendario ====== */
-.calendar-header .header-container {
-  display: flex;
-  align-items: center;
-  justify-content: center; /* título centrado */
-  gap: 12px;
-  position: relative;
-  padding: 1rem 1.5rem;
+/* === Header del calendario: prev | título | next | spacer | botón === */
+.calendar-header .header-container{
+  display: grid !important;
+  grid-template-columns: 48px 1fr 48px 1fr auto !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 12px 0 !important;        /* sin padding-right para pegar el botón */
 }
 
-/* Flechas de navegación */
-.calendar-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.5rem;
-  color: #ffffff;
-  transition: transform 0.15s ease;
-}
-.calendar-button:hover {
-  transform: scale(1.1);
+/* Flechas: solo ubicación, sin cambiar forma */
+.calendar-button-previous{ grid-column: 1 !important; justify-self: start !important; }
+.calendar-button-next    { grid-column: 3 !important; justify-self: end   !important; }
+
+/* Título CENTRADO (sin absolute) */
+.calendar-header .container-heading{
+  grid-column: 2 !important;
+  justify-self: center !important;
+  position: static !important;
+  transform: none !important;
+  margin: 0 !important;
+  text-align: center !important;
+  color: #fff !important;
+  font-weight: 800 !important;
+  letter-spacing: .3px !important;
 }
 
-/* Título del mes */
+/* Botón pegado al extremo derecho */
+.calendar-header .btn-crear-evento{
+  grid-column: 5 !important;
+  justify-self: end !important;
+  position: static !important;       /* anula absolute anteriores */
+  right: auto !important;
+  top: auto !important;
+  transform: none !important;
+  margin: 0 !important;
+}
+
+/* Colores PaperEase del botón (si quieres mantenerlos) */
+.calendar-header .btn-crear-evento{
+  background: linear-gradient(135deg, #2a7d91, #1fb6c8) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 999px !important;
+  padding: .7rem 1.4rem !important;
+  font-weight: 700 !important;
+  letter-spacing: .2px !important;
+}
+
+/* Si lo quieres literalmente al ras, sin aire: */
+.calendar-header .header-container{ padding-right: 0 !important; }
+/* === CORRECCIÓN FINAL — BOTÓN A LA ESQUINA DERECHA === */
+
+/* Asegura que el header tenga posición relativa */
+.calendar-header {
+  position: relative !important;
+}
+
+/* Centra el título (sin afectar las flechas) */
 .calendar-header .container-heading {
-  font-weight: 700;
-  font-size: 1.25rem;
-  color: #fff;
+  position: absolute !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  top: 50% !important;
+  translate: 0 -50%;
+  color: #fff !important;
+  margin: 0 !important;
+  font-weight: 800 !important;
+  letter-spacing: .3px !important;
+  text-align: center !important;
 }
 
-/* ====== Botón Crear Evento ====== */
-.btn-crear-evento {
+/* Flechas siguen normales */
+.calendar-button-previous { position: relative; z-index: 2; }
+.calendar-button-next     { position: relative; z-index: 2; }
+
+/* Botón pegado a la esquina */
+.calendar-header .btn-crear-evento {
+  position: absolute !important;
+  right: 20px !important; /* ajusta a 0 si lo quieres literalmente tocando el borde */
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  margin: 0 !important;
+  z-index: 3 !important;
+
+  background: linear-gradient(135deg, #2a7d91, #1fb6c8) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 999px !important;
+  padding: .7rem 1.5rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  box-shadow: 0 8px 20px rgba(31,182,200,.25) !important;
+  transition: transform .2s ease, box-shadow .2s ease !important;
+}
+
+.calendar-header .btn-crear-evento:hover {
+  transform: translateY(-50%) scale(1.05) !important;
+  box-shadow: 0 12px 25px rgba(31,182,200,.35) !important;
+}
+/* Mover SOLO la flecha derecha para que no tape el título */
+.calendar-header { position: relative; }
+
+/* Distancia desde el centro del título hacia la derecha */
+:root { --gap-flecha: 210px; } /* prueba 190–250px según tu fuente */
+
+/* Flecha derecha: colócala a la derecha del título centrado */
+.calendar-button-next{
   position: absolute;
-  right: 1.5rem;     /* lo coloca a la derecha */
   top: 50%;
-  transform: translateY(-50%);  /* centrado verticalmente */
-  background: linear-gradient(135deg, #0ea5b3, #00949d);
-  color: #fff;
-  border: none;
-  padding: 0.6rem 1.3rem;
-  border-radius: 30px;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0, 123, 131, 0.3);
-  transition: all 0.2s ease;
-  z-index: 2; /* para que quede sobre el fondo, pero detrás de las flechas */
+  left: calc(50% + var(--gap-flecha));
+  transform: translateY(-50%);
+  z-index: 2;
 }
 
-/* Hover: hace que el gradiente se mueva y brille más */
-.btn-crear-evento:hover {
-  background: linear-gradient(135deg, #0aa6ff, #13b8a5);
-  transform: translateY(-50%) scale(1.03);
-  box-shadow: 0 6px 14px rgba(0, 123, 131, 0.4);
-}
-
-/* Responsive: en móviles el botón baja debajo del título */
-@media (max-width: 768px) {
-  .calendar-header .header-container {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .btn-crear-evento {
-    position: static;
-    transform: none;
-    align-self: flex-end;
-    margin-top: 8px;
-  }
-}
-/* ===== HEADER: layout y centrado perfecto ===== */
-.calendar-header .header-container{
-  position: relative;
-  display: grid;
-  grid-template-columns: 48px 1fr 48px auto; /* prev | (centro) | next | botón */
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-}
-
-/* Flechas a los lados */
-.calendar-button-previous{ grid-column: 1; justify-self: start; }
-.calendar-button-next    { grid-column: 3; justify-self: end; }
-
-/* Título centrado absoluto: queda centrado sin importar ancho del botón */
-.calendar-header .container-heading{
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  margin: 0;
-  font-weight: 800;
-  letter-spacing: .2px;
-  color: #ffffff;
-  text-align: center;
-}
-
-/* Botón pegado al extremo derecho (sin posición absoluta) */
-.calendar-header .btn-crear-evento{
-  grid-column: 4;
-  justify-self: end;
-  position: static; right: auto; top: auto; transform: none;
-  margin-right: 6px;
-}
-
-/* ===== BOTÓN: colores PaperEase (azul–turquesa) ===== */
-/* Ajusta estos dos si quieres afinar el tono */
-:root{
-  --pe-brand-1: #0ea5b3; /* turquesa PaperEase */
-  --pe-brand-2: #2196d9; /* azul PaperEase */
-}
-
-.btn-crear-evento{
-  background: linear-gradient(135deg, var(--pe-brand-1), var(--pe-brand-2));
-  color: #fff;
-  border: 0;
-  padding: .7rem 1.2rem;
-  border-radius: 999px;
-  font-weight: 700;
-  letter-spacing: .2px;
-  font-size: .95rem;
-  display: inline-flex;
-  align-items: center;
-  gap: .5rem;
-  cursor: pointer;
-  box-shadow: 0 8px 22px rgba(33,150,217,.25);
-  transition: transform .15s ease, box-shadow .2s ease, background-position .25s ease;
-  background-size: 140% 140%;
-  background-position: 0% 50%;
-}
-.btn-crear-evento:hover{
-  transform: translateY(-1px);
-  background-position: 100% 50%;
-  box-shadow: 0 12px 28px rgba(33,150,217,.35);
-}
-.btn-crear-evento:active{ transform: translateY(0); }
-
-/* ===== CÉLULAS DEL CALENDARIO: número centrado ===== */
-.calendar-days .calendar-day{
-  display: block; /* por si tenía otro display */
-}
-.calendar-days .calendar-day .day-info{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%; height: 100%;
-  padding: .4rem;
-}
-.calendar-days .calendar-day .day-info h5{
-  margin: 0;
-  font-weight: 600;
-}
-
-/* ===== Responsive: en móvil el botón baja y no pisa nada ===== */
+/* (Opcional) en pantallas pequeñas acércala un poco */
 @media (max-width: 768px){
-  .calendar-header .header-container{
-    grid-template-columns: 48px 1fr 48px;
-    grid-auto-rows: auto;
-    row-gap: 10px;
-  }
-  .calendar-header .btn-crear-evento{
-    grid-column: 1 / -1;        /* ocupa toda la fila */
-    justify-self: end;
-    margin-right: 0;
-  }
+  :root { --gap-flecha: 160px; }
 }
-/* prev | título centrado | next | (espaciador) | botón al extremo derecho */
-.calendar-header .header-container{
-  display: grid;
-  grid-template-columns: 48px 1fr 48px 1fr auto;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
+/* Mover SOLO la flecha derecha para que no tape el título */
+.calendar-header { position: relative; }
+
+/* Distancia desde el centro del título hacia la derecha */
+:root { --gap-flecha: 210px; } /* prueba 190–250px según tu fuente */
+
+/* Flecha derecha: colócala a la derecha del título centrado */
+.calendar-button-next{
+  position: absolute;
+  top: 50%;
+  left: calc(50% + var(--gap-flecha));
+  transform: translateY(-50%);
+  z-index: 2;
 }
 
-/* Flechas bien a los lados, sin superponer */
-.calendar-button-previous{ grid-column: 1; justify-self: start; }
-.calendar-button-next    { grid-column: 3; justify-self: end; }
-
-/* Título REALMENTE centrado (sin absolute) */
-.calendar-header .container-heading{
-  grid-column: 2;
-  justify-self: center;
-  margin: 0;
-  font-weight: 800;
-  letter-spacing: .2px;
-  color: #fff;
+/* (Opcional) en pantallas pequeñas acércala un poco */
+@media (max-width: 768px){
+  :root { --gap-flecha: 160px; }
 }
 
-/* Botón de crear al EXTREMO derecho, lejos del centro */
-.calendar-header .btn-crear-evento{
-  grid-column: 5;
-  justify-self: end;
+/* Ancla del header */
+.calendar-header{ position: relative !important; }
 
-  /* ✅ anula cualquier estilo viejo que lo hiciera absolute */
-  position: static; right: auto; top: auto; transform: none; margin: 0;
-}
-:root{
-  --pe-blue:   #2a7d91;   /* azul PaperEase (links/nav) */
-  --pe-teal:   #1fb6c8;   /* turquesa PaperEase del header */
-}
+/* Flecha DERECHA: forzar posición absoluta y anular grid */
+.calendar-button-next{
+  position: absolute !important;
+  top: 50% !important;
+  left: calc(50% + 195px) !important;  /* ⬅️ mueve aquí: 180, 190, 200, 210… */
+  transform: translateY(-50%) !important;
 
-.btn-crear-evento{
-  background: linear-gradient(135deg, var(--pe-blue), var(--pe-teal));
-  color: #fff;
-  border: 0;
-  padding: .7rem 1.2rem;
-  border-radius: 999px;
-  font-weight: 700;
-  letter-spacing: .2px;
-  font-size: .95rem;
-  display: inline-flex;
-  align-items: center;
-  gap: .5rem;
-  cursor: pointer;
-  box-shadow: 0 8px 22px rgba(31,182,200,.25);
-  transition: transform .15s ease, box-shadow .2s ease, background-position .25s ease;
-  background-size: 140% 140%;
-  background-position: 0% 50%;
+  right: auto !important;
+  grid-column: auto !important;
+  justify-self: auto !important;
+  z-index: 2 !important;
 }
-.btn-crear-evento:hover{
-  transform: translateY(-1px);
-  background-position: 100% 50%;
-  box-shadow: 0 12px 28px rgba(31,182,200,.35);
-}
-.btn-crear-evento:active{ transform: translateY(0); }
-.calendar-days .calendar-day .day-info{
-  display: flex; align-items: center; justify-content: center;
-  width: 100%; height: 100%; padding: .4rem;
-}
-.calendar-days .calendar-day .day-info h5{ margin: 0; font-weight: 600; }
-
