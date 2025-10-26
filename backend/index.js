@@ -9,6 +9,7 @@ const cors = require('cors');
 const estadisticasRoutes = require('./estadisticas.js');
 const formularioRoutes = require('./formulario');
 const authRoutes = require('./auth.js');
+const gestionRoutes = require('./gestion.js');
 
 // Configurar CORS
 app.use(cors({
@@ -43,6 +44,7 @@ app.use('/api/eventos', eventosRouter);         // http://localhost:3000/api/eve
 app.use('/api/estadisticas', estadisticasRoutes); // http://localhost:3000/api/estadisticas
 app.use('/api', formularioRoutes);
 app.use('/api/auth', authRoutes);               // http://localhost:3000/api/auth
+app.use('/api/gestion', gestionRoutes);         // http://localhost:3000/api/gestion
 // Servir archivos estáticos
 // Servir archivos estáticos
 app.use('/public', express.static(path.join(__dirname, '../frontend/public')));
