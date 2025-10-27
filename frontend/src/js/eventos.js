@@ -412,19 +412,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Recargar eventos y actualizar calendario
                 await cargarEventos();
 
+                // Limpiar ANTES de cerrar paneles
+                if (isEditMode) {
+                    delete formCrearEvento.dataset.editMode;
+                    delete formCrearEvento.dataset.editId;
+                    console.log('✅ Modo edición limpiado');
+                }
+
                 // Resetear formulario y vista previa
                 formCrearEvento.reset();
                 const previewContainer = document.getElementById('preview-imagen');
                 if (previewContainer) previewContainer.style.display = 'none';
 
                 // Cerrar paneles
-                cerrarPaneles();
-
-                // Limpiar modo de edición
-                if (isEditMode) {
-                    delete formCrearEvento.dataset.editMode;
-                    delete formCrearEvento.dataset.editId;
-                }
+                cerrarPaneles()
 
                 // Mostrar el toast
                 const toast = document.getElementById('toast');
