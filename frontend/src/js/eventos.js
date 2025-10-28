@@ -465,19 +465,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const result = await response.json();
         if (result.success) {
-          await cargarEventos();
+  await cargarEventos();
 
-          formCrearEvento.reset();
-          if (previewContainer) previewContainer.style.display = 'none';
+  // Limpiar ANTES de cerrar paneles (evita duplicación)
+  if (isEditMode) {
+    delete formCrearEvento.dataset.editMode;
+    delete formCrearEvento.dataset.editId;
+    console.log(' Modo edición limpiado');
+  }
 
-          cerrarPaneles();
+  formCrearEvento.reset();
+  if (previewContainer) previewContainer.style.display = 'none';
 
-          if (isEditMode) {
-            delete formCrearEvento.dataset.editMode;
-            delete formCrearEvento.dataset.editId;
-          }
+  cerrarPaneles();
 
-          mostrarToast(`Evento "${titulo}" ${isEditMode ? 'actualizado' : 'creado'} con éxito`);
+        mostrarToast(`Evento "${titulo}" ${isEditMode ? 'actualizado' : 'creado'} con éxito`);
         } else {
           alert('Error: El servidor no pudo procesar la solicitud');
         }
