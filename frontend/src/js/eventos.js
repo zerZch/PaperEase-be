@@ -467,71 +467,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (result.success) {
           await cargarEventos();
 
+          // Limpiar ANTES de cerrar paneles
+          if (isEditMode) {
+            delete formCrearEvento.dataset.editMode;
+            delete formCrearEvento.dataset.editId;
+            console.log('✅ Modo edición limpiado');
+          }
+
           formCrearEvento.reset();
           if (previewContainer) previewContainer.style.display = 'none';
 
           cerrarPaneles();
 
-          if (isEditMode) {
-            delete formCrearEvento.dataset.editMode;
-            delete formCrearEvento.dataset.editId;
-          }
-
-<<<<<<< HEAD
           mostrarToast(`Evento "${titulo}" ${isEditMode ? 'actualizado' : 'creado'} con éxito`);
         } else {
           alert('Error: El servidor no pudo procesar la solicitud');
-=======
-            console.log('Respuesta del servidor:', response.status, response.statusText);
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Error del servidor:', errorText);
-                throw new Error(`Error ${response.status}: ${response.statusText} - ${errorText}`);
-            }
-
-            const result = await response.json();
-            console.log('Resultado:', result);
-
-            if (result.success) {
-                console.log('Evento guardado exitosamente');
-
-                // Recargar eventos y actualizar calendario
-                await cargarEventos();
-
-                // Limpiar ANTES de cerrar paneles
-                if (isEditMode) {
-                    delete formCrearEvento.dataset.editMode;
-                    delete formCrearEvento.dataset.editId;
-                    console.log('✅ Modo edición limpiado');
-                }
-
-                // Resetear formulario y vista previa
-                formCrearEvento.reset();
-                const previewContainer = document.getElementById('preview-imagen');
-                if (previewContainer) previewContainer.style.display = 'none';
-
-                // Cerrar paneles
-                cerrarPaneles()
-
-                // Mostrar el toast
-                const toast = document.getElementById('toast');
-                if (toast) {
-                    toast.textContent = `Evento "${titulo}" ${isEditMode ? 'actualizado' : 'creado'} con éxito`;
-                    toast.classList.add('show');
-                    setTimeout(() => {
-                        toast.classList.remove('show');
-                    }, 3000);
-                }
-            } else {
-                console.error('El servidor respondió pero no fue exitoso');
-                alert('Error: El servidor no pudo procesar la solicitud');
-            }
-
-        } catch (error) {
-            console.error('Error completo:', error);
-            alert(`Error al guardar el evento: ${error.message}`);
->>>>>>> 74bee13de07de045b6016aab03bb209bb81c81bb
         }
       } catch (error) {
         console.error('Error completo:', error);
