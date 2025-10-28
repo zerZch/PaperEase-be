@@ -2120,17 +2120,20 @@ body {
 /* --- Separación real entre el navbar (header sticky) y el título --- */
 header{
   /* crea un espacio bajo la barra de navegación */
-  --nav-gap: 48px;
+  --nav-gap: 100px;
   margin-bottom: var(--nav-gap) !important;
 }
 
 /* empuja la sección donde está el H1 "Calendario de Eventos" */
 .calendar-intro{
-  margin-top: var(--nav-gap) !important;     /* por si el margin del header es sobrescrito */
-  padding-top: 0 !important;                 /* opcional: evita dobles rellenos */
+  margin-top: var(--nav-gap) !important;
+  padding-top: 20px !important;
+  position: relative;
+  z-index: 1;
 }
 
 /* si usas otra envoltura, cubre también el caso */
 main > .calendar-intro.container{
   margin-top: var(--nav-gap) !important;
+  padding-top: 20px !important;
 }
