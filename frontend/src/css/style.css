@@ -571,21 +571,11 @@ header .container {
 }
 
 /* === CALENDARIO RESPONSIVE (AJUSTE DE ESPACIO SUPERIOR REAL) === */
-/* Para evitar la superposición del calendario con el navbar */
 .eventos-section {
-  margin-top: 90px !important; /* Ajusta el valor según el tamaño de tu navbar */
-  padding: 40px var(--container-padding);
+  margin-top: 90px !important; /* fuerza separación real del navbar */
+  padding: 40px var(--container-padding) 40px var(--container-padding);
   background-color: var(--color-fondo-claro);
-  z-index: 10; /* Asegura que el calendario quede debajo del navbar */
 }
-
-/* Asegura que el navbar se quede encima */
-header {
-  position: sticky;
-  top: 0;
-  z-index: 100; /* Navbar siempre encima */
-}
-
 
 .calendar-main-title {
   font-size: var(--text-3xl);
