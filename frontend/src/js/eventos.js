@@ -354,27 +354,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ---- FIX PRINCIPAL: Navegación robusta de meses ----
   const goNextMonth = (e) => {
-    if (e) e.preventDefault();
+    if (e) {
+      e.preventDefault();
+      e.stopImmediatePropagation(); // Evita ejecución doble
+    }
     currentDate.setMonth(currentDate.getMonth() + 1);
     renderCalendar(currentDate);
-    // Si el botón está dentro de un form, evita submit accidental
     if (e?.currentTarget && e.currentTarget.blur) e.currentTarget.blur();
     console.log('Mes siguiente:', meses[currentDate.getMonth()], currentDate.getFullYear());
   };
 
   const goPrevMonth = (e) => {
-    if (e) e.preventDefault();
+    if (e) {
+      e.preventDefault();
+      e.stopImmediatePropagation(); // Evita ejecución doble
+    }
     currentDate.setMonth(currentDate.getMonth() - 1);
     renderCalendar(currentDate);
     if (e?.currentTarget && e.currentTarget.blur) e.currentTarget.blur();
     console.log('Mes anterior:', meses[currentDate.getMonth()], currentDate.getFullYear());
   };
 
-  // Listeners directos (si existen los nodos)
-  nextMonthBtn?.addEventListener('click', goNextMonth);
-  previousMonthBtn?.addEventListener('click', goPrevMonth);
-
-  // Delegación global (plan B): por si el DOM de los botones se re-renderiza
+  // Usar SOLO delegación global (más robusta)
   document.addEventListener('click', (e) => {
     // Si un overlay activo tapara los clicks, ignora
     const overlay = document.getElementById('panelOverlay');
