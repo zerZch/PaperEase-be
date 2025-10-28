@@ -407,65 +407,79 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   btnCancelar?.addEventListener('click', cerrarPaneles);
 
-  // ----- Formulario crear/editar (con imagen) -----
-  if (formCrearEvento) {
-    formCrearEvento.addEventListener('submit', async (e) => {
-      e.preventDefault();
+// ----- Formulario crear/editar (con imagen) -----
+if (formCrearEvento) {
+  formCrearEvento.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-      const formData = new FormData(formCrearEvento);
+    const formData = new FormData(formCrearEvento);
 
-      const fecha = formData.get('fecha');
-      const titulo = formData.get('titulo');
-      const lugar = formData.get('lugar');
-      const horaInicio = formData.get('horaInicio');
-      const horaFin = formData.get('horaFin');
-      const descripcion = formData.get('descripcion');
-      const color = formData.get('color');
-      const imagenFile = formData.get('imagen');
+    const fecha = formData.get('fecha');
+    const titulo = formData.get('titulo');
+    const lugar = formData.get('lugar');
+    const horaInicio = formData.get('horaInicio');
+    const horaFin = formData.get('horaFin');
+    const descripcion = formData.get('descripcion');
+    const color = formData.get('color');
+    const imagenFile = formData.get('imagen');
 
-      if (!fecha || !titulo) {
-        alert('Por favor completa la fecha y el título del evento');
-        return;
+    // Validar campos obligatorios
+    if (!fecha || !titulo) {
+      alert('Por favor completa la fecha y el título del evento');
+      return;
+    }
+
+    // Dividir la fecha en año, mes y día
+    const [year, mes, dia] = fecha.split('-').map((x) => parseInt(x, 10));
+
+    // Crear un nuevo FormData para enviar los datos
+    const submitFormData = new FormData();
+    submitFormData.append('Titulo', titulo);
+    submitFormData.append('Descripcion', descripcion || '');
+    submitFormData.append('Lugar', lugar || '');
+    submitFormData.append('HoraInicio', horaInicio || '');
+    submitFormData.append('HoraFin', horaFin || '');
+    submitFormData.append('Categoria', color || '');
+    submitFormData.append('Dia', dia);
+    submitFormData.append('Mes', mes);
+    submitFormData.append('year', year);
+    submitFormData.append('Facultad', '');
+    submitFormData.append('Programa', '');
+    
+    if (imagenFile && imagenFile.size > 0) {
+      submitFormData.append('imagen', imagenFile);
+    }
+
+    try {
+      // Verificar si estamos en modo edición
+      const isEditMode = formCrearEvento.dataset.editMode === 'true';
+      let response;
+      let url;
+
+      if (isEditMode) {
+        // Si estamos en modo edición, hacemos PUT a la API con el ID del evento
+        const eventId = formCrearEvento.dataset.eventId;  // Obtener el ID del evento
+        url = `http://localhost:3000/api/eventos/${eventId}`;  // Cambia la URL si es necesario
+        response = await fetch(url, { method: 'PUT', body: submitFormData });
+      } else {
+        // Si estamos creando un nuevo evento, hacemos POST
+        url = 'http://localhost:3000/api/eventos';  // Cambia la URL si es necesario
+        response = await fetch(url, { method: 'POST', body: submitFormData });
       }
 
-      const [year, mes, dia] = fecha.split('-').map((x) => parseInt(x, 10));
-
-      const submitFormData = new FormData();
-      submitFormData.append('Titulo', titulo);
-      submitFormData.append('Descripcion', descripcion || '');
-      submitFormData.append('Lugar', lugar || '');
-      submitFormData.append('HoraInicio', horaInicio || '');
-      submitFormData.append('HoraFin', horaFin || '');
-      submitFormData.append('Categoria', color || '');
-      submitFormData.append('Dia', dia);
-      submitFormData.append('Mes', mes);
-      submitFormData.append('year', year);
-      submitFormData.append('Facultad', '');
-      submitFormData.append('Programa', '');
-      if (imagenFile && imagenFile.size > 0) submitFormData.append('imagen', imagenFile);
-
-      try {
-        const isEditMode = formCrearEvento.dataset.editMode === 'true';
-        let response;
-        let url;
-
-        if (isEditMode) {
-          const eventId = formCrearEvento.dataset.editId;
-          url = `http://localhost:3000/api/eventos/${eventId}`;
-          response = await fetch(url, { method: 'PUT', body: submitFormData });
-        } else {
-          url = 'http://localhost:3000/api/eventos';
-          response = await fetch(url, { method: 'POST', body: submitFormData });
-        }
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`Error ${response.status}: ${response.statusText} - ${errorText}`);
-        }
-
-        const result = await response.json();
-        if (result.success) {
-          await cargarEventos();
+      if (!response.ok) {
+        alert('Error al guardar el evento');
+      } else {
+        alert('Evento guardado correctamente');
+        // Después de guardar, puedes recargar los eventos si lo deseas
+        cargarEventos();  // Asegúrate de tener esta función para cargar los eventos
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Hubo un problema al guardar el evento');
+    }
+  });
+}
 
           // Limpiar ANTES de cerrar paneles
           if (isEditMode) {
