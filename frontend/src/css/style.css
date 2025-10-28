@@ -711,6 +711,7 @@ header .container {
   font-weight: 600;
   color: var(--color-primario);
   font-size: var(--text-base);
+  margin-top: -10px;
 }
 
 .calendar-weekday h4 {
