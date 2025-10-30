@@ -4,17 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Eventos • PaperEase</title>
-  <link rel="stylesheet" href="css/style.css" />
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-  <script src="src/js/eventos.js" defer></script>
-</head>
-<body>
+  <link rel="stylesheet" href="css/calendar.css"/>
+  <link rel="stylesheet" href="css/style.css">
 
-  <!-- Header reutilizado -->
+  <!-- Iconos -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <!-- Script del calendario -->
+  <script src="./js/eventos.js" defer></script>
+</head>
+
+<body>
+  <!-- Header principal -->
   <header>
     <div class="container">
       <div class="logo-container">
-        <img src="imagenes/logo.png" alt="PaperEase Logo" class="logo" />
+        <img src="./imagenes/logo.png" alt="PaperEase Logo" class="logo" />
         <span class="logo-text">PaperEase</span>
       </div>
       <nav class="nav">
@@ -25,6 +30,7 @@
     </div>
   </header>
 
+  <!-- Introducción del calendario -->
   <section class="calendar-intro container">
     <h1 class="calendar-main-title">Calendario de Eventos</h1>
     <p class="calendar-description-text">
@@ -33,33 +39,45 @@
   </section>  
 
   <main>
+    <!-- Calendario principal -->
     <section class="calendar">
-        <!-- HEAD CALENDARIO -->
-        <header class="calendar-header">
-            <div class="header-container">
-                <button class="calendar-button calendar-button-previous" data-lucide="chevron-left"></button>  
-                <h3 class="container-heading" id="calendarMonthTitle"></h3>
-                <button class="calendar-button calendar-button-next" data-lucide="chevron-right"></button>
-                <button class="btn-crear-evento" id="crearEvento">Crear evento</button>
-            </div>
-        </header>
+      <!-- Encabezado del calendario -->
+      <header class="calendar-header">
+        <div class="header-container">
+          <button id="prevMonth" type="button" class="calendar-button calendar-button-previous" aria-label="Mes anterior">
+            <span>‹</span>
+          </button>
 
-        <!-- Días de la semana -->
-        <div class="calendar-weekdays">
-          <div class="calendar-weekday"><h4>Lunes</h4><abbr>Lun</abbr></div>
-          <div class="calendar-weekday"><h4>Martes</h4><abbr>Mar</abbr></div>
-          <div class="calendar-weekday"><h4>Miércoles</h4><abbr>Mie</abbr></div>
-          <div class="calendar-weekday"><h4>Jueves</h4><abbr>Jue</abbr></div>
-          <div class="calendar-weekday"><h4>Viernes</h4><abbr>Vie</abbr></div>
-          <div class="calendar-weekday"><h4>Sábado</h4><abbr>Sab</abbr></div>
-          <div class="calendar-weekday"><h4>Domingo</h4><abbr>Dom</abbr></div>
+          <h3 class="container-heading" id="calendarMonthTitle">Octubre 2025</h3>
+
+          <button id="nextMonth" type="button" class="calendar-button calendar-button-next" aria-label="Mes siguiente">
+            <span>›</span>
+          </button>
+
+          <button class="btn-crear-evento" id="crearEvento" type="button">
+            Crear evento
+          </button>
         </div>
-        
-        <!-- Contenedor de días -->
-        <ol class="calendar-days"></ol>
+      </header>
+
+      <!-- Días de la semana -->
+      <div class="calendar-weekdays">
+        <div class="calendar-weekday"><h4>Lunes</h4><abbr>Lun</abbr></div>
+        <div class="calendar-weekday"><h4>Martes</h4><abbr>Mar</abbr></div>
+        <div class="calendar-weekday"><h4>Miércoles</h4><abbr>Mie</abbr></div>
+        <div class="calendar-weekday"><h4>Jueves</h4><abbr>Jue</abbr></div>
+        <div class="calendar-weekday"><h4>Viernes</h4><abbr>Vie</abbr></div>
+        <div class="calendar-weekday"><h4>Sábado</h4><abbr>Sab</abbr></div>
+        <div class="calendar-weekday"><h4>Domingo</h4><abbr>Dom</abbr></div>
+      </div>
+      
+      <!-- Contenedor de días -->
+      <ol class="calendar-days"></ol>
     </section>
 
-    <!-- Modal de Eventos -->
+    <!-- ========================================
+         MODAL DE LISTA DE EVENTOS (múltiples)
+         ======================================== -->
     <div class="calendar-modal-overlay" id="calendarModalOverlay">
       <div class="calendar-modal">
         <button class="calendar-modal-close" id="calendarCloseModal">×</button>
@@ -68,30 +86,33 @@
       </div>
     </div>
 
-    <section class="evento-formulario" id="panelEventoFormulario">
+    <!-- ========================================
+         OVERLAY GENERAL (para paneles laterales)
+         ======================================== -->
+    <div class="panel-overlay" id="panelOverlay"></div>
+
+    <!-- ========================================
+         PANEL LATERAL: FORMULARIO CREAR/EDITAR
+         ======================================== -->
+    <section class="side-panel from-right evento-formulario" id="panelEventoFormulario">
+      <button class="btn-close" id="btnCerrarFormulario">&times;</button>
       <h2>Añadir Evento</h2>
-    
-    <!-- Panel de Formulario (derecha) -->  
       <form id="formCrearEvento">
-        <!-- Nombre del Evento -->
         <div class="form-group">
           <label for="titulo">Nombre del Evento</label>
           <input type="text" id="titulo" name="titulo" placeholder="Ej: Feria de Salud" required />
         </div>
-    
-        <!-- Lugar -->
+
         <div class="form-group">
           <label for="lugar">Lugar del Evento</label>
           <input type="text" id="lugar" name="lugar" placeholder="Ej: Gimnasio UTP" required />
         </div>
-    
-        <!-- Fecha -->
+
         <div class="form-group">
           <label for="fecha">Fecha</label>
           <input type="date" id="fecha" name="fecha" required />
         </div>
-    
-        <!-- Hora de Inicio y Fin -->
+
         <div class="hora-rango">
           <div class="grupo-hora">
             <label for="horaInicio">Hora de Inicio</label>
@@ -103,29 +124,37 @@
             <input type="time" id="horaFin" name="horaFin" required />
           </div>
         </div>
-    
-        <!-- Descripción -->
+
         <div class="form-group">
           <label for="descripcion">Descripción</label>
           <textarea id="descripcion" name="descripcion" placeholder="Ej: Actividades de chequeo médico gratuito..."></textarea>
         </div>
-    
-        <!-- Color -->
-        <div class="form-group colores-evento">
-          <label>Color del Evento</label>
-          <label>
-            <input type="radio" name="color" value="Programa de Salud" checked />
-            <span class="color-circulo color-morado" style="background-color: #c084fc;"></span>
-            <span class="color-label">Programa de Salud</span>
-          </label>
-          <label>
-            <input type="radio" name="color" value="Promoción Social" />
-            <span class="color-circulo color-amarillo" style="background-color: #fde047;"></span>
-            <span class="color-label">Promoción Social</span>
-          </label>
+
+        <div class="form-group">
+          <label for="imagen">Imagen del Evento (opcional)</label>
+          <input type="file" id="imagen" name="imagen" accept="image/*" />
+          <small style="color: #666; font-size: 0.85rem;">Formatos: JPG, PNG, GIF. Máximo 5MB</small>
+          <div id="preview-imagen" style="margin-top: 1rem; display: none;">
+            <img id="img-preview" src="" alt="Vista previa" style="max-width: 100%; height: auto; border-radius: 0.5rem;" />
+          </div>
         </div>
-    
-        <!-- Botones -->
+
+        <div class="form-group colores-evento">
+          <label class="colores-titulo">Color del Evento</label>
+          <div class="colores-opciones">
+            <label class="color-opcion">
+              <input type="radio" name="color" value="Programa de Salud" checked />
+              <span class="color-circulo color-morado" style="background-color: #c084fc;"></span>
+              <span class="color-label">Programa de Salud</span>
+            </label>
+            <label class="color-opcion">
+              <input type="radio" name="color" value="Promoción Social" />
+              <span class="color-circulo color-amarillo" style="background-color: #fde047;"></span>
+              <span class="color-label">Promoción Social</span>
+            </label>
+          </div>
+      </div>
+
         <div class="acciones">
           <button type="button" class="btn-cancelar">Cancelar</button>
           <button type="submit" class="btn-guardar">Guardar</button>
@@ -133,43 +162,40 @@
       </form>
     </section>
 
-    <!-- Overlay para cerrar paneles -->
-    <div class="panel-overlay" id="panelOverlay"></div>
-    
-    <!-- Panel de detalles del evento (izquierda) -->
-    <section class="evento-detalle" id="panelEventoDetalle">
+    <!-- ========================================
+         PANEL LATERAL: DETALLE DEL EVENTO
+         ======================================== -->
+    <section class="side-panel from-right evento-detalle" id="panelEventoDetalle">
       <div class="panel-header">
         <h2 class="panel-title">Detalles del Evento</h2>
-      
-        <!-- Botón Cerrar -->
         <button class="btn-close" id="btnCerrarDetalle">&times;</button>
       </div>
-    
+
       <div class="evento-info">
         <h3 class="evento-title" id="eventoTitulo">Conferencia de Tecnología 2024</h3>
-    
+        
         <div class="evento-detail-item">
           <div class="evento-detail-label">Fecha</div>
           <div class="evento-detail-value" id="eventoFecha">15 de Marzo, 2024</div>
         </div>
-    
+        
         <div class="evento-detail-item">
           <div class="evento-detail-label">Horario</div>
           <div class="evento-detail-value" id="eventoHorario">09:00 AM - 05:00 PM</div>
         </div>
-    
+        
         <div class="evento-detail-item">
           <div class="evento-detail-label">Lugar</div>
           <div class="evento-detail-value" id="eventoLugar">Centro de Convenciones Tech Hub</div>
         </div>
-    
+        
         <div class="evento-detail-item">
           <div class="evento-detail-label">Descripción</div>
           <div class="evento-detail-value" id="eventoDescripcion">
-            Una conferencia anual que reúne a los mejores profesionales de la tecnología para compartir conocimientos sobre las últimas tendencias e innovaciones del sector.
+            Una conferencia anual que reúne a los mejores profesionales de la tecnología.
           </div>
         </div>
-    
+        
         <div class="evento-detail-item">
           <div class="evento-detail-label">Categoría</div>
           <div class="evento-detail-value">
@@ -177,9 +203,13 @@
             <span id="eventoCategoriaTexto">Tecnología</span>
           </div>
         </div>
+
+        <div id="eventoImagenContainer" style="display: none; margin-top: 1.5rem;">
+          <div class="evento-detail-label">Imagen</div>
+          <img id="eventoImagen" src="" alt="Imagen del evento" style="max-width: 100%; height: auto; border-radius: 0.75rem; margin-top: 0.5rem;" />
+        </div>
       </div>
-    
-      <!-- Acciones secundarias abajo -->
+
       <div class="evento-actions">
         <button class="btn-icon btn-edit" id="btnEditarEvento" data-tooltip="Editar">
           <i data-lucide="edit"></i>
@@ -194,13 +224,13 @@
     </section>
   </main>
 
-  <!-- Toast de Confirmación -->
+  <!-- Toast de notificaciones -->
   <div id="toast" class="calendar-toast"></div>
 
   <!-- Footer -->
   <footer>
     <div class="footer-flex container">
-      <p>© 2025 PaperEase • Universidad Tecnológica de Panamá</p>
+      <p>©️ 2025 PaperEase • Universidad Tecnológica de Panamá</p>
       <div class="footer-links">
         <a href="#">Ayuda</a>
         <a href="#">Privacidad</a>
@@ -208,7 +238,5 @@
       </div>
     </div>
   </footer>
-
-<script src="/src/js/eventos.js" defer></script>
 </body>
 </html>

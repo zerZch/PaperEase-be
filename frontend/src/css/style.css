@@ -570,377 +570,9 @@ header .container {
   border-radius: 1rem;
 }
 
-/* === CALENDARIO RESPONSIVE === */
-.eventos-section {
-  padding: var(--section-padding) var(--container-padding);
-  background-color: var(--color-fondo-claro);
-}
+/* === CALENDAR ARREGLADO === */
 
-.calendar-main-title {
-  font-size: var(--text-3xl);
-  font-weight: 700;
-  color: var(--color-primario);
-  margin-bottom: clamp(0.25rem, 1vw, 0.5rem);
-  text-align: center;
-}
 
-.calendar-description-text {
-  font-size: var(--text-lg);
-  color: var(--color-primario);
-  font-weight: 400;
-  text-align: center;
-  margin-bottom: clamp(1rem, 3vw, 2rem);
-}
-
-.calendar {
-  padding: clamp(1rem, 3vw, 3rem) clamp(0.5rem, 2vw, 1rem);
-  border-radius: 1.5rem;
-  max-width: min(1000px, 100%);
-  margin: 0 auto;
-}
-
-.calendar-header {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(to right, var(--color-primario), var(--color-secundario));
-  color: white;
-  padding: clamp(0.75rem, 2vw, 1rem) clamp(1rem, 3vw, 2rem);
-  border-radius: 1rem 1rem 0 0;
-  font-weight: 600;
-  font-size: var(--text-xl);
-  overflow: hidden;
-  min-height: 60px;
-}
-
-.header-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: clamp(12px, 3vw, 24px);
-  width: 100%;
-}
-
-.container-heading {
-  flex-grow: 1;
-  text-align: center;
-  margin: 0;
-  font-size: var(--text-xl);
-  font-weight: 600;
-  color: white;
-}
-
-.calendar-button {
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), color 0.25s ease;
-  color: var(--color-fondo-claro);
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: clamp(0.1rem, 0.5vw, 0.2rem);
-  will-change: transform;
-  stroke-width: 3;
-  width: clamp(24px, 5vw, 32px);
-  height: clamp(24px, 5vw, 32px);
-}
-
-.calendar-button:hover {
-  transform: scale(1.3);
-  stroke-width: 4;
-  color: white;
-}
-
-.btn-crear-evento {
-  position: absolute;
-  right: clamp(0.5rem, 2vw, 2rem);
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: var(--color-fondo-claro);
-  color: var(--color-primario);
-  border: none;
-  border-radius: 0.75rem;
-  padding: clamp(0.4rem, 1.5vw, 0.5rem) clamp(0.6rem, 2vw, 1rem);
-  font-weight: 600;
-  font-size: var(--text-base);
-  cursor: pointer;
-  transition: var(--transition);
-  white-space: nowrap;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-  z-index: 1;
-}
-
-.btn-crear-evento:hover {
-  background-color: var(--color-secundario);
-  color: white;
-  transform: translateY(-50%) scale(1.05);
-}
-
-/* Días de la semana responsive */
-.calendar-weekdays {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  background: white;
-  padding: clamp(0.5rem, 1.5vw, 0.75rem);
-  text-align: center;
-  font-weight: 600;
-  color: var(--color-primario);
-  font-size: var(--text-base);
-}
-
-.calendar-weekday h4 {
-  display: block;
-  margin: 0;
-}
-
-.calendar-weekday abbr {
-  display: none;
-}
-
-/* Grid de días responsive */
-.calendar-days {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: clamp(0.25rem, 1vw, 0.5rem);
-  padding: clamp(0.5rem, 2vw, 1rem);
-  background: white;
-  border-radius: 0 0 1rem 1rem;
-}
-
-.calendar-day {
-  background-color: var(--color-fondo-claro);
-  border: 1px solid var(--color-fondo-medio);
-  border-radius: 0.75rem;
-  padding: clamp(0.25rem, 1vw, 0.5rem);
-  min-height: clamp(60px, 12vw, 80px);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  position: relative;
-  transition: var(--transition);
-}
-
-.calendar-day:hover {
-  background-color: var(--color-fondo-medio);
-}
-
-.day-info h5 {
-  font-size: var(--text-base);
-  color: var(--color-primario);
-  font-weight: 600;
-  margin: 0;
-}
-
-/* Eventos en el calendario - responsive */
-.event-bars-container {
-  margin-top: clamp(2px, 1vw, 6px);
-  display: flex;
-  flex-direction: column;
-  gap: clamp(1px, 0.5vw, 2px);
-  width: 100%;
-}
-
-.event-bar {
-  height: clamp(18px, 4vw, 24px);
-  border-radius: clamp(4px, 1.5vw, 8px);
-  padding: clamp(2px, 1vw, 4px) clamp(4px, 2vw, 10px);
-  font-size: clamp(9px, 2vw, 11px);
-  color: rgba(255, 255, 255, 0.95);
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  line-height: 1.2;
-  position: relative;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-}
-
-.event-bar .event-title {
-  font-weight: 600;
-  font-size: clamp(8px, 2vw, 11px);
-  line-height: 1.1;
-}
-
-.event-bar .event-time {
-  font-size: clamp(7px, 1.5vw, 9px);
-  opacity: 0.85;
-  line-height: 1;
-}
-
-/* === RESPONSIVE BREAKPOINTS === */
-
-/* Móviles pequeños */
-@media (max-width: 480px) {
-  .calendar-weekday h4 {
-    display: none;
-  }
-
-  .calendar-weekday abbr {
-    display: block;
-    font-size: 0.75rem;
-  }
-
-  .calendar-days {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem;
-  }
-
-  .calendar-day {
-    min-height: 100px;
-    padding: 0.5rem;
-  }
-
-  .btn-crear-evento {
-    position: static;
-    transform: none;
-    margin-top: 0.5rem;
-    width: 100%;
-  }
-
-  .calendar-header {
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 1rem;
-  }
-
-  .header-container {
-    flex-direction: column;
-    width: 100%;
-  }
-}
-
-/* Tablets */
-@media (max-width: 768px) {
-  .calendar-weekday h4 {
-    display: none;
-  }
-
-  .calendar-weekday abbr {
-    display: block;
-  }
-
-  .features-grid {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  }
-
-  .requisitos-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .tabs {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .tab {
-    width: 100%;
-    max-width: 200px;
-  }
-}
-
-/* Desktop grande */
-@media (min-width: 1200px) {
-  .calendar-days {
-    gap: 0.75rem;
-  }
-
-  .calendar-day {
-    min-height: 100px;
-  }
-
-  .event-bar {
-    height: 28px;
-    font-size: 12px;
-  }
-}
-
-/* === MODALES RESPONSIVE === */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0,0,0,0.5);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  padding: var(--container-padding);
-}
-
-.modal-window {
-  background: white;
-  border-radius: 1.5rem;
-  padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 3vw, 2.5rem);
-  max-width: min(800px, 95vw);
-  width: 100%;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-}
-
-.modal-window h2 {
-  font-size: var(--text-2xl);
-  color: var(--color-primario);
-  margin-bottom: clamp(0.5rem, 2vw, 1rem);
-}
-
-.modal-window h3 {
-  font-size: var(--text-xl);
-  color: var(--color-primario);
-  margin-top: clamp(1rem, 3vw, 2rem);
-  margin-bottom: clamp(0.4rem, 1.5vw, 0.8rem);
-}
-
-.modal-close {
-  position: absolute;
-  top: clamp(0.75rem, 2vw, 1.5rem);
-  right: clamp(0.75rem, 2vw, 1.5rem);
-  font-size: clamp(1.5rem, 4vw, 2rem);
-  line-height: 1;
-  cursor: pointer;
-  border: none;
-  background: transparent;
-  color: #999;
-  transition: var(--transition);
-  z-index: 1;
-}
-
-.modal-close:hover {
-  color: var(--color-primario);
-  transform: scale(1.15);
-}
-
-/* === FORMULARIOS RESPONSIVE === */
-.evento-formulario,
-.evento-detalle {
-  width: min(400px, 100vw);
-  height: 100vh;
-  padding: clamp(1rem, 3vw, 2rem);
-}
-
-@media (max-width: 768px) {
-  .evento-formulario,
-  .evento-detalle {
-    width: 100vw;
-    height: 100vh;
-    border-radius: 0;
-  }
-
-  .evento-formulario.open {
-    right: 0;
-  }
-
-  .evento-detalle.open {
-    left: 0;
-  }
-}
 
 /* === FOOTER RESPONSIVE === */
 footer {
@@ -2089,7 +1721,165 @@ body:has(.registro-form) .role-selector {
     padding: 2rem 1.5rem;
   }
 
-  body:has(.registro-form) .login-right {
-    padding: 2rem 1.5rem;
+  .form-group input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    transition: var(--transition);
+    font-family: inherit;
+  }
+
+  .form-group input:focus {
+    outline: none;
+    border-color: var(--color-primario);
+    box-shadow: 0 0 0 3px rgba(77, 134, 156, 0.1);
+  }
+
+  .form-group input::placeholder {
+    color: #999;
+  }
+
+  .remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+  }
+
+  .remember-forgot label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    color: #666;
+  }
+
+  .remember-forgot input[type="checkbox"] {
+    cursor: pointer;
+    width: 18px;
+    height: 18px;
+  }
+
+  .remember-forgot a {
+    color: var(--color-primario);
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--transition);
+  }
+
+  .remember-forgot a:hover {
+    text-decoration: underline;
+  }
+
+  .btn-login {
+    width: 100%;
+    padding: 0.9rem;
+    background: linear-gradient(135deg, var(--color-primario), var(--color-secundario));
+    color: white;
+    border: none;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-bottom: 1rem;
+  }
+
+  .btn-login:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-hover);
+  }
+
+  .btn-login:active {
+    transform: translateY(0);
+  }
+
+  .btn-login.loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .login-footer {
+    text-align: center;
+    color: #666;
+    font-size: 0.9rem;
+  }
+
+  .login-footer a {
+    color: var(--color-primario);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .login-footer a:hover {
+    text-decoration: underline;
+  }
+
+  .message {
+    padding: 1rem;
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    display: none;
+    animation: slideIn 0.3s ease;
+  }
+
+  .message.show {
+    display: block;
+  }
+
+  .message.error {
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fca5a5;
+  }
+
+  .message.success {
+    background: #dcfce7;
+    color: #16a34a;
+    border: 1px solid #86efac;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .login-container {
+      flex-direction: column;
+      min-height: auto;
+    }
+
+    .login-left {
+      display: flex;
+      padding: 2rem 1.5rem;
+      min-height: 200px;
+    }
+
+    .login-left h1 {
+      font-size: 1.75rem;
+    }
+
+    .login-right {
+      padding: 2rem 1.5rem;
+    }
+
+    .role-selector {
+      flex-direction: column;
+    }
+
+    .form-header h2 {
+      font-size: 1.5rem;
+    }
   }
 }
