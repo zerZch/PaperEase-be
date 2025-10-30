@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mis Solicitudes • PaperEase</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/solicitudes.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="js/authHelper.js"></script>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="container">
+    <div class="logo-container">
+      <img src="imagenes/logo.png" alt="PaperEase Logo" class="logo" />
+      <span class="logo-text">PaperEase</span>
+    </div>
+    <nav class="nav">
+      <a href="MenuPE.html">Inicio</a>
+      <a href="Programas.html">Programas</a>
+      <a href="Solicitudes.html" id="linkMisSolicitudes">Mis Solicitudes</a>
+    </nav>
+  </div>
+</header>
+
+<main class="main-solicitudes">
+  <div class="container">
+    <!-- Header Section -->
+    <div class="solicitudes-header">
+      <div class="header-title">
+        <h1 class="page-title">Mis Solicitudes</h1>
+        <p class="header-subtitle">Consulta el estado y progreso de tus solicitudes de Bienestar Estudiantil</p>
+      </div>
+    </div>
+
+    <!-- Filtros y Búsqueda -->
+    <div class="filters-section" id="filtersSection">
+      <div class="search-box">
+        <svg data-lucide="search"></svg>
+        <input type="text" id="searchInput" placeholder="Buscar por programa...">
+      </div>
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-filter="todas">
+          <svg data-lucide="list"></svg>
+          Todas
+        </button>
+        <button class="filter-btn" data-filter="pendiente">
+          <svg data-lucide="clock"></svg>
+          Pendientes
+        </button>
+        <button class="filter-btn" data-filter="aprobada">
+          <svg data-lucide="check-circle"></svg>
+          Aprobadas
+        </button>
+        <button class="filter-btn" data-filter="rechazada">
+          <svg data-lucide="x-circle"></svg>
+          Rechazadas
+        </button>
+      </div>
+    </div>
+
+    <!-- Estadísticas Rápidas -->
+    <div class="stats-section" id="statsSection">
+      <div class="stat-card">
+        <div class="stat-icon total">
+          <svg data-lucide="file-text"></svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-value" id="statTotal">0</span>
+          <span class="stat-label">Total Solicitudes</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon pending">
+          <svg data-lucide="clock"></svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-value" id="statPendiente">0</span>
+          <span class="stat-label">Pendientes</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon approved">
+          <svg data-lucide="check-circle"></svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-value" id="statAprobada">0</span>
+          <span class="stat-label">Aprobadas</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon rejected">
+          <svg data-lucide="x-circle"></svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-value" id="statRechazada">0</span>
+          <span class="stat-label">Rechazadas</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de Solicitudes -->
+    <div class="solicitudes-container" id="solicitudesContainer">
+      <!-- Se llena dinámicamente con JS -->
+    </div>
+
+    <!-- Estado vacío -->
+    <div class="empty-state" id="emptyState" style="display: none;">
+      <svg data-lucide="inbox"></svg>
+      <h3>No se encontraron solicitudes</h3>
+      <p>No has realizado ninguna solicitud aún o no se encontraron resultados con los filtros aplicados.</p>
+      <a href="Formulario.html" class="cta-primary">
+        <svg data-lucide="plus"></svg>
+        Nueva Solicitud
+      </a>
+    </div>
+
+    <!-- Estado de carga -->
+    <div class="loading-state" id="loadingState" style="display: none;">
+      <div class="spinner"></div>
+      <p>Cargando tus solicitudes...</p>
+    </div>
+
+    <!-- Estado de error -->
+    <div class="error-state" id="errorState" style="display: none;">
+      <svg data-lucide="alert-triangle"></svg>
+      <h3>Error al cargar solicitudes</h3>
+      <p id="errorMessage">Ocurrió un problema al cargar tus solicitudes. Por favor, intenta nuevamente.</p>
+      <button class="btn-retry" onclick="location.reload()">
+        <svg data-lucide="refresh-cw"></svg>
+        Reintentar
+      </button>
+    </div>
+  </div>
+</main>
+
+<!-- Modal de Detalle -->
+<div class="modal-overlay" id="detalleModal">
+  <div class="modal-detalle">
+    <div class="modal-header">
+      <h3>Detalle de Solicitud</h3>
+      <button class="close-button" id="btnCloseDetalle">
+        <svg data-lucide="x"></svg>
+      </button>
+    </div>
+    <div class="modal-body" id="detalleContent">
+      <!-- Se llena dinámicamente -->
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="toast-notification"></div>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-flex container">
+    <p>© 2025 PaperEase • Universidad Tecnológica de Panamá</p>
+    <div class="footer-links">
+      <a href="#">Ayuda</a>
+      <a href="#">Privacidad</a>
+      <a href="#">Términos</a>
+    </div>
+  </div>
+</footer>
+
+<script src="js/solicitudes.js"></script>
+</body>
+</html>

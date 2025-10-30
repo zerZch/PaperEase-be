@@ -4,6 +4,9 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const conexion = require('./conexion');
 
+
+
+
 // Constante para el número de rounds de bcrypt (seguridad)
 const SALT_ROUNDS = 10;
 
@@ -180,7 +183,7 @@ router.post('/register', async (req, res) => {
 });
 
 // =====================================================
-// FUNCIÓN: Login
+// FUNCIÓN: Login (⭐ CORREGIDO)
 // =====================================================
 /**
  * POST /api/auth/login
@@ -268,7 +271,7 @@ router.post('/login', async (req, res) => {
     // Registrar login exitoso en auditoría
     await registrarAuditoria(idUsuarioRef, tipoUsuario, email, 'login', 'Login exitoso', req.ip, req.get('user-agent'), true);
 
-    // Guardar sesión en express-session
+    // ⭐⭐⭐ CAMBIO 1: Guardar sesión en express-session CON TODOS LOS DATOS ⭐⭐⭐
     req.session.usuario = {
       id: idUsuarioRef,
       email: usuario.Email,
@@ -363,7 +366,6 @@ router.post('/logout', async (req, res) => {
 });
 
 // =====================================================
-// FUNCIÓN: Verificar Sesión
 // =====================================================
 /**
  * GET /api/auth/verificar
@@ -395,17 +397,47 @@ router.get('/verificar', async (req, res) => {
 
     const { IdUsuarioRef, TipoUsuario } = sesion[0];
 
-    // Obtener información del usuario
+    // ⭐⭐⭐ CAMBIO 2: Obtener información completa del usuario con JOINs ⭐⭐⭐
     let usuario = null;
+    
     if (TipoUsuario === 1) {
+      // ESTUDIANTE - Incluir cédula, género, facultad
       const [estudiantes] = await conexion.promise().query(
-        'SELECT IdEstudiante as id, Email, Nombre, Apellido FROM estudiante WHERE IdEstudiante = ? AND Activo = 1',
+        `SELECT 
+          e.IdEstudiante as id,
+          e.Email,
+          e.Nombre,
+          e.Apellido,
+          e.Cedula,                    
+          e.IdGenero,                  
+          e.IdFacultad,                
+          e.FechaNacimiento,
+          g.Genero,                    
+          f.Facultad                   
+        FROM estudiante e
+        LEFT JOIN genero g ON e.IdGenero = g.IdGenero
+        LEFT JOIN facultad f ON e.IdFacultad = f.IdFacultad
+        WHERE e.IdEstudiante = ? AND e.Activo = 1`,
         [IdUsuarioRef]
       );
       usuario = estudiantes[0];
+      
     } else {
+      // TRABAJADOR SOCIAL - Incluir cédula, género
       const [trabajadores] = await conexion.promise().query(
-        'SELECT IdTrabajadorSocial as id, Email, Nombre, Apellido FROM trabajador_social WHERE IdTrabajadorSocial = ? AND Activo = 1',
+        `SELECT 
+          ts.IdTrabajadorSocial as id,
+          ts.Email,
+          ts.Nombre,
+          ts.Apellido,
+          ts.Cedula,                   
+          ts.IdGenero,
+          ts.Departamento,
+          ts.Oficina,
+          g.Genero                     
+        FROM trabajador_social ts
+        LEFT JOIN genero g ON ts.IdGenero = g.IdGenero
+        WHERE ts.IdTrabajadorSocial = ? AND ts.Activo = 1`,
         [IdUsuarioRef]
       );
       usuario = trabajadores[0];
@@ -434,7 +466,6 @@ router.get('/verificar', async (req, res) => {
     console.error('Error al verificar sesión:', error);
     return res.status(500).json({
       autenticado: false,
-      error: 'Error al verificar sesión'
     });
   }
 });
@@ -453,4 +484,5 @@ async function registrarAuditoria(idUsuarioRef, tipoUsuario, email, accion, desc
   }
 }
 
+module.exports = router;
 module.exports = router;
