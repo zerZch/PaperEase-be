@@ -25,9 +25,16 @@ const meses = [
 const coloresCategorias = {
   'Programa de Salud': '#c084fc',
   'Promoción Social': '#fde047',
+  'Deportivo': '#fb923c',
+  'Académico': '#60a5fa',
+  'Feria': '#ec4899',
   'programa de salud': '#c084fc',
   'promoción social': '#fde047',
   'promocion social': '#fde047',
+  'deportivo': '#fb923c',
+  'académico': '#60a5fa',
+  'academico': '#60a5fa',
+  'feria': '#ec4899',
   'default': '#4d869c'
 };
 

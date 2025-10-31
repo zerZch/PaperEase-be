@@ -239,30 +239,40 @@
   height: 14px;
 }
 
-/* Colores por categoría */
+/* Colores por categoría - Consistentes con el calendario */
 .evento-card[data-categoria="Programa de Salud"] .evento-categoria {
-  --categoria-bg: #dbeafe;
-  --categoria-color: #1e40af;
+  --categoria-bg: #e9d5ff;
+  --categoria-color: #7c3aed;
+  background-color: #c084fc;
+  color: white;
 }
 
 .evento-card[data-categoria="Promoción Social"] .evento-categoria {
-  --categoria-bg: #dcfce7;
-  --categoria-color: #166534;
+  --categoria-bg: #fef9c3;
+  --categoria-color: #854d0e;
+  background-color: #fde047;
+  color: #854d0e;
 }
 
 .evento-card[data-categoria="Deportivo"] .evento-categoria {
-  --categoria-bg: #fef3c7;
-  --categoria-color: #92400e;
+  --categoria-bg: #fed7aa;
+  --categoria-color: #9a3412;
+  background-color: #fb923c;
+  color: white;
 }
 
 .evento-card[data-categoria="Académico"] .evento-categoria {
-  --categoria-bg: #e0e7ff;
-  --categoria-color: #3730a3;
+  --categoria-bg: #dbeafe;
+  --categoria-color: #1e40af;
+  background-color: #60a5fa;
+  color: white;
 }
 
 .evento-card[data-categoria="Feria"] .evento-categoria {
   --categoria-bg: #fce7f3;
   --categoria-color: #9f1239;
+  background-color: #ec4899;
+  color: white;
 }
 
 .evento-ubicacion {
@@ -450,6 +460,249 @@
 
   .evento-titulo {
     font-size: 1.125rem;
+  }
+}
+
+/* ================================
+   MODAL DE DETALLES DEL EVENTO
+   ================================ */
+
+.evento-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  animation: fadeIn 0.3s ease;
+}
+
+.evento-modal-overlay.active {
+  display: flex;
+}
+
+.evento-modal {
+  background: white;
+  border-radius: 1.5rem;
+  max-width: 700px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.1);
+  color: #333;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.modal-close:hover {
+  background: rgba(0, 0, 0, 0.2);
+  transform: rotate(90deg);
+}
+
+.modal-close i {
+  width: 20px;
+  height: 20px;
+}
+
+.modal-content {
+  padding: 2rem;
+}
+
+.modal-imagen-container {
+  width: 100%;
+  height: 300px;
+  margin: -2rem -2rem 2rem -2rem;
+  border-radius: 1.5rem 1.5rem 0 0;
+  overflow: hidden;
+}
+
+.modal-imagen {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.modal-titulo {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.modal-categoria-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.categoria-icon-modal {
+  width: 16px;
+  height: 16px;
+}
+
+.modal-detalles {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.modal-detalle-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.detalle-icon-wrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 0.75rem;
+  background: var(--color-fondo-claro);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.detalle-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--color-primario);
+}
+
+.detalle-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.detalle-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detalle-valor {
+  font-size: 1rem;
+  color: #1a1a1a;
+  line-height: 1.6;
+}
+
+.detalle-valor p {
+  margin: 0;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-borde);
+}
+
+.btn-modal-cerrar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, var(--color-primario), var(--color-secundario));
+  color: white;
+  padding: 0.875rem 2rem;
+  border-radius: 50px;
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(77, 134, 156, 0.3);
+}
+
+.btn-modal-cerrar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(77, 134, 156, 0.4);
+}
+
+.btn-modal-cerrar i {
+  width: 20px;
+  height: 20px;
+}
+
+/* Modal Responsive */
+@media (max-width: 768px) {
+  .evento-modal {
+    max-height: 95vh;
+    border-radius: 1rem;
+  }
+
+  .modal-content {
+    padding: 1.5rem;
+  }
+
+  .modal-imagen-container {
+    height: 200px;
+    margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+    border-radius: 1rem 1rem 0 0;
+  }
+
+  .modal-titulo {
+    font-size: 1.5rem;
+  }
+
+  .modal-detalle-item {
+    gap: 0.75rem;
+  }
+
+  .detalle-icon-wrapper {
+    width: 36px;
+    height: 36px;
   }
 }
 

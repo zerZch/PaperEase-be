@@ -118,6 +118,82 @@
     </div>
   </footer>
 
+  <!-- Modal de Detalles del Evento -->
+  <div class="evento-modal-overlay" id="eventoModalOverlay">
+    <div class="evento-modal">
+      <button class="modal-close" id="modalCloseBtn">
+        <i data-lucide="x"></i>
+      </button>
+
+      <div class="modal-content">
+        <!-- Imagen del evento -->
+        <div class="modal-imagen-container" id="modalImagenContainer">
+          <img id="modalImagen" src="" alt="Imagen del evento" class="modal-imagen">
+        </div>
+
+        <!-- Información principal -->
+        <div class="modal-header">
+          <h2 id="modalTitulo" class="modal-titulo">Título del Evento</h2>
+          <div id="modalCategoria" class="modal-categoria-badge">
+            <i data-lucide="tag" class="categoria-icon-modal"></i>
+            <span id="modalCategoriaTexto">Categoría</span>
+          </div>
+        </div>
+
+        <!-- Detalles -->
+        <div class="modal-detalles">
+          <div class="modal-detalle-item">
+            <div class="detalle-icon-wrapper">
+              <i data-lucide="calendar-days" class="detalle-icon"></i>
+            </div>
+            <div class="detalle-content">
+              <span class="detalle-label">Fecha</span>
+              <span id="modalFecha" class="detalle-valor">15 de Noviembre, 2025</span>
+            </div>
+          </div>
+
+          <div class="modal-detalle-item" id="modalHorarioItem">
+            <div class="detalle-icon-wrapper">
+              <i data-lucide="clock" class="detalle-icon"></i>
+            </div>
+            <div class="detalle-content">
+              <span class="detalle-label">Horario</span>
+              <span id="modalHorario" class="detalle-valor">09:00 - 17:00</span>
+            </div>
+          </div>
+
+          <div class="modal-detalle-item" id="modalLugarItem">
+            <div class="detalle-icon-wrapper">
+              <i data-lucide="map-pin" class="detalle-icon"></i>
+            </div>
+            <div class="detalle-content">
+              <span class="detalle-label">Lugar</span>
+              <span id="modalLugar" class="detalle-valor">Auditorio Central</span>
+            </div>
+          </div>
+
+          <div class="modal-detalle-item" id="modalDescripcionItem">
+            <div class="detalle-icon-wrapper">
+              <i data-lucide="file-text" class="detalle-icon"></i>
+            </div>
+            <div class="detalle-content">
+              <span class="detalle-label">Descripción</span>
+              <p id="modalDescripcion" class="detalle-valor">Descripción del evento...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botón de acción -->
+        <div class="modal-footer">
+          <button class="btn-modal-cerrar" onclick="cerrarModal()">
+            <i data-lucide="check-circle"></i>
+            Entendido
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     lucide.createIcons();
   </script>
