@@ -7,57 +7,13 @@ class StudentChatbot {
   constructor() {
     this.isOpen = false;
     this.conversationHistory = [];
-    this.audioContext = null;
     this.init();
   }
 
   init() {
     this.createChatbotUI();
     this.attachEventListeners();
-    this.initAudioContext();
     this.addWelcomeMessage();
-  }
-
-  /**
-   * Inicializa el contexto de audio para reproducir sonidos
-   */
-  initAudioContext() {
-    try {
-      this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    } catch (e) {
-      console.warn('Web Audio API no soportada en este navegador');
-    }
-  }
-
-  /**
-   * Reproduce un sonido de notificación cuando el bot responde
-   * Sonido estilo WhatsApp: corto, agudo y limpio
-   */
-  playNotificationSound() {
-    if (!this.audioContext) return;
-
-    try {
-      const oscillator = this.audioContext.createOscillator();
-      const gainNode = this.audioContext.createGain();
-
-      oscillator.connect(gainNode);
-      gainNode.connect(this.audioContext.destination);
-
-      // Configuración del sonido tipo WhatsApp (más agudo y corto)
-      oscillator.type = 'sine';
-      oscillator.frequency.setValueAtTime(1200, this.audioContext.currentTime); // Tono más agudo
-
-      // Control de volumen (fade rápido, sonido más corto)
-      gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-      gainNode.gain.linearRampToValueAtTime(0.25, this.audioContext.currentTime + 0.02);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.15);
-
-      // Reproducir (más corto: 0.15 segundos)
-      oscillator.start(this.audioContext.currentTime);
-      oscillator.stop(this.audioContext.currentTime + 0.15);
-    } catch (e) {
-      console.warn('Error al reproducir sonido de notificación:', e);
-    }
   }
 
   createChatbotUI() {
@@ -154,9 +110,6 @@ class StudentChatbot {
       window.classList.add('open');
       toggle.classList.add('hidden');
       document.getElementById('chatbot-input').focus();
-
-      // Reproducir sonido cuando se abre el chat
-      this.playNotificationSound();
     } else {
       window.classList.remove('open');
       toggle.classList.remove('hidden');
@@ -167,7 +120,6 @@ class StudentChatbot {
     const welcomeMessage = {
       text: '¡Hola! Soy tu asistente virtual de PaperEase. Estoy aquí para ayudarte a navegar por el sitio y entender cómo usar las funciones principales.',
       isBot: true,
-      playSound: false, // No reproducir sonido en el mensaje de bienvenida
       quickReplies: [
         { text: 'Ver Programas', action: 'ver_programas' },
         { text: 'Mis Solicitudes', action: 'mis_solicitudes' },
@@ -246,7 +198,7 @@ class StudentChatbot {
     // Detectar intención: Notificaciones
     if (this.matchIntent(lowerMessage, ['notificacion', 'notificaciones', 'aviso', 'avisos', 'alerta', 'alertas', 'me llegó', 'me llego'])) {
       return {
-        text: 'Las notificaciones te informan sobre el estado de tus solicitudes y eventos importantes. Puedes:<br><br>• Ver todas tus notificaciones en el panel superior<br>• Marcarlas como leídas<br>• Algunas te llevan directamente a tu solicitud<br><br>Revisa regularmente tus notificaciones para estar al día.',
+        text: 'Las notificaciones te informan sobre el estado de tus solicitudes y actualizaciones importantes. Puedes:<br><br>• Ver todas tus notificaciones en el panel superior<br>• Marcarlas como leídas<br>• Algunas te llevan directamente a tu solicitud<br><br>Revisa regularmente tus notificaciones para estar al día.',
         isBot: true,
         quickReplies: [
           { text: 'Entendido', action: 'understood' }
@@ -261,17 +213,6 @@ class StudentChatbot {
         isBot: true,
         quickReplies: [
           { text: 'Entendido', action: 'understood' }
-        ]
-      };
-    }
-
-    // Detectar intención: Calendario / eventos
-    if (this.matchIntent(lowerMessage, ['calendario', 'evento', 'eventos', 'actividad', 'actividades', 'fecha', 'fechas'])) {
-      return {
-        text: 'En el <strong>Calendario de Eventos</strong> puedes consultar todas las actividades programadas de Bienestar Estudiantil. Encontrarás:<br><br>• Ferias de empleo<br>• Ferias de salud<br>• Charlas y talleres<br>• Otros eventos importantes<br><br>Mantente informado de las próximas actividades.',
-        isBot: true,
-        quickReplies: [
-          { text: 'Ver Eventos', action: 'navigate', url: 'Eventos.html' }
         ]
       };
     }
@@ -291,7 +232,7 @@ class StudentChatbot {
     // Detectar intención: Ayuda general
     if (this.matchIntent(lowerMessage, ['ayuda', 'ayúdame', 'ayudame', 'no sé', 'no se', 'no entiendo', 'cómo funciona', 'como funciona', 'qué puedo hacer', 'que puedo hacer'])) {
       return {
-        text: 'Estoy aquí para ayudarte. Las cosas principales que puedes hacer en PaperEase son:<br><br>• Ver programas disponibles<br>• Aplicar a programas<br>• Revisar tus solicitudes<br>• Comunicarte con trabajadoras sociales<br>• Ver eventos y calendario<br><br>¿Con cuál necesitas ayuda?',
+        text: 'Estoy aquí para ayudarte. Las cosas principales que puedes hacer en PaperEase son:<br><br>• Ver programas disponibles<br>• Aplicar a programas<br>• Revisar tus solicitudes<br>• Gestionar tus notificaciones<br>• Comunicarte con trabajadoras sociales<br><br>¿Con cuál necesitas ayuda?',
         isBot: true,
         quickReplies: [
           { text: 'Ver Programas', action: 'ver_programas' },
@@ -376,12 +317,6 @@ class StudentChatbot {
 
     // Scroll al último mensaje
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
-    // Reproducir sonido de notificación si es un mensaje del bot
-    // Solo si playSound no está explícitamente establecido en false
-    if (messageObj.isBot && messageObj.playSound !== false) {
-      this.playNotificationSound();
-    }
 
     // Guardar en historial
     this.conversationHistory.push(messageObj);
