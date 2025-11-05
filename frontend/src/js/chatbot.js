@@ -7,13 +7,57 @@ class StudentChatbot {
   constructor() {
     this.isOpen = false;
     this.conversationHistory = [];
+    this.audioContext = null;
     this.init();
   }
 
   init() {
     this.createChatbotUI();
     this.attachEventListeners();
+    this.initAudioContext();
     this.addWelcomeMessage();
+  }
+
+  /**
+   * Inicializa el contexto de audio para reproducir sonidos
+   */
+  initAudioContext() {
+    try {
+      this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    } catch (e) {
+      console.warn('Web Audio API no soportada en este navegador');
+    }
+  }
+
+  /**
+   * Reproduce un sonido de notificación cuando el bot responde
+   */
+  playNotificationSound() {
+    if (!this.audioContext) return;
+
+    try {
+      const oscillator = this.audioContext.createOscillator();
+      const gainNode = this.audioContext.createGain();
+
+      oscillator.connect(gainNode);
+      gainNode.connect(this.audioContext.destination);
+
+      // Configuración del sonido (tono agradable de notificación)
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(800, this.audioContext.currentTime); // Primera nota
+      oscillator.frequency.setValueAtTime(1000, this.audioContext.currentTime + 0.1); // Segunda nota
+
+      // Control de volumen (fade in/out)
+      gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+      gainNode.gain.linearRampToValueAtTime(0.3, this.audioContext.currentTime + 0.05);
+      gainNode.gain.linearRampToValueAtTime(0, this.audioContext.currentTime + 0.2);
+
+      // Reproducir
+      oscillator.start(this.audioContext.currentTime);
+      oscillator.stop(this.audioContext.currentTime + 0.2);
+    } catch (e) {
+      console.warn('Error al reproducir sonido de notificación:', e);
+    }
   }
 
   createChatbotUI() {
@@ -328,6 +372,11 @@ class StudentChatbot {
 
     // Scroll al último mensaje
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    // Reproducir sonido de notificación si es un mensaje del bot
+    if (messageObj.isBot) {
+      this.playNotificationSound();
+    }
 
     // Guardar en historial
     this.conversationHistory.push(messageObj);
