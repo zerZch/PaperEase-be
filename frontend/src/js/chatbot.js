@@ -31,6 +31,7 @@ class StudentChatbot {
 
   /**
    * Reproduce un sonido de notificación cuando el bot responde
+   * Sonido estilo WhatsApp: corto, agudo y limpio
    */
   playNotificationSound() {
     if (!this.audioContext) return;
@@ -42,19 +43,18 @@ class StudentChatbot {
       oscillator.connect(gainNode);
       gainNode.connect(this.audioContext.destination);
 
-      // Configuración del sonido (tono agradable de notificación)
+      // Configuración del sonido tipo WhatsApp (más agudo y corto)
       oscillator.type = 'sine';
-      oscillator.frequency.setValueAtTime(800, this.audioContext.currentTime); // Primera nota
-      oscillator.frequency.setValueAtTime(1000, this.audioContext.currentTime + 0.1); // Segunda nota
+      oscillator.frequency.setValueAtTime(1200, this.audioContext.currentTime); // Tono más agudo
 
-      // Control de volumen (fade in/out)
+      // Control de volumen (fade rápido, sonido más corto)
       gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-      gainNode.gain.linearRampToValueAtTime(0.3, this.audioContext.currentTime + 0.05);
-      gainNode.gain.linearRampToValueAtTime(0, this.audioContext.currentTime + 0.2);
+      gainNode.gain.linearRampToValueAtTime(0.25, this.audioContext.currentTime + 0.02);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + 0.15);
 
-      // Reproducir
+      // Reproducir (más corto: 0.15 segundos)
       oscillator.start(this.audioContext.currentTime);
-      oscillator.stop(this.audioContext.currentTime + 0.2);
+      oscillator.stop(this.audioContext.currentTime + 0.15);
     } catch (e) {
       console.warn('Error al reproducir sonido de notificación:', e);
     }
@@ -154,6 +154,9 @@ class StudentChatbot {
       window.classList.add('open');
       toggle.classList.add('hidden');
       document.getElementById('chatbot-input').focus();
+
+      // Reproducir sonido cuando se abre el chat
+      this.playNotificationSound();
     } else {
       window.classList.remove('open');
       toggle.classList.remove('hidden');
@@ -164,6 +167,7 @@ class StudentChatbot {
     const welcomeMessage = {
       text: '¡Hola! Soy tu asistente virtual de PaperEase. Estoy aquí para ayudarte a navegar por el sitio y entender cómo usar las funciones principales.',
       isBot: true,
+      playSound: false, // No reproducir sonido en el mensaje de bienvenida
       quickReplies: [
         { text: 'Ver Programas', action: 'ver_programas' },
         { text: 'Mis Solicitudes', action: 'mis_solicitudes' },
@@ -374,7 +378,8 @@ class StudentChatbot {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
     // Reproducir sonido de notificación si es un mensaje del bot
-    if (messageObj.isBot) {
+    // Solo si playSound no está explícitamente establecido en false
+    if (messageObj.isBot && messageObj.playSound !== false) {
       this.playNotificationSound();
     }
 
