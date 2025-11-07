@@ -138,6 +138,14 @@
   .form-group input[type="file"]:hover {
     border-color: var(--color-primario);
   }
+
+  .cta-section {
+    display: flex;
+    justify-content: center;
+    gap: 1rem; /* Espacio entre los botones */
+    flex-wrap: wrap; /* Para que se acomoden en pantallas pequeñas */
+    margin-top: 2rem;
+  }
   
   .cta-primary {
     margin-top: 1rem;
@@ -155,6 +163,25 @@
   .cta-primary:hover {
     background-color: var(--color-secundario);
   }
+
+    /* Botón secundario */
+  .cta-secondary {
+      margin-top: 1rem;
+      align-self: center;
+      padding: 0.75rem 2rem;
+      border-radius: 9999px;
+      background-color: var(--color-secundario);
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .cta-secondary:hover {
+      background-color: var(--color-primario);
+      color: white;
+  }
   
   /* Footer ajuste */
   footer {
@@ -166,5 +193,185 @@
     .form-radio-group {
       flex-direction: column;
       gap: 1rem;
+    }
+  }
+
+  /* ========== MEJORAS VISUALES ADICIONALES ========== */
+
+  /* Efecto de sombra sutil al formulario */
+  .formulario {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Animación suave para inputs */
+  .form-group input,
+  .form-group select {
+    transition: all 0.3s ease;
+  }
+
+  .form-group input:hover,
+  .form-group select:hover {
+    border-color: var(--color-primario);
+    transform: translateY(-1px);
+  }
+
+  /* Efecto para campos preseleccionados */
+  .form-group select[data-preselected="true"] {
+    background-color: #f0f9ff;
+    border-color: var(--color-primario);
+    animation: highlight 0.6s ease-in-out;
+  }
+
+  @keyframes highlight {
+    0% {
+      background-color: #dbeafe;
+    }
+    100% {
+      background-color: #f0f9ff;
+    }
+  }
+
+  /* Mejora del botón de envío */
+  .cta-primary {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px -1px rgba(77, 134, 156, 0.3);
+  }
+
+  .cta-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(77, 134, 156, 0.4);
+  }
+
+  .cta-primary:active {
+    transform: translateY(0);
+  }
+
+  /* Efecto ripple para el botón */
+  .cta-primary::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+
+  .cta-primary:active::before {
+    width: 300px;
+    height: 300px;
+  }
+
+  /* Mejora de los mensajes de estado */
+  #message {
+    border-radius: 0.5rem;
+    font-weight: 500;
+    animation: slideIn 0.4s ease-out;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Animación para el loading */
+  #loading {
+    font-size: 1.1rem;
+    color: var(--color-primario);
+    font-weight: 600;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  /* Mejora visual para input file */
+  .form-group input[type="file"] {
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .form-group input[type="file"]:hover {
+    background-color: #f0f9ff;
+    border-color: var(--color-primario);
+  }
+
+  /* Indicador visual para campos requeridos */
+  .form-group label[for]::after {
+    content: ' *';
+    color: #ef4444;
+    font-weight: bold;
+  }
+
+  /* Estilo para select cuando está enfocado */
+  .form-group select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+    appearance: none;
+  }
+
+  /* Efecto de foco mejorado */
+  .form-group input:focus,
+  .form-group select:focus {
+    transform: translateY(-2px);
+  }
+
+  /* Título de la sección con efecto degradado */
+  .form-section h2 {
+    background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Mejora del párrafo descriptivo */
+  .form-section p {
+    line-height: 1.6;
+    color: #6b7280;
+  }
+
+  /* Efecto hover para radio buttons mejorado */
+  .form-radio {
+    transition: all 0.2s ease;
+    padding: 0.25rem;
+    border-radius: 0.375rem;
+  }
+
+  .form-radio:hover {
+    background-color: #f9fafb;
+  }
+
+  /* Responsive mejorado */
+  @media (max-width: 768px) {
+    .formulario {
+      padding: 1.5rem;
+    }
+
+    .form-section h2 {
+      font-size: 1.5rem;
     }
   }
