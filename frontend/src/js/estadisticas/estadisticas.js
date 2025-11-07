@@ -5,7 +5,9 @@ let yearChart;
 let currentFilters = {
     programa: '',
     tipo: '',
-    facultad: ''
+    facultad: '',
+    yearStart: 2018,
+    yearEnd: 2024
 };
 
 // URLs de la API
@@ -14,12 +16,18 @@ const API_BASE_URL = 'http://localhost:3000/api/estadisticas';
 // Inicialización cuando se carga la página
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Iniciando aplicación de estadísticas...');
-    
+
+    // Inicializar valores de año
+    const currentYear = new Date().getFullYear();
+    const yearStartInput = document.getElementById('yearStart');
+    const yearEndInput = document.getElementById('yearEnd');
+    if (yearEndInput) yearEndInput.value = currentYear;
+
     // Cargar datos iniciales
     loadDashboardData();
     loadFacultadesData();
     loadYearData();
-    
+
     // Cargar opciones de filtros
     loadFilterOptions();
 });
@@ -65,23 +73,26 @@ function updateMetrics(data) {
 async function loadFacultadesData() {
     try {
         console.log('Cargando datos de facultades...');
-        
+
         const params = new URLSearchParams();
         if (currentFilters.programa) params.append('programa', currentFilters.programa);
         if (currentFilters.tipo) params.append('tipo', currentFilters.tipo);
-        
+        if (currentFilters.facultad) params.append('facultad', currentFilters.facultad);
+        if (currentFilters.yearStart) params.append('yearStart', currentFilters.yearStart);
+        if (currentFilters.yearEnd) params.append('yearEnd', currentFilters.yearEnd);
+
         const url = `${API_BASE_URL}/facultades${params.toString() ? '?' + params.toString() : ''}`;
         const response = await fetch(url);
-        
+
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const data = await response.json();
         console.log('Datos de facultades recibidos:', data);
-        
+
         createFacultadesChart(data);
-        
+
     } catch (error) {
         console.error('Error cargando datos de facultades:', error);
         showError('No se pudieron cargar los datos de facultades');
@@ -164,17 +175,25 @@ function createFacultadesChart(data) {
 async function loadYearData() {
     try {
         console.log('=== CARGANDO DATOS DE PARTICIPACIÓN POR GÉNERO ===');
-        
+
+        // Construir parámetros de filtro
+        const params = new URLSearchParams();
+        if (currentFilters.yearStart) params.append('yearStart', currentFilters.yearStart);
+        if (currentFilters.yearEnd) params.append('yearEnd', currentFilters.yearEnd);
+        if (currentFilters.programa) params.append('programa', currentFilters.programa);
+        if (currentFilters.tipo) params.append('tipo', currentFilters.tipo);
+        if (currentFilters.facultad) params.append('facultad', currentFilters.facultad);
+
         // Intentar múltiples rutas por si hay problemas de configuración
         const possibleUrls = [
-            '/api/participacion-genero-anual',
-            '/participacion-genero-anual',
-            'participacion-genero-anual'
+            `/api/participacion-genero-anual${params.toString() ? '?' + params.toString() : ''}`,
+            `/participacion-genero-anual${params.toString() ? '?' + params.toString() : ''}`,
+            `participacion-genero-anual${params.toString() ? '?' + params.toString() : ''}`
         ];
-        
+
         let response = null;
         let usedUrl = '';
-        
+
         for (const url of possibleUrls) {
             try {
                 console.log(`Intentando cargar desde: ${url}`);
@@ -188,44 +207,51 @@ async function loadYearData() {
                 continue;
             }
         }
-        
+
         if (!response || !response.ok) {
             throw new Error(`No se pudo cargar desde ninguna URL. Último status: ${response?.status}`);
         }
-        
+
         const data = await response.json();
         console.log('Datos recibidos desde', usedUrl, ':', data);
-        
+
         // Verificar que los datos tengan la estructura correcta
         if (!data.years || !data.hombres || !data.mujeres) {
             console.error('Estructura de datos incorrecta:', data);
             throw new Error('Datos incompletos recibidos del servidor');
         }
-        
+
         // Crear el gráfico
         createYearChart(data);
-        
+
         // Mostrar información de debug si está disponible
         if (data.debug) {
             console.log('=== INFORMACIÓN DE DEBUG ===');
             console.log('Total participantes:', data.debug.totalParticipantes);
             console.log('Géneros disponibles:', data.debug.generosDisponibles);
         }
-        
+
         if (data.emergency) {
             console.warn('⚠️ Usando datos de emergencia debido a error en el servidor');
         }
-        
+
     } catch (error) {
         console.error('Error cargando datos de participación por género:', error);
-        
+
         // Datos de emergencia para mostrar algo en el gráfico
+        const yearStart = currentFilters.yearStart || 2018;
+        const yearEnd = currentFilters.yearEnd || 2024;
+        const years = [];
+        for (let year = yearStart; year <= yearEnd; year++) {
+            years.push(year.toString());
+        }
+
         const emergencyData = {
-            years: ['2018', '2019', '2020', '2021', '2022', '2023', '2024'],
-            hombres: [45, 52, 38, 67, 89, 76, 41],
-            mujeres: [38, 47, 29, 58, 82, 69, 35]
+            years: years,
+            hombres: years.map(() => Math.floor(Math.random() * 50) + 30),
+            mujeres: years.map(() => Math.floor(Math.random() * 50) + 25)
         };
-        
+
         console.log('Usando datos de emergencia:', emergencyData);
         createYearChart(emergencyData);
     }
@@ -310,18 +336,27 @@ function createYearChart(data) {
 // Función para cargar opciones de filtros
 async function loadFilterOptions() {
     try {
+        // Cargar facultades
+        const facultadesResponse = await fetch(`${API_BASE_URL}/facultades-lista`);
+        if (facultadesResponse.ok) {
+            const facultades = await facultadesResponse.json();
+            populateSelect('facultad', facultades, 'Facultad', 'Facultad');
+        }
+
+        // Cargar tipos de programa
         const tiposResponse = await fetch(`${API_BASE_URL}/tipos-programa`);
         if (tiposResponse.ok) {
             const tipos = await tiposResponse.json();
             populateSelect('tipoPrograma', tipos, 'TipoPrograma', 'TipoPrograma');
         }
-        
+
+        // Cargar programas
         const programasResponse = await fetch(`${API_BASE_URL}/programas`);
         if (programasResponse.ok) {
             const programas = await programasResponse.json();
             populateProgramasSelect(programas);
         }
-        
+
     } catch (error) {
         console.error('Error cargando opciones de filtros:', error);
     }
@@ -393,34 +428,57 @@ function closeModal() {
 }
 
 function resetFilters() {
+    const currentYear = new Date().getFullYear();
+
     currentFilters = {
         programa: '',
         tipo: '',
-        facultad: ''
+        facultad: '',
+        yearStart: 2018,
+        yearEnd: currentYear
     };
-    
+
+    const facultadSelect = document.getElementById('facultad');
     const tipoSelect = document.getElementById('tipoPrograma');
     const programaSelect = document.getElementById('programa');
-    
+    const yearStartInput = document.getElementById('yearStart');
+    const yearEndInput = document.getElementById('yearEnd');
+
+    if (facultadSelect) facultadSelect.value = '';
     if (tipoSelect) tipoSelect.value = '';
     if (programaSelect) programaSelect.value = '';
-    
+    if (yearStartInput) yearStartInput.value = 2018;
+    if (yearEndInput) yearEndInput.value = currentYear;
+
     loadFacultadesData();
-    loadTimelineData();
-    
+    loadYearData();
+
     updateChartTitles();
 }
 
 function applyFilters() {
+    const facultadSelect = document.getElementById('facultad');
     const tipoSelect = document.getElementById('tipoPrograma');
     const programaSelect = document.getElementById('programa');
-    
+    const yearStartInput = document.getElementById('yearStart');
+    const yearEndInput = document.getElementById('yearEnd');
+
+    currentFilters.facultad = facultadSelect ? facultadSelect.value : '';
     currentFilters.tipo = tipoSelect ? tipoSelect.value : '';
     currentFilters.programa = programaSelect ? programaSelect.value : '';
-    
+    currentFilters.yearStart = yearStartInput ? parseInt(yearStartInput.value) || 2018 : 2018;
+    currentFilters.yearEnd = yearEndInput ? parseInt(yearEndInput.value) || 2024 : 2024;
+
+    // Validar que yearStart no sea mayor que yearEnd
+    if (currentFilters.yearStart > currentFilters.yearEnd) {
+        showError('El año de inicio no puede ser mayor que el año final');
+        return;
+    }
+
     console.log('Aplicando filtros:', currentFilters);
-    
+
     loadFacultadesData();
+    loadYearData();
     updateChartTitles();
     closeModal();
 }
@@ -429,22 +487,34 @@ function applyFilters() {
 function updateChartTitles() {
     const chartTitle = document.getElementById('chartTitle');
     const chartBadges = document.getElementById('chartBadges');
-    
+    const timeChartTitle = document.getElementById('timeChartTitle');
+
+    // Actualizar título del gráfico de facultades
     if (chartTitle) {
         let title = 'Facultades - Participación';
         if (currentFilters.programa) {
             title += ` - ${currentFilters.programa}`;
         } else if (currentFilters.tipo) {
             title += ` - ${currentFilters.tipo}`;
+        } else if (currentFilters.facultad) {
+            title += ` - ${currentFilters.facultad}`;
         } else {
             title += ' General';
         }
         chartTitle.textContent = title;
     }
-    
+
+    // Actualizar badges
     if (chartBadges) {
         chartBadges.innerHTML = '';
-        
+
+        if (currentFilters.facultad) {
+            const badge = document.createElement('span');
+            badge.className = 'badge';
+            badge.textContent = currentFilters.facultad;
+            chartBadges.appendChild(badge);
+        }
+
         if (currentFilters.programa) {
             const badge = document.createElement('span');
             badge.className = 'badge';
@@ -455,12 +525,23 @@ function updateChartTitles() {
             badge.className = 'badge';
             badge.textContent = currentFilters.tipo;
             chartBadges.appendChild(badge);
-        } else {
+        }
+
+        if (chartBadges.children.length === 0) {
             const badge = document.createElement('span');
             badge.className = 'badge';
-            badge.textContent = 'Promoción Social';
+            badge.textContent = 'Todos los Programas';
             chartBadges.appendChild(badge);
         }
+    }
+
+    // Actualizar título del gráfico de participación por año
+    if (timeChartTitle) {
+        let title = 'Participación por Año';
+        if (currentFilters.yearStart && currentFilters.yearEnd) {
+            title += ` (${currentFilters.yearStart}-${currentFilters.yearEnd})`;
+        }
+        timeChartTitle.textContent = title;
     }
 }
 

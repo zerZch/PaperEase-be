@@ -140,6 +140,14 @@
       </button>
     </div>
 
+    <!-- Filtro de Facultad -->
+    <div class="filter-group">
+        <label for="facultad">Facultad:</label>
+        <select id="facultad" class="filter-select">
+            <option value="">Todas las facultades</option>
+        </select>
+    </div>
+
     <div class="filter-group">
         <label for="tipoPrograma">Tipo de Programa:</label>
         <select id="tipoPrograma" class="filter-select">
@@ -170,6 +178,25 @@
                 <option value="siniestros">Apoyo en Casos de Siniestros</option>
             </optgroup>
         </select>
+    </div>
+
+    <!-- Filtro de Rango de Años -->
+    <div class="filter-group">
+        <label>Participación Anual (Rango de Años):</label>
+        <div class="year-range-container">
+            <div class="year-input-group">
+                <label for="yearStart" class="year-label">Desde:</label>
+                <input type="number" id="yearStart" class="filter-input"
+                       min="2018" value="2018"
+                       placeholder="Año inicio">
+            </div>
+            <div class="year-input-group">
+                <label for="yearEnd" class="year-label">Hasta:</label>
+                <input type="number" id="yearEnd" class="filter-input"
+                       min="2018"
+                       placeholder="Año fin">
+            </div>
+        </div>
     </div>
 
     <div class="modal-actions">

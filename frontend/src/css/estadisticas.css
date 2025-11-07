@@ -314,13 +314,17 @@
     height: 24px;
   }
   
+  .filter-group {
+    margin-bottom: 1.5rem;
+  }
+
   .filter-group label {
     font-weight: 600;
     color: var(--color-primario);
     margin-bottom: 0.5rem;
     display: block;
   }
-  
+
   .filter-select {
     width: 100%;
     padding: 0.75rem;
@@ -331,11 +335,53 @@
     color: var(--color-primario);
     transition: var(--transition);
   }
-  
+
   .filter-select:focus {
     outline: none;
     border-color: var(--color-accent);
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  }
+
+  /* === FILTRO DE RANGO DE AÑOS === */
+  .year-range-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 0.75rem;
+  }
+
+  .year-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .year-label {
+    font-weight: 600;
+    color: var(--color-secundario);
+    font-size: 0.9rem;
+  }
+
+  .filter-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--color-fondo-medio);
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    background-color: white;
+    color: var(--color-primario);
+    transition: var(--transition);
+  }
+
+  .filter-input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  }
+
+  .filter-input::-webkit-inner-spin-button,
+  .filter-input::-webkit-outer-spin-button {
+    opacity: 1;
   }
   
   .modal-actions {

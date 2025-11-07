@@ -84,43 +84,62 @@ router.get('/estadisticas', async (req, res) => {
 
 // Obtener participación por facultades
 router.get('/facultades', (req, res) => {
-  const { programa, tipo } = req.query;
-  
+  const { programa, tipo, facultad, yearStart, yearEnd } = req.query;
+
   let query = `
-    SELECT 
+    SELECT
       f.Facultad,
       COUNT(fe.id_formulario) as participantes
     FROM facultad f
     LEFT JOIN formulario_estudiante fe ON f.IdFacultad = fe.IdFacultad
   `;
-  
+
   const conditions = [];
   const values = [];
-  
+  let hasPrograma = false;
+
   if (programa) {
     query += ` LEFT JOIN programa p ON fe.IdPrograma = p.IdPrograma`;
     conditions.push('p.Programa = ?');
     values.push(programa);
+    hasPrograma = true;
   }
-  
+
   if (tipo) {
-    if (!programa) {
+    if (!hasPrograma) {
       query += ` LEFT JOIN programa p ON fe.IdPrograma = p.IdPrograma`;
+      hasPrograma = true;
     }
     query += ` LEFT JOIN tipoprograma tp ON p.IdTipoP = tp.IdTipoP`;
     conditions.push('tp.TipoPrograma = ?');
     values.push(tipo);
   }
-  
+
+  if (facultad) {
+    conditions.push('f.Facultad = ?');
+    values.push(facultad);
+  }
+
+  // Filtro de rango de años
+  if (yearStart) {
+    conditions.push('YEAR(fe.fecha_registro) >= ?');
+    values.push(parseInt(yearStart));
+  }
+
+  if (yearEnd) {
+    conditions.push('YEAR(fe.fecha_registro) <= ?');
+    values.push(parseInt(yearEnd));
+  }
+
   if (conditions.length > 0) {
     query += ' WHERE ' + conditions.join(' AND ');
   }
-  
+
   query += ' GROUP BY f.IdFacultad, f.Facultad ORDER BY participantes DESC';
-  
+
   console.log('Query facultades:', query);
   console.log('Valores:', values);
-  
+
   db.query(query, values, (err, result) => {
     if (err) {
       console.error('Error en consulta facultades:', err);
@@ -136,13 +155,15 @@ router.get('/facultades', (req, res) => {
 router.get('/participacion-genero-anual', async (req, res) => {
   try {
     console.log('=== INICIANDO CONSULTA DE PARTICIPACIÓN POR GÉNERO ===');
-    const { yearStart = 2018, yearEnd = new Date().getFullYear() } = req.query;
-    
+    const { yearStart = 2018, yearEnd = new Date().getFullYear(), programa, tipo, facultad } = req.query;
+
+    console.log('Filtros recibidos:', { yearStart, yearEnd, programa, tipo, facultad });
+
     // Primero, verificar si tenemos datos
     const totalQuery = `SELECT COUNT(*) as total FROM formulario_estudiante`;
     const totalResult = await executeQuery(totalQuery);
     console.log('Total de participantes en BD:', totalResult[0]?.total || 0);
-    
+
     // Verificar qué géneros tenemos
     const generosQuery = `
       SELECT g.IdGenero, g.Genero, COUNT(fe.id_formulario) as count
@@ -152,49 +173,124 @@ router.get('/participacion-genero-anual', async (req, res) => {
     `;
     const generosResult = await executeQuery(generosQuery);
     console.log('Géneros disponibles:', generosResult);
-    
+
     // Consulta principal - usando distribución simple si no hay fecha_registro
     let query, params;
-    
+
     // Intentar con fecha_registro primero
     try {
       query = `
-        SELECT 
+        SELECT
           YEAR(fe.fecha_registro) as year,
           g.Genero,
           COUNT(fe.id_formulario) as participantes
         FROM formulario_estudiante fe
         LEFT JOIN genero g ON fe.IdGenero = g.IdGenero
-        WHERE fe.fecha_registro IS NOT NULL 
-          AND YEAR(fe.fecha_registro) BETWEEN ? AND ?
-          AND g.Genero IS NOT NULL
-        GROUP BY YEAR(fe.fecha_registro), g.IdGenero, g.Genero
-        ORDER BY year ASC, g.Genero ASC
       `;
-      params = [yearStart, yearEnd];
-      
+
+      // Agregar joins necesarios para los filtros
+      let needsProgramaJoin = false;
+      if (programa || tipo) {
+        query += ` LEFT JOIN programa p ON fe.IdPrograma = p.IdPrograma`;
+        needsProgramaJoin = true;
+      }
+
+      if (tipo) {
+        query += ` LEFT JOIN tipoprograma tp ON p.IdTipoP = tp.IdTipoP`;
+      }
+
+      if (facultad) {
+        query += ` LEFT JOIN facultad f ON fe.IdFacultad = f.IdFacultad`;
+      }
+
+      // Construir condiciones WHERE
+      const conditions = [];
+      params = [];
+
+      conditions.push('fe.fecha_registro IS NOT NULL');
+      conditions.push('YEAR(fe.fecha_registro) BETWEEN ? AND ?');
+      params.push(parseInt(yearStart), parseInt(yearEnd));
+
+      conditions.push('g.Genero IS NOT NULL');
+
+      if (programa) {
+        conditions.push('p.Programa = ?');
+        params.push(programa);
+      }
+
+      if (tipo) {
+        conditions.push('tp.TipoPrograma = ?');
+        params.push(tipo);
+      }
+
+      if (facultad) {
+        conditions.push('f.Facultad = ?');
+        params.push(facultad);
+      }
+
+      query += ` WHERE ${conditions.join(' AND ')}`;
+      query += ` GROUP BY YEAR(fe.fecha_registro), g.IdGenero, g.Genero`;
+      query += ` ORDER BY year ASC, g.Genero ASC`;
+
+      console.log('Query con filtros:', query);
+      console.log('Params:', params);
+
       const testResult = await executeQuery(query, params);
       console.log('Resultado con fecha_registro:', testResult);
-      
+
       if (testResult.length === 0) {
         throw new Error('No hay datos con fecha_registro, usando distribución alternativa');
       }
-      
+
     } catch (dateError) {
       console.log('Error con fecha_registro, usando distribución alternativa:', dateError.message);
-      
+
       // Consulta alternativa sin fecha
       query = `
-        SELECT 
+        SELECT
           g.Genero,
           COUNT(fe.id_formulario) as participantes
         FROM formulario_estudiante fe
         LEFT JOIN genero g ON fe.IdGenero = g.IdGenero
-        WHERE g.Genero IS NOT NULL
-        GROUP BY g.IdGenero, g.Genero
-        ORDER BY g.Genero ASC
       `;
+
+      // Agregar joins necesarios para los filtros
+      if (programa || tipo) {
+        query += ` LEFT JOIN programa p ON fe.IdPrograma = p.IdPrograma`;
+      }
+
+      if (tipo) {
+        query += ` LEFT JOIN tipoprograma tp ON p.IdTipoP = tp.IdTipoP`;
+      }
+
+      if (facultad) {
+        query += ` LEFT JOIN facultad f ON fe.IdFacultad = f.IdFacultad`;
+      }
+
+      // Construir condiciones WHERE
+      const conditions = ['g.Genero IS NOT NULL'];
       params = [];
+
+      if (programa) {
+        conditions.push('p.Programa = ?');
+        params.push(programa);
+      }
+
+      if (tipo) {
+        conditions.push('tp.TipoPrograma = ?');
+        params.push(tipo);
+      }
+
+      if (facultad) {
+        conditions.push('f.Facultad = ?');
+        params.push(facultad);
+      }
+
+      query += ` WHERE ${conditions.join(' AND ')}`;
+      query += ` GROUP BY g.IdGenero, g.Genero ORDER BY g.Genero ASC`;
+
+      console.log('Query alternativa:', query);
+      console.log('Params:', params);
     }
     
     const result = await executeQuery(query, params);
