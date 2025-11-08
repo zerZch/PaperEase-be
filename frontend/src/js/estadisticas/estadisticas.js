@@ -91,10 +91,12 @@ async function loadFacultadesData() {
         if (currentFilters.programa) params.append('programa', currentFilters.programa);
         if (currentFilters.tipo) params.append('tipo', currentFilters.tipo);
         if (currentFilters.facultad) params.append('facultad', currentFilters.facultad);
-        if (currentFilters.yearStart) params.append('yearStart', currentFilters.yearStart);
-        if (currentFilters.yearEnd) params.append('yearEnd', currentFilters.yearEnd);
+        // NO enviar filtros de años por defecto, solo si el usuario los aplica explícitamente
+        // if (currentFilters.yearStart) params.append('yearStart', currentFilters.yearStart);
+        // if (currentFilters.yearEnd) params.append('yearEnd', currentFilters.yearEnd);
 
         const url = `${API_BASE_URL}/facultades${params.toString() ? '?' + params.toString() : ''}`;
+        console.log('URL de consulta facultades:', url);
         const response = await fetch(url);
 
         if (!response.ok) {

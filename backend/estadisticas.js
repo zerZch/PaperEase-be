@@ -120,15 +120,11 @@ router.get('/facultades', (req, res) => {
     values.push(facultad);
   }
 
-  // Filtro de rango de años
-  if (yearStart) {
-    conditions.push('YEAR(fe.fecha_registro) >= ?');
-    values.push(parseInt(yearStart));
-  }
-
-  if (yearEnd) {
-    conditions.push('YEAR(fe.fecha_registro) <= ?');
-    values.push(parseInt(yearEnd));
+  // Filtro de rango de años - solo aplicar si hay datos válidos en fecha_registro
+  if (yearStart && yearEnd) {
+    // Agregar condición que también verifica que fecha_registro no sea NULL
+    conditions.push('(fe.fecha_registro IS NOT NULL AND YEAR(fe.fecha_registro) BETWEEN ? AND ?)');
+    values.push(parseInt(yearStart), parseInt(yearEnd));
   }
 
   if (conditions.length > 0) {
