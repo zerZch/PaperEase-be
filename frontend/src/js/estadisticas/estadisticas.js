@@ -347,6 +347,7 @@ async function loadFilterOptions() {
         const tiposResponse = await fetch(`${API_BASE_URL}/tipos-programa`);
         if (tiposResponse.ok) {
             const tipos = await tiposResponse.json();
+            console.log('Tipos de programa cargados:', tipos);
             populateSelect('tipoPrograma', tipos, 'TipoPrograma', 'TipoPrograma');
         }
 
@@ -354,6 +355,7 @@ async function loadFilterOptions() {
         const programasResponse = await fetch(`${API_BASE_URL}/programas`);
         if (programasResponse.ok) {
             const programas = await programasResponse.json();
+            console.log('Programas cargados:', programas);
             populateProgramasSelect(programas);
         }
 
@@ -488,6 +490,7 @@ function updateChartTitles() {
     const chartTitle = document.getElementById('chartTitle');
     const chartBadges = document.getElementById('chartBadges');
     const timeChartTitle = document.getElementById('timeChartTitle');
+    const timeChartSubtitle = document.getElementById('timeChartSubtitle');
 
     // Actualizar título del gráfico de facultades
     if (chartTitle) {
@@ -535,13 +538,36 @@ function updateChartTitles() {
         }
     }
 
-    // Actualizar título del gráfico de participación por año
+    // Actualizar título y subtítulo del gráfico de participación por año
     if (timeChartTitle) {
         let title = 'Participación por Año';
         if (currentFilters.yearStart && currentFilters.yearEnd) {
             title += ` (${currentFilters.yearStart}-${currentFilters.yearEnd})`;
         }
         timeChartTitle.textContent = title;
+    }
+
+    if (timeChartSubtitle) {
+        let subtitle = 'Distribución por género';
+        const filters = [];
+
+        if (currentFilters.programa) {
+            filters.push(currentFilters.programa);
+        } else if (currentFilters.tipo) {
+            filters.push(currentFilters.tipo);
+        }
+
+        if (currentFilters.facultad) {
+            filters.push(currentFilters.facultad);
+        }
+
+        if (filters.length > 0) {
+            subtitle += ' - ' + filters.join(' • ');
+        } else {
+            subtitle += ' - Todos los programas';
+        }
+
+        timeChartSubtitle.textContent = subtitle;
     }
 }
 
