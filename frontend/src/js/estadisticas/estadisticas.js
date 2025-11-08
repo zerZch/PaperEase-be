@@ -31,6 +31,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Cargar opciones de filtros
     loadFilterOptions();
 
+    // Actualizar títulos iniciales
+    updateChartTitles();
+
     // Event listener para filtro en cascada: tipo de programa -> programa específico
     const tipoSelect = document.getElementById('tipoPrograma');
     if (tipoSelect) {
