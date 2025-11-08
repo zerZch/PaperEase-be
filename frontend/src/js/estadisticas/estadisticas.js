@@ -30,6 +30,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Cargar opciones de filtros
     loadFilterOptions();
+
+    // Event listener para filtro en cascada: tipo de programa -> programa específico
+    const tipoSelect = document.getElementById('tipoPrograma');
+    if (tipoSelect) {
+        tipoSelect.addEventListener('change', function() {
+            const tipoSeleccionado = this.value;
+            console.log('Tipo de programa seleccionado:', tipoSeleccionado);
+            filtrarProgramasPorTipo(tipoSeleccionado);
+        });
+    }
 });
 
 // Función para cargar datos del dashboard principal
@@ -364,15 +374,20 @@ async function loadFilterOptions() {
     }
 }
 
+// Variable global para guardar todos los programas
+let todosLosProgramas = [];
+
 // Función para poblar select de programas (agrupados)
 function populateProgramasSelect(programas) {
+    // Guardar todos los programas en variable global
+    todosLosProgramas = programas;
+
     const select = document.getElementById('programa');
     if (!select) return;
-    
-    while (select.children.length > 1) {
-        select.removeChild(select.lastChild);
-    }
-    
+
+    // Limpiar select
+    select.innerHTML = '<option value="">Todos los programas</option>';
+
     const grupos = {};
     programas.forEach(programa => {
         const tipo = programa.TipoPrograma || 'Sin categoría';
@@ -381,20 +396,60 @@ function populateProgramasSelect(programas) {
         }
         grupos[tipo].push(programa);
     });
-    
+
     Object.keys(grupos).forEach(tipo => {
         const optgroup = document.createElement('optgroup');
         optgroup.label = tipo;
-        
+
         grupos[tipo].forEach(programa => {
             const option = document.createElement('option');
             option.value = programa.Programa;
             option.textContent = programa.Programa;
             optgroup.appendChild(option);
         });
-        
+
         select.appendChild(optgroup);
     });
+}
+
+// Función para filtrar programas por tipo seleccionado
+function filtrarProgramasPorTipo(tipoSeleccionado) {
+    const select = document.getElementById('programa');
+    if (!select || !todosLosProgramas) return;
+
+    // Limpiar select y resetear valor seleccionado
+    select.innerHTML = '<option value="">Todos los programas</option>';
+    select.value = '';
+
+    // Si no hay tipo seleccionado, mostrar todos
+    if (!tipoSeleccionado) {
+        populateProgramasSelect(todosLosProgramas);
+        return;
+    }
+
+    // Filtrar programas por tipo
+    const programasFiltrados = todosLosProgramas.filter(p =>
+        p.TipoPrograma === tipoSeleccionado
+    );
+
+    console.log(`Programas filtrados para ${tipoSeleccionado}:`, programasFiltrados);
+
+    // Agregar solo los programas del tipo seleccionado
+    if (programasFiltrados.length > 0) {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = tipoSeleccionado;
+
+        programasFiltrados.forEach(programa => {
+            const option = document.createElement('option');
+            option.value = programa.Programa;
+            option.textContent = programa.Programa;
+            optgroup.appendChild(option);
+        });
+
+        select.appendChild(optgroup);
+    } else {
+        console.warn(`No se encontraron programas para el tipo: ${tipoSeleccionado}`);
+    }
 }
 
 // Función para poblar un select general
@@ -448,9 +503,13 @@ function resetFilters() {
 
     if (facultadSelect) facultadSelect.value = '';
     if (tipoSelect) tipoSelect.value = '';
-    if (programaSelect) programaSelect.value = '';
     if (yearStartInput) yearStartInput.value = 2018;
     if (yearEndInput) yearEndInput.value = currentYear;
+
+    // Restaurar todos los programas en el select
+    if (todosLosProgramas && todosLosProgramas.length > 0) {
+        populateProgramasSelect(todosLosProgramas);
+    }
 
     loadFacultadesData();
     loadYearData();
