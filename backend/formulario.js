@@ -151,7 +151,7 @@ router.get('/config', (req, res) => {
   });
 });
 
-// RUTA PRINCIPAL DEL FORMULARIO CON DEBUG COMPLETO Y CORRECCIONES
+// RUTA PRINCIPAL DEL FORMULARIO - MODIFICADO PARA MÚLTIPLES SOLICITUDES
 router.post('/formulario', upload.single('archivo'), (req, res) => {
   console.log('\n🚀 === INICIO DE PROCESAMIENTO DEL FORMULARIO ===');
   console.log('📅 Timestamp:', new Date().toISOString());
@@ -198,7 +198,6 @@ router.post('/formulario', upload.single('archivo'), (req, res) => {
     const tipoProgramaId = parseInt(tipoPrograma);
     const programaId = parseInt(programa);
 
-    // Verificar que la conversión fue exitosa
     if (isNaN(generoId) || isNaN(facultadId) || isNaN(tipoProgramaId) || isNaN(programaId)) {
       console.log('❌ Error en conversión de IDs:', {
         genero: `"${genero}" -> ${generoId}`,
@@ -223,119 +222,95 @@ router.post('/formulario', upload.single('archivo'), (req, res) => {
     console.log('🆔 ID generado para el formulario:', idFormulario);
     console.log('📎 Archivo a guardar:', archivo);
     
-    // 5. VERIFICAR SI LA CÉDULA YA EXISTE
-    console.log('🔍 Verificando si la cédula ya existe...');
-    const checkCedulaSQL = 'SELECT id_formulario FROM formulario_estudiante WHERE Cedula = ?';
+    // ⭐ YA NO verificamos si la cédula existe - permitimos múltiples solicitudes
+    console.log('ℹ️ Permitiendo múltiples solicitudes para la misma cédula');
     
-    conexion.query(checkCedulaSQL, [cedula], (err, results) => {
-      if (err) {
-        console.error('❌ Error al verificar cédula:', err);
-        return res.status(500).json({ 
-          error: 'Error en la base de datos al verificar cédula',
-          sql_error: err.message 
-        });
-      }
-      
-      console.log(`🔍 Resultados de verificación de cédula: ${results.length} registros encontrados`);
-      
-      if (results.length > 0) {
-        console.log('❌ Cédula ya existe:', results[0]);
-        return res.status(400).json({ 
-          error: 'Ya existe una solicitud con esta cédula',
-          existing_id: results[0].id_formulario
-        });
-      }
-      
-      console.log('✅ Cédula disponible');
-      
-      // 6. VALIDAR QUE LOS IDs EXISTAN EN SUS RESPECTIVAS TABLAS (CORREGIDO)
-      console.log('🔍 Validando IDs en tablas relacionadas...');
-      
-      // Función para validar un ID en una tabla específica
-      const validarId = (query, params, fieldName) => {
-        return new Promise((resolve, reject) => {
-          console.log(`🔍 Validando ${fieldName}:`, params);
-          conexion.query(query, params, (err, result) => {
-            if (err) {
-              console.error(`❌ Error validando ${fieldName}:`, err);
-              reject(`Error al validar ${fieldName}: ${err.message}`);
-            } else if (result.length === 0) {
-              console.log(`❌ ID de ${fieldName} no encontrado:`, params);
-              reject(`ID de ${fieldName} inválido: ${Array.isArray(params) ? params.join(', ') : params}`);
-            } else {
-              console.log(`✅ ${fieldName} válido:`, result[0]);
-              resolve(true);
-            }
-          });
-        });
-      };
-
-      // Ejecutar todas las validaciones
-      Promise.all([
-        validarId('SELECT IdGenero FROM genero WHERE IdGenero = ?', [generoId], 'género'),
-        validarId('SELECT IdFacultad FROM facultad WHERE IdFacultad = ?', [facultadId], 'facultad'),
-        validarId('SELECT IdTipoP FROM tipoprograma WHERE IdTipoP = ?', [tipoProgramaId], 'tipo de programa'),
-        validarId('SELECT IdPrograma FROM programa WHERE IdPrograma = ? AND IdTipoP = ?', [programaId, tipoProgramaId], 'programa')
-      ]).then(() => {
-        // 7. TODAS LAS VALIDACIONES PASARON - INSERTAR LA NUEVA SOLICITUD
-        console.log('💾 Insertando nueva solicitud en la base de datos...');
-        const insertSQL = `
-          INSERT INTO formulario_estudiante 
-          (id_formulario, Nombre, Apellido, Cedula, IdGenero, IdFacultad, IdTipoP, IdPrograma, Archivo) 
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `;
-        
-        const insertParams = [
-          idFormulario, 
-          nombre, 
-          apellido, 
-          cedula, 
-          generoId, 
-          facultadId, 
-          tipoProgramaId, 
-          programaId, 
-          archivo
-        ];
-        
-        console.log('📝 Parámetros para inserción:', insertParams);
-        
-        conexion.query(insertSQL, insertParams, (err, result) => {
+    // 5. VALIDAR QUE LOS IDs EXISTAN EN SUS RESPECTIVAS TABLAS
+    console.log('🔍 Validando IDs en tablas relacionadas...');
+    
+    const validarId = (query, params, fieldName) => {
+      return new Promise((resolve, reject) => {
+        console.log(`🔍 Validando ${fieldName}:`, params);
+        conexion.query(query, params, (err, result) => {
           if (err) {
-            console.error('❌ Error al insertar solicitud:', err);
-            console.error('❌ SQL:', insertSQL);
-            console.error('❌ Parámetros:', insertParams);
-            return res.status(500).json({ 
-              error: 'Error al guardar la solicitud',
-              sql_error: err.message,
-              sql_code: err.code,
-              sql_errno: err.errno
-            });
+            console.error(`❌ Error validando ${fieldName}:`, err);
+            reject(`Error al validar ${fieldName}: ${err.message}`);
+          } else if (result.length === 0) {
+            console.log(`❌ ID de ${fieldName} no encontrado:`, params);
+            reject(`ID de ${fieldName} inválido: ${Array.isArray(params) ? params.join(', ') : params}`);
+          } else {
+            console.log(`✅ ${fieldName} válido:`, result[0]);
+            resolve(true);
           }
-          
-          console.log('✅ Solicitud insertada exitosamente:', result);
-          console.log('🎉 === FIN DE PROCESAMIENTO EXITOSO ===\n');
-          
-          res.json({ 
-            success: true,
-            message: 'Solicitud registrada exitosamente', 
-            id: idFormulario,
-            archivo: archivo,
-            insertId: result.insertId,
-            affectedRows: result.affectedRows
+        });
+      });
+    };
+
+    // Ejecutar todas las validaciones
+    Promise.all([
+      validarId('SELECT IdGenero FROM genero WHERE IdGenero = ?', [generoId], 'género'),
+      validarId('SELECT IdFacultad FROM facultad WHERE IdFacultad = ?', [facultadId], 'facultad'),
+      validarId('SELECT IdTipoP FROM tipoprograma WHERE IdTipoP = ?', [tipoProgramaId], 'tipo de programa'),
+      validarId('SELECT IdPrograma FROM programa WHERE IdPrograma = ? AND IdTipoP = ?', [programaId, tipoProgramaId], 'programa')
+    ]).then(() => {
+      // 6. TODAS LAS VALIDACIONES PASARON - INSERTAR LA NUEVA SOLICITUD
+      console.log('💾 Insertando nueva solicitud en la base de datos...');
+      const insertSQL = `
+        INSERT INTO formulario_estudiante 
+        (id_formulario, Nombre, Apellido, Cedula, IdGenero, IdFacultad, IdTipoP, IdPrograma, Archivo) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `;
+      
+      const insertParams = [
+        idFormulario, 
+        nombre, 
+        apellido, 
+        cedula, 
+        generoId, 
+        facultadId, 
+        tipoProgramaId, 
+        programaId, 
+        archivo
+      ];
+      
+      console.log('📝 Parámetros para inserción:', insertParams);
+      
+      conexion.query(insertSQL, insertParams, (err, result) => {
+        if (err) {
+          console.error('❌ Error al insertar solicitud:', err);
+          console.error('❌ SQL:', insertSQL);
+          console.error('❌ Parámetros:', insertParams);
+          return res.status(500).json({ 
+            error: 'Error al guardar la solicitud',
+            sql_error: err.message,
+            sql_code: err.code,
+            sql_errno: err.errno
           });
-        });
+        }
         
-      }).catch((validationError) => {
-        console.log('❌ Error en validación:', validationError);
-        return res.status(400).json({ 
-          error: validationError,
-          received_data: {
-            genero: generoId,
-            facultad: facultadId,
-            tipoPrograma: tipoProgramaId,
-            programa: programaId
-          }
+        console.log('✅ Solicitud insertada exitosamente:', result);
+        console.log('🎉 === FIN DE PROCESAMIENTO EXITOSO ===\n');
+        
+        res.json({ 
+          success: true,
+          message: 'Solicitud registrada exitosamente', 
+          id: idFormulario,
+          archivo: archivo,
+          insertId: result.insertId,
+          affectedRows: result.affectedRows
         });
+      });
+      
+    }).catch((validationError) => {
+      console.log('❌ Error en validación:', validationError);
+      return res.status(400).json({ 
+        error: validationError,
+        received_data: {
+          genero: generoId,
+          facultad: facultadId,
+          tipoPrograma: tipoProgramaId,
+          programa: programaId
+        }
       });
     });
     
@@ -353,9 +328,9 @@ router.post('/formulario', upload.single('archivo'), (req, res) => {
 // RUTA PARA VER TODAS LAS SOLICITUDES
 router.get('/solicitudes', (req, res) => {
   console.log('🔍 Obteniendo todas las solicitudes...');
-  
+
   const sql = `
-    SELECT 
+    SELECT
       fe.id_formulario,
       fe.Nombre,
       fe.Apellido,
@@ -364,7 +339,12 @@ router.get('/solicitudes', (req, res) => {
       f.Facultad,
       tp.TipoPrograma,
       p.Programa,
-      fe.Archivo
+      fe.Archivo,
+      fe.Estado,
+      fe.Prioridad,
+      fe.FechaCreacion,
+      fe.FechaModificacion,
+      fe.NotasTrabajador
     FROM formulario_estudiante fe
     LEFT JOIN genero g ON fe.IdGenero = g.IdGenero
     LEFT JOIN facultad f ON fe.IdFacultad = f.IdFacultad
@@ -403,6 +383,51 @@ router.get('/count', (req, res) => {
     const total = results[0].total;
     console.log(`📊 Total de solicitudes: ${total}`);
     res.json({ total: total });
+  });
+});
+
+// RUTA PARA OBTENER SOLICITUDES DE UN ESTUDIANTE
+router.get('/mis-solicitudes/:cedula', (req, res) => {
+  const { cedula } = req.params;
+
+  console.log(`🔍 Obteniendo solicitudes del estudiante con cédula: ${cedula}`);
+
+  const sql = `
+    SELECT
+      fe.id_formulario,
+      fe.Nombre,
+      fe.Apellido,
+      fe.Cedula,
+      g.Genero,
+      f.Facultad,
+      tp.TipoPrograma,
+      p.Programa,
+      fe.Archivo,
+      fe.Estado,
+      fe.Prioridad,
+      fe.FechaCreacion,
+      fe.FechaModificacion,
+      fe.NotasTrabajador
+    FROM formulario_estudiante fe
+    LEFT JOIN genero g ON fe.IdGenero = g.IdGenero
+    LEFT JOIN facultad f ON fe.IdFacultad = f.IdFacultad
+    LEFT JOIN tipoprograma tp ON fe.IdTipoP = tp.IdTipoP
+    LEFT JOIN programa p ON fe.IdPrograma = p.IdPrograma
+    WHERE fe.Cedula = ?
+    ORDER BY fe.FechaCreacion DESC
+  `;
+
+  conexion.query(sql, [cedula], (err, results) => {
+    if (err) {
+      console.error('❌ Error al obtener solicitudes del estudiante:', err);
+      return res.status(500).json({
+        error: 'Error en la base de datos',
+        sql_error: err.message
+      });
+    }
+
+    console.log(`✅ ${results.length} solicitudes obtenidas para cédula ${cedula}`);
+    res.json(results);
   });
 });
 

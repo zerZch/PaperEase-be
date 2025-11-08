@@ -5,14 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Registro • PaperEase</title>
   <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
   <script src="js/registro.js" defer></script>
 </head>
 
-<body>
+<body class="body-login-registro">
   <div class="login-container">
     <!-- Sección Izquierda -->
     <div class="login-left">
-      <div class="logo-big">📄</div>
+      <div class="logo-paperease">
+        <img src="imagenes/logo.png" alt="PaperEase Logo" class="logo" />
+      </div>
       <h1>PaperEase</h1>
       <p>Únete a nuestra plataforma y gestiona tu bienestar estudiantil de forma ágil y eficiente.</p>
     </div>
@@ -30,73 +33,150 @@
         <!-- Selector de Roles -->
         <div class="role-selector">
           <button class="role-btn active" data-role="estudiante" type="button">
-            <span>👨‍🎓</span>
+            <i data-lucide="graduation-cap"></i>
             Estudiante
           </button>
           <button class="role-btn" data-role="trabajadora" type="button">
-            <span>👩‍💼</span>
+            <i data-lucide="briefcase"></i>
             Trabajadora Social
           </button>
         </div>
 
         <!-- Formulario de Registro -->
-        <form id="registroForm">
-          <div class="form-group">
-            <label for="nombre">Nombre</label>
-            <input
-              type="text"
-              id="nombre"
-              name="nombre"
-              placeholder="Tu nombre"
-              required
-            />
+        <form id="registroForm" class="registro-form">
+          <!-- Fila 1: Nombre y Apellido -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="nombre">
+                <i data-lucide="user" class="label-icon"></i>
+                Nombre
+              </label>
+              <div class="input-wrapper">
+                <i data-lucide="user" class="input-icon"></i>
+                <input
+                  type="text"
+                  id="nombre"
+                  name="nombre"
+                  placeholder="Tu nombre"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="apellido">
+                <i data-lucide="user" class="label-icon"></i>
+                Apellido
+              </label>
+              <div class="input-wrapper">
+                <i data-lucide="user" class="input-icon"></i>
+                <input
+                  type="text"
+                  id="apellido"
+                  name="apellido"
+                  placeholder="Tu apellido"
+                  required
+                />
+              </div>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label for="apellido">Apellido</label>
-            <input
-              type="text"
-              id="apellido"
-              name="apellido"
-              placeholder="Tu apellido"
-              required
-            />
+          <!-- Fila 2: Cédula y Facultad -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cedula">
+                <i data-lucide="credit-card" class="label-icon"></i>
+                Cédula
+              </label>
+              <div class="input-wrapper">
+                <i data-lucide="credit-card" class="input-icon"></i>
+                <input
+                  type="text"
+                  id="cedula"
+                  name="cedula"
+                  placeholder="8-123-4567"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group" id="facultadGroup">
+              <label for="facultad">
+                <i data-lucide="building-2" class="label-icon"></i>
+                Facultad
+              </label>
+              <div class="input-wrapper">
+                <i data-lucide="building-2" class="input-icon"></i>
+                <select id="facultad" name="facultad">
+                  <option value="">Selecciona tu facultad</option>
+                  <option value="1">Ciencias y Tecnología</option>
+                  <option value="2">Ingeniería Civil</option>
+                  <option value="3">Ingeniería Eléctrica</option>
+                  <option value="4">Ingeniería Industrial</option>
+                  <option value="5">Ingeniería Mecánica</option>
+                  <option value="6">Ing. Sistemas Computacionales</option>
+                </select>
+              </div>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label for="email">Correo Electrónico</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="tu.correo@utp.ac.pa"
-              required
-            />
+          <!-- Fila 3: Email (ancho completo) -->
+          <div class="form-group form-full">
+            <label for="email">
+              <i data-lucide="mail" class="label-icon"></i>
+              Correo Institucional
+            </label>
+            <div class="input-wrapper">
+              <i data-lucide="mail" class="input-icon"></i>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="tu.correo@utp.ac.pa"
+                required
+              />
+            </div>
           </div>
 
-          <div class="form-group">
-            <label for="password">Contraseña</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="••••••••"
-              required
-            />
-          </div>
+          <!-- Fila 4: Contraseñas -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="password">
+                <i data-lucide="lock" class="label-icon"></i>
+                Contraseña
+              </label>
+              <div class="input-wrapper">
+                <i data-lucide="lock" class="input-icon"></i>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
+            </div>
 
-          <div class="form-group">
-            <label for="confirmPassword">Confirmar Contraseña</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              placeholder="••••••••"
-              required
-            />
+            <div class="form-group">
+              <label for="confirmPassword">
+                <i data-lucide="lock" class="label-icon"></i>
+                Confirmar
+              </label>
+              <div class="input-wrapper">
+                <i data-lucide="lock" class="input-icon"></i>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
+            </div>
           </div>
 
           <button type="submit" class="btn-login" id="btnRegistro">
+            <i data-lucide="user-plus" class="btn-icon"></i>
             Crear Cuenta
           </button>
         </form>
@@ -107,5 +187,9 @@
       </div>
     </div>
   </div>
+
+  <script>
+    lucide.createIcons();
+  </script>
 </body>
 </html>

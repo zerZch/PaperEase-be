@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PaperEase • Bienestar Estudiantil UTP</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/chatbot.css">
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-  
+  <script src="js/authHelper.js"></script>
 </head>
 <body>
   <!-- Header -->
@@ -21,11 +22,8 @@
       <!-- Navegación -->
       <nav class="nav">
         <a href="MenuPE.html">Inicio</a>
-        <a href="Programas.html">Requisitos</a>
-        <a href="formulario.html">Solicitud</a>
-        <a href="Estadisticas_Dashboard.html">Estadísticas</a>
-        <a href="eventos.html">Eventos</a>
-        <a href="gestion.html">Gestion</a>
+        <a href="Programas.html">Programas</a>
+        <a href="Solicitudes.html" id="linkMisSolicitudes">Mis Solicitudes</a>
       </nav>
     </div>
   </header>
@@ -36,7 +34,7 @@
       <h1>Bienvenido a PaperEase</h1>
       <p>Gestiona y explora los programas de Bienestar Estudiantil de la UTP de forma ágil y eficiente.</p>
       <div class="cta-buttons">
-        <a href="Programas.html" class="cta-primary">Ver Requisitos</a>
+        <a href="Programas.html" class="cta-primary">Ver Programas</a>
         <a href="Formulario.html" class="cta-secondary">Solicitar Servicio</a>
       </div>
     </div>
@@ -108,7 +106,7 @@
     <div class="cta-text">
       <h2>Empieza a usar PaperEase hoy</h2>
       <p>Regístrate y descubre cómo PaperEase puede facilitar tu gestión universitaria.</p>
-      <a href="Formulario.html" class="cta-primary">Crear Solicitud</a>
+      <a href="Formulario.html" class="cta-primary">Registrate</a>
     </div>
     <div class="cta-image">
       <img src="imagenes\cta.avif" alt="Estudiante usando PaperEase">
@@ -133,6 +131,32 @@
 <script src="js/novedades.js" defer></script>
 <script>
   lucide.createIcons();
+
+  // Mostrar/ocultar links basados en el rol del usuario
+  document.addEventListener('DOMContentLoaded', () => {
+    const linkMisSolicitudes = document.getElementById('linkMisSolicitudes');
+    const linkGestion = document.getElementById('linkGestion');
+
+    // Verificar si el usuario está autenticado
+    if (typeof getCurrentUser === 'function' && typeof getUserRole === 'function') {
+      const user = getCurrentUser();
+      const userRole = getUserRole();
+
+      if (user && userRole) {
+        // Rol 1 = Estudiante, Rol 2 = Trabajador Social
+        if (userRole === 1) {
+          // Mostrar "Mis Solicitudes" para estudiantes
+          if (linkMisSolicitudes) linkMisSolicitudes.style.display = '';
+        } else if (userRole === 2) {
+          // Mostrar "Gestión" para trabajadores sociales
+          if (linkGestion) linkGestion.style.display = '';
+        }
+      }
+    }
+  });
 </script>
+
+<!-- Chatbot de Navegación -->
+<script src="js/chatbot.js"></script>
 
 </html>
