@@ -7,7 +7,7 @@
   // VARIABLES GLOBALES
   // ============================================
   let socket = null;
-  let idEstudiante = null;
+  let cedulaEstudiante = null;  // CAMBIO: Ahora usamos cedula en vez de idEstudiante
   const API_BASE = 'http://localhost:3000';
 
   // Elementos del DOM
@@ -20,7 +20,7 @@
   // ============================================
   // INICIALIZACIÓN
   // ============================================
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', async () => {
     console.log('🔔 Inicializando sistema de notificaciones...');
 
     // Verificar que el usuario está autenticado
@@ -30,13 +30,33 @@
     }
 
     const user = getCurrentUser();
-    if (!user || !user.id) {
+    if (!user) {
       console.warn('⚠️ Usuario no autenticado');
       return;
     }
 
-    idEstudiante = user.id;
-    console.log('✅ Usuario autenticado:', idEstudiante);
+    // CAMBIO: Obtener la cédula del usuario desde el endpoint /api/auth/me
+    try {
+      const token = getAuthToken();
+      const response = await fetch('http://localhost:3000/api/auth/me', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const userData = await response.json();
+        cedulaEstudiante = userData.Cedula;
+        console.log('✅ Usuario autenticado con cédula:', cedulaEstudiante);
+      } else {
+        console.warn('⚠️ No se pudo obtener la cédula del usuario');
+        return;
+      }
+    } catch (error) {
+      console.error('❌ Error al obtener datos del usuario:', error);
+      return;
+    }
 
     // Solo inicializar notificaciones para estudiantes (rol 1)
     if (user.rol !== 1) {
@@ -68,8 +88,8 @@
 
       socket.on('connect', () => {
         console.log('🔌 Conectado a Socket.IO');
-        // Registrar al estudiante en su sala
-        socket.emit('registrar_estudiante', idEstudiante);
+        // CAMBIO: Registrar al estudiante en su sala usando cedula
+        socket.emit('registrar_estudiante', cedulaEstudiante);
       });
 
       socket.on('disconnect', () => {
@@ -154,7 +174,8 @@
   async function cargarNotificaciones() {
     try {
       const token = getAuthToken();
-      const response = await fetch(`${API_BASE}/api/notificaciones/${idEstudiante}`, {
+      // CAMBIO: Usar cedula en vez de idEstudiante
+      const response = await fetch(`${API_BASE}/api/notificaciones/${cedulaEstudiante}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -293,7 +314,8 @@
   async function marcarTodasComoLeidas() {
     try {
       const token = getAuthToken();
-      const response = await fetch(`${API_BASE}/api/notificaciones/estudiante/${idEstudiante}/leer-todas`, {
+      // CAMBIO: Usar cedula en vez de idEstudiante
+      const response = await fetch(`${API_BASE}/api/notificaciones/estudiante/${cedulaEstudiante}/leer-todas`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -359,7 +381,8 @@
   async function actualizarConteo() {
     try {
       const token = getAuthToken();
-      const response = await fetch(`${API_BASE}/api/notificaciones/${idEstudiante}/conteo`, {
+      // CAMBIO: Usar cedula en vez de idEstudiante
+      const response = await fetch(`${API_BASE}/api/notificaciones/${cedulaEstudiante}/conteo`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

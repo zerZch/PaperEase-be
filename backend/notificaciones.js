@@ -16,22 +16,23 @@ function setSocketIO(socketIO) {
 // ============================================
 /**
  * Crea una nueva notificación para un estudiante
- * @param {number} idEstudiante - ID del estudiante
+ * CAMBIO: Ahora usa Cedula en vez de IdEstudiante
+ * @param {string} cedula - Cédula del estudiante
  * @param {string} idFormulario - ID del formulario relacionado
  * @param {string} tipo - Tipo de notificación ('aprobada', 'rechazada', 'info')
  * @param {string} titulo - Título de la notificación
  * @param {string} mensaje - Mensaje de la notificación
  * @returns {Promise<object>}
  */
-async function crearNotificacion(idEstudiante, idFormulario, tipo, titulo, mensaje) {
+async function crearNotificacion(cedula, idFormulario, tipo, titulo, mensaje) {
   return new Promise((resolve, reject) => {
     const sql = `
       INSERT INTO notificaciones
-      (IdEstudiante, id_formulario, tipo, titulo, mensaje, leida)
+      (Cedula, id_formulario, tipo, titulo, mensaje, leida)
       VALUES (?, ?, ?, ?, ?, 0)
     `;
 
-    conexion.query(sql, [idEstudiante, idFormulario, tipo, titulo, mensaje], (err, result) => {
+    conexion.query(sql, [cedula, idFormulario, tipo, titulo, mensaje], (err, result) => {
       if (err) {
         console.error('❌ Error al crear notificación:', err);
         reject(err);
@@ -40,7 +41,7 @@ async function crearNotificacion(idEstudiante, idFormulario, tipo, titulo, mensa
 
       const notificacion = {
         id_notificacion: result.insertId,
-        IdEstudiante: idEstudiante,
+        Cedula: cedula,
         id_formulario: idFormulario,
         tipo: tipo,
         titulo: titulo,
@@ -49,12 +50,12 @@ async function crearNotificacion(idEstudiante, idFormulario, tipo, titulo, mensa
         fecha_creacion: new Date()
       };
 
-      console.log(`✅ Notificación creada: ID ${result.insertId} para estudiante ${idEstudiante}`);
+      console.log(`✅ Notificación creada: ID ${result.insertId} para estudiante con cédula ${cedula}`);
 
       // Emitir la notificación en tiempo real vía Socket.IO
       if (io) {
-        io.to(`estudiante_${idEstudiante}`).emit('nueva_notificacion', notificacion);
-        console.log(`📡 Notificación emitida a estudiante_${idEstudiante}`);
+        io.to(`estudiante_${cedula}`).emit('nueva_notificacion', notificacion);
+        console.log(`📡 Notificación emitida a estudiante_${cedula}`);
       }
 
       resolve(notificacion);
@@ -64,18 +65,19 @@ async function crearNotificacion(idEstudiante, idFormulario, tipo, titulo, mensa
 
 // ============================================
 // ENDPOINT: Obtener Notificaciones del Usuario
-// GET /api/notificaciones/:idEstudiante
+// CAMBIO: Ahora usa cedula en vez de idEstudiante
+// GET /api/notificaciones/:cedula
 // ============================================
-router.get('/:idEstudiante', (req, res) => {
-  const { idEstudiante } = req.params;
+router.get('/:cedula', (req, res) => {
+  const { cedula } = req.params;
   const { solo_no_leidas } = req.query;
 
-  console.log(`🔔 Obteniendo notificaciones del estudiante ${idEstudiante}`);
+  console.log(`🔔 Obteniendo notificaciones del estudiante con cédula ${cedula}`);
 
   let sql = `
     SELECT
       id_notificacion,
-      IdEstudiante,
+      Cedula,
       id_formulario,
       tipo,
       titulo,
@@ -84,7 +86,7 @@ router.get('/:idEstudiante', (req, res) => {
       fecha_creacion,
       fecha_lectura
     FROM notificaciones
-    WHERE IdEstudiante = ?
+    WHERE Cedula = ?
   `;
 
   if (solo_no_leidas === 'true') {
@@ -93,7 +95,7 @@ router.get('/:idEstudiante', (req, res) => {
 
   sql += ' ORDER BY fecha_creacion DESC LIMIT 50';
 
-  conexion.query(sql, [idEstudiante], (err, results) => {
+  conexion.query(sql, [cedula], (err, results) => {
     if (err) {
       console.error('❌ Error al obtener notificaciones:', err);
       return res.status(500).json({
@@ -109,20 +111,21 @@ router.get('/:idEstudiante', (req, res) => {
 
 // ============================================
 // ENDPOINT: Obtener Conteo de No Leídas
-// GET /api/notificaciones/:idEstudiante/conteo
+// CAMBIO: Ahora usa cedula en vez de idEstudiante
+// GET /api/notificaciones/:cedula/conteo
 // ============================================
-router.get('/:idEstudiante/conteo', (req, res) => {
-  const { idEstudiante } = req.params;
+router.get('/:cedula/conteo', (req, res) => {
+  const { cedula } = req.params;
 
-  console.log(`🔢 Obteniendo conteo de notificaciones no leídas del estudiante ${idEstudiante}`);
+  console.log(`🔢 Obteniendo conteo de notificaciones no leídas del estudiante con cédula ${cedula}`);
 
   const sql = `
     SELECT COUNT(*) as no_leidas
     FROM notificaciones
-    WHERE IdEstudiante = ? AND leida = 0
+    WHERE Cedula = ? AND leida = 0
   `;
 
-  conexion.query(sql, [idEstudiante], (err, results) => {
+  conexion.query(sql, [cedula], (err, results) => {
     if (err) {
       console.error('❌ Error al contar notificaciones:', err);
       return res.status(500).json({
@@ -181,20 +184,21 @@ router.put('/:id/leer', (req, res) => {
 
 // ============================================
 // ENDPOINT: Marcar Todas como Leídas
-// PUT /api/notificaciones/estudiante/:idEstudiante/leer-todas
+// CAMBIO: Ahora usa cedula en vez de idEstudiante
+// PUT /api/notificaciones/estudiante/:cedula/leer-todas
 // ============================================
-router.put('/estudiante/:idEstudiante/leer-todas', (req, res) => {
-  const { idEstudiante } = req.params;
+router.put('/estudiante/:cedula/leer-todas', (req, res) => {
+  const { cedula } = req.params;
 
-  console.log(`👁️ Marcando todas las notificaciones del estudiante ${idEstudiante} como leídas`);
+  console.log(`👁️ Marcando todas las notificaciones del estudiante con cédula ${cedula} como leídas`);
 
   const sql = `
     UPDATE notificaciones
     SET leida = 1, fecha_lectura = NOW()
-    WHERE IdEstudiante = ? AND leida = 0
+    WHERE Cedula = ? AND leida = 0
   `;
 
-  conexion.query(sql, [idEstudiante], (err, result) => {
+  conexion.query(sql, [cedula], (err, result) => {
     if (err) {
       console.error('❌ Error al marcar todas como leídas:', err);
       return res.status(500).json({
@@ -251,16 +255,17 @@ router.delete('/:id', (req, res) => {
 
 // ============================================
 // ENDPOINT: Eliminar Todas las Notificaciones
-// DELETE /api/notificaciones/estudiante/:idEstudiante/eliminar-todas
+// CAMBIO: Ahora usa cedula en vez de idEstudiante
+// DELETE /api/notificaciones/estudiante/:cedula/eliminar-todas
 // ============================================
-router.delete('/estudiante/:idEstudiante/eliminar-todas', (req, res) => {
-  const { idEstudiante } = req.params;
+router.delete('/estudiante/:cedula/eliminar-todas', (req, res) => {
+  const { cedula } = req.params;
 
-  console.log(`🗑️ Eliminando todas las notificaciones del estudiante ${idEstudiante}`);
+  console.log(`🗑️ Eliminando todas las notificaciones del estudiante con cédula ${cedula}`);
 
-  const sql = 'DELETE FROM notificaciones WHERE IdEstudiante = ?';
+  const sql = 'DELETE FROM notificaciones WHERE Cedula = ?';
 
-  conexion.query(sql, [idEstudiante], (err, result) => {
+  conexion.query(sql, [cedula], (err, result) => {
     if (err) {
       console.error('❌ Error al eliminar todas las notificaciones:', err);
       return res.status(500).json({

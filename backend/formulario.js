@@ -253,15 +253,16 @@ router.post('/formulario', upload.single('archivo'), (req, res) => {
       validarId('SELECT IdTipoP FROM tipoprograma WHERE IdTipoP = ?', [tipoProgramaId], 'tipo de programa'),
       validarId('SELECT IdPrograma FROM programa WHERE IdPrograma = ? AND IdTipoP = ?', [programaId, tipoProgramaId], 'programa')
     ]).then(() => {
-      // 6. OBTENER EL IdEstudiante USANDO LA CÉDULA
-      console.log('🔍 Obteniendo IdEstudiante para la cédula:', cedula);
-      const sqlGetEstudiante = 'SELECT IdEstudiante FROM estudiante WHERE Cedula = ? AND Activo = 1';
+      // 6. VERIFICAR QUE EL ESTUDIANTE EXISTE CON ESA CÉDULA
+      // CAMBIO: Ya no necesitamos IdEstudiante, solo verificamos que la cédula existe
+      console.log('🔍 Verificando que existe estudiante con cédula:', cedula);
+      const sqlGetEstudiante = 'SELECT Cedula FROM estudiante WHERE Cedula = ? AND Activo = 1';
 
       conexion.query(sqlGetEstudiante, [cedula], (err, estudianteRows) => {
         if (err) {
-          console.error('❌ Error al obtener IdEstudiante:', err);
+          console.error('❌ Error al verificar estudiante:', err);
           return res.status(500).json({
-            error: 'Error al obtener información del estudiante',
+            error: 'Error al verificar información del estudiante',
             sql_error: err.message
           });
         }
@@ -273,20 +274,19 @@ router.post('/formulario', upload.single('archivo'), (req, res) => {
           });
         }
 
-        const idEstudiante = estudianteRows[0].IdEstudiante;
-        console.log('✅ IdEstudiante encontrado:', idEstudiante);
+        console.log('✅ Estudiante encontrado con cédula:', cedula);
 
-        // 7. TODAS LAS VALIDACIONES PASARON - INSERTAR LA NUEVA SOLICITUD CON IdEstudiante
+        // 7. TODAS LAS VALIDACIONES PASARON - INSERTAR LA NUEVA SOLICITUD
+        // CAMBIO: Ya no se inserta IdEstudiante, solo Cedula (la tabla formulario_estudiante NO tiene columna IdEstudiante)
         console.log('💾 Insertando nueva solicitud en la base de datos...');
         const insertSQL = `
           INSERT INTO formulario_estudiante
-          (id_formulario, IdEstudiante, Nombre, Apellido, Cedula, IdGenero, IdFacultad, IdTipoP, IdPrograma, Archivo)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          (id_formulario, Nombre, Apellido, Cedula, IdGenero, IdFacultad, IdTipoP, IdPrograma, Archivo)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
         const insertParams = [
           idFormulario,
-          idEstudiante,
           nombre,
           apellido,
           cedula,

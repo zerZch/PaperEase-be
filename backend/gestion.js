@@ -42,24 +42,24 @@ router.put('/solicitud/:id/aprobar', async (req, res) => {
 
     console.log(`✅ Solicitud ${id} aprobada exitosamente`);
 
-    // Obtener el IdEstudiante de la solicitud para crear la notificación
-    const sqlEstudiante = 'SELECT IdEstudiante FROM formulario_estudiante WHERE id_formulario = ?';
+    // CAMBIO: Obtener la Cedula del estudiante (no IdEstudiante, ya que esa columna no existe en formulario_estudiante)
+    const sqlEstudiante = 'SELECT Cedula FROM formulario_estudiante WHERE id_formulario = ?';
     conexion.query(sqlEstudiante, [id], async (err, rows) => {
       if (err || rows.length === 0) {
-        console.error('⚠️  No se pudo obtener el IdEstudiante para la notificación');
+        console.error('⚠️  No se pudo obtener la Cedula del estudiante para la notificación');
       } else {
-        const idEstudiante = rows[0].IdEstudiante;
+        const cedula = rows[0].Cedula;
 
         // Crear notificación
         try {
           await crearNotificacion(
-            idEstudiante,
+            cedula,
             id,
             'aprobada',
             '¡Solicitud Aprobada!',
             `Tu solicitud #${id} ha sido aprobada. ${notas ? 'Notas: ' + notas : ''}`
           );
-          console.log(`🔔 Notificación de aprobación enviada al estudiante ${idEstudiante}`);
+          console.log(`🔔 Notificación de aprobación enviada al estudiante con cédula ${cedula}`);
         } catch (notifErr) {
           console.error('❌ Error al crear notificación:', notifErr);
         }
@@ -113,24 +113,24 @@ router.put('/solicitud/:id/rechazar', async (req, res) => {
 
     console.log(`✅ Solicitud ${id} rechazada exitosamente`);
 
-    // Obtener el IdEstudiante de la solicitud para crear la notificación
-    const sqlEstudiante = 'SELECT IdEstudiante FROM formulario_estudiante WHERE id_formulario = ?';
+    // CAMBIO: Obtener la Cedula del estudiante (no IdEstudiante, ya que esa columna no existe en formulario_estudiante)
+    const sqlEstudiante = 'SELECT Cedula FROM formulario_estudiante WHERE id_formulario = ?';
     conexion.query(sqlEstudiante, [id], async (err, rows) => {
       if (err || rows.length === 0) {
-        console.error('⚠️  No se pudo obtener el IdEstudiante para la notificación');
+        console.error('⚠️  No se pudo obtener la Cedula del estudiante para la notificación');
       } else {
-        const idEstudiante = rows[0].IdEstudiante;
+        const cedula = rows[0].Cedula;
 
         // Crear notificación
         try {
           await crearNotificacion(
-            idEstudiante,
+            cedula,
             id,
             'rechazada',
             'Solicitud Rechazada',
             `Tu solicitud #${id} ha sido rechazada. ${notas ? 'Motivo: ' + notas : 'Por favor, contacta con Bienestar Estudiantil para más información.'}`
           );
-          console.log(`🔔 Notificación de rechazo enviada al estudiante ${idEstudiante}`);
+          console.log(`🔔 Notificación de rechazo enviada al estudiante con cédula ${cedula}`);
         } catch (notifErr) {
           console.error('❌ Error al crear notificación:', notifErr);
         }

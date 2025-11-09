@@ -134,10 +134,10 @@ app.use((error, req, res, next) => {
 io.on('connection', (socket) => {
   console.log(`🔌 Cliente conectado: ${socket.id}`);
 
-  // El cliente envía su ID de estudiante al conectarse
-  socket.on('registrar_estudiante', (idEstudiante) => {
-    socket.join(`estudiante_${idEstudiante}`);
-    console.log(`📝 Estudiante ${idEstudiante} registrado en la sala`);
+  // CAMBIO: El cliente envía su cédula (no IdEstudiante) al conectarse
+  socket.on('registrar_estudiante', (cedula) => {
+    socket.join(`estudiante_${cedula}`);
+    console.log(`📝 Estudiante con cédula ${cedula} registrado en la sala`);
   });
 
   socket.on('disconnect', () => {
