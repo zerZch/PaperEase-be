@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PaperEase • Bienestar Estudiantil UTP</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/novedades.css">
   <link rel="stylesheet" href="css/chatbot.css">
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <script src="js/authHelper.js"></script>
@@ -23,6 +24,7 @@
       <nav class="nav">
         <a href="MenuPE.html">Inicio</a>
         <a href="Programas.html">Programas</a>
+        <a href="Novedades.html">Novedades</a>
         <a href="Solicitudes.html" id="linkMisSolicitudes">Mis Solicitudes</a>
       </nav>
     </div>
@@ -72,33 +74,114 @@
 <!-- Novedades Section -->
 <section class="novedades-section">
   <div class="container">
-    <h2>Novedades</h2>
-    <p>Descubre las últimas actualizaciones y mejoras en PaperEase.</p>
+    <div class="novedades-header">
+      <div>
+        <h2>Próximos Eventos</h2>
+        <p>Descubre los próximos eventos y actividades de Bienestar Estudiantil.</p>
+      </div>
+      <a href="Novedades.html" class="btn-ver-todos">
+        <span>Ver todos</span>
+        <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+      </a>
+    </div>
 
-    <div class="novedades-grid">
+    <div id="novedadesGrid" class="novedades-grid">
+      <!-- Las tarjetas se cargarán dinámicamente con el diseño original -->
       <div class="novedad-card card1">
-        <img src="/Universidad/17Mimi/PaperEase-be/frontend/public/Novedades/empleo.avif" alt="Descripción 1">
-        <h4>01/ Próxima feria de empleo</h4>
+        <div class="novedad-skeleton-overlay"></div>
       </div>
       <div class="novedad-card card2">
-        <img src="/Universidad/17Mimi/PaperEase-be/frontend/public/Novedades/feriadesalud.jpeg" alt="Descripción 2">
-        <h4>02/ Feria de Salud</h4>
+        <div class="novedad-skeleton-overlay"></div>
       </div>
       <div class="novedad-card card3">
-        <img src="ruta/a/imagen3.jpg" alt="Descripción 3">
-        <h4>03/ Feria de Salud</h4>
+        <div class="novedad-skeleton-overlay"></div>
       </div>
       <div class="novedad-card card5">
-        <img src="/Universidad/17Mimi/PaperEase-be/frontend/public/Novedades/valores.jpeg" alt="Descripción 5">
-        <h4>05/ Campaña de valores 2024</h4>
+        <div class="novedad-skeleton-overlay"></div>
       </div>
       <div class="novedad-card card6">
-        <img src="/Universidad/17Mimi/PaperEase-be/frontend/public/Novedades/lentes.avif" alt="Descripción 6">
-        <h4>04/ Nuevos aros</h4>
+        <div class="novedad-skeleton-overlay"></div>
       </div>
     </div>
   </div>
 </section>
+
+<!-- Modal de Detalles del Evento -->
+<div class="evento-modal-overlay" id="eventoModalOverlayMenu">
+  <div class="evento-modal">
+    
+    <div class="modal-imagen-container" id="modalImagenContainerMenu">
+      <button class="modal-close" id="modalCloseBtnMenu">
+        <i data-lucide="x"></i>
+      </button>
+      <!-- Imagen del evento -->
+      <img id="modalImagenMenu" src="" alt="Imagen del evento" class="modal-imagen">
+    </div>
+
+    <div class="modal-content">
+
+      <!-- Información principal -->
+      <div class="modal-header">
+        <h2 id="modalTituloMenu" class="modal-titulo">Título del Evento</h2>
+        <div id="modalCategoriaMenu" class="modal-categoria-badge">
+          <i data-lucide="tag" class="categoria-icon-modal"></i>
+          <span id="modalCategoriaTextoMenu">Categoría</span>
+        </div>
+      </div>
+
+      <!-- Detalles -->
+      <div class="modal-detalles">
+        <div class="modal-detalle-item">
+          <div class="detalle-icon-wrapper">
+            <i data-lucide="calendar-days" class="detalle-icon"></i>
+          </div>
+          <div class="detalle-content">
+            <span class="detalle-label">Fecha</span>
+            <span id="modalFechaMenu" class="detalle-valor">15 de Noviembre, 2025</span>
+          </div>
+        </div>
+
+        <div class="modal-detalle-item" id="modalHorarioItemMenu">
+          <div class="detalle-icon-wrapper">
+            <i data-lucide="clock" class="detalle-icon"></i>
+          </div>
+          <div class="detalle-content">
+            <span class="detalle-label">Horario</span>
+            <span id="modalHorarioMenu" class="detalle-valor">09:00 - 17:00</span>
+          </div>
+        </div>
+
+        <div class="modal-detalle-item" id="modalLugarItemMenu">
+          <div class="detalle-icon-wrapper">
+            <i data-lucide="map-pin" class="detalle-icon"></i>
+          </div>
+          <div class="detalle-content">
+            <span class="detalle-label">Lugar</span>
+            <span id="modalLugarMenu" class="detalle-valor">Auditorio Central</span>
+          </div>
+        </div>
+
+        <div class="modal-detalle-item" id="modalDescripcionItemMenu">
+          <div class="detalle-icon-wrapper">
+            <i data-lucide="file-text" class="detalle-icon"></i>
+          </div>
+          <div class="detalle-content">
+            <span class="detalle-label">Descripción</span>
+            <p id="modalDescripcionMenu" class="detalle-valor">Descripción del evento...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón de acción -->
+      <div class="modal-footer">
+        <button class="btn-modal-cerrar" onclick="cerrarModalMenu()">
+          <i data-lucide="check-circle"></i>
+          Entendido
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Call to Action -->
 <section class="cta">

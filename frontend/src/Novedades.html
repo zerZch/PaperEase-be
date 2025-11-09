@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Novedades • PaperEase</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/novedades.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <!-- Logo + Texto -->
+      <div class="logo-container">
+         <img src="imagenes/logo.png" alt="PaperEase Logo" class="logo" />
+        <span class="logo-text">PaperEase</span>
+      </div>
+
+      <!-- Navegación -->
+      <nav class="nav">
+        <a href="MenuPE.html">Inicio</a>
+        <a href="Programas.html">Programas</a>
+        <a href="Novedades.html" class="active">Novedades</a>
+        <a href="Solicitudes.html" id="linkMisSolicitudes">Mis Solicitudes</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Novedades -->
+  <section class="novedades-hero">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-icon" data-lucide="megaphone"></div>
+        <h1>Próximos Eventos y Novedades</h1>
+        <p>Mantente al día con los eventos, programas y actividades de Bienestar Estudiantil UTP</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filtros -->
+  <section class="filters-section">
+    <div class="container">
+      <div class="filters-wrapper">
+        <div class="filter-group">
+          <div class="filter-icon" data-lucide="filter"></div>
+          <select id="filtroCategoria" class="filter-select">
+            <option value="todos">Todas las categorías</option>
+            <option value="Programa de Salud">Programa de Salud</option>
+            <option value="Promoción Social">Promoción Social</option>
+            <option value="Deportivo">Deportivo</option>
+            <option value="Académico">Académico</option>
+            <option value="Feria">Feria</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <div class="filter-icon" data-lucide="calendar"></div>
+          <select id="filtroMes" class="filter-select">
+            <option value="todos">Todos los meses</option>
+            <option value="1">Enero</option>
+            <option value="2">Febrero</option>
+            <option value="3">Marzo</option>
+            <option value="4">Abril</option>
+            <option value="5">Mayo</option>
+            <option value="6">Junio</option>
+            <option value="7">Julio</option>
+            <option value="8">Agosto</option>
+            <option value="9">Septiembre</option>
+            <option value="10">Octubre</option>
+            <option value="11">Noviembre</option>
+            <option value="12">Diciembre</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Grid de Eventos -->
+  <section class="eventos-section">
+    <div class="container">
+      <div id="eventosGrid" class="eventos-grid">
+        <!-- Los eventos se cargarán dinámicamente aquí -->
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>Cargando eventos...</p>
+        </div>
+      </div>
+      <div id="noResultados" class="no-resultados" style="display: none;">
+        <div class="no-resultados-icon" data-lucide="search-x"></div>
+        <h3>No se encontraron eventos</h3>
+        <p>Intenta ajustar los filtros para ver más resultados</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="cta-novedades">
+    <div class="container">
+      <div class="cta-card">
+        <div class="cta-icon" data-lucide="bell"></div>
+        <h2>¿Quieres estar al tanto de todo?</h2>
+        <p>No te pierdas ninguna actividad, programa o evento de Bienestar Estudiantil</p>
+        <a href="Programas.html" class="btn-cta">Ver todos los programas</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-flex">
+      <p>© 2025 PaperEase • Universidad Tecnológica de Panamá</p>
+      <div class="footer-links">
+        <a href="#">Ayuda</a>
+        <a href="#">Privacidad</a>
+        <a href="#">Términos</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal de Detalles del Evento -->
+  <div class="evento-modal-overlay" id="eventoModalOverlay">
+    <div class="evento-modal">
+      
+        <div class="modal-imagen-container" id="modalImagenContainer">
+          <button class="modal-close" id="modalCloseBtn">
+            <i data-lucide="x"></i>
+          </button>
+          <!-- Imagen del evento -->
+          <img id="modalImagen" src="" alt="Imagen del evento" class="modal-imagen">
+        </div>
+
+      <div class="modal-content">
+        <!-- Información principal -->
+        <div class="modal-header">
+          <h2 id="modalTitulo" class="modal-titulo">Título del Evento</h2>
+          <div id="modalCategoria" class="modal-categoria-badge">
+            <i data-lucide="tag" class="categoria-icon-modal"></i>
+            <span id="modalCategoriaTexto">Categoría</span>
+          </div>
+        </div>
+
+        <!-- Detalles -->
+        <div class="modal-detalles">
+          <div class="modal-detalle-item">
+            <div class="detalle-icon-wrapper">
+              <i data-lucide="calendar-days" class="detalle-icon"></i>
+            </div>
+            <div class="detalle-content">
+              <span class="detalle-label">Fecha</span>
+              <span id="modalFecha" class="detalle-valor">15 de Noviembre, 2025</span>
+            </div>
+          </div>
+
+          <div class="modal-detalle-item" id="modalHorarioItem">
+            <div class="detalle-icon-wrapper">
+              <i data-lucide="clock" class="detalle-icon"></i>
+            </div>
+            <div class="detalle-content">
+              <span class="detalle-label">Horario</span>
+              <span id="modalHorario" class="detalle-valor">09:00 - 17:00</span>
+            </div>
+          </div>
+
+          <div class="modal-detalle-item" id="modalLugarItem">
+            <div class="detalle-icon-wrapper">
+              <i data-lucide="map-pin" class="detalle-icon"></i>
+            </div>
+            <div class="detalle-content">
+              <span class="detalle-label">Lugar</span>
+              <span id="modalLugar" class="detalle-valor">Auditorio Central</span>
+            </div>
+          </div>
+
+          <div class="modal-detalle-item" id="modalDescripcionItem">
+            <div class="detalle-icon-wrapper">
+              <i data-lucide="file-text" class="detalle-icon"></i>
+            </div>
+            <div class="detalle-content">
+              <span class="detalle-label">Descripción</span>
+              <p id="modalDescripcion" class="detalle-valor">Descripción del evento...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botón de acción -->
+        <div class="modal-footer">
+          <button class="btn-modal-cerrar" onclick="cerrarModal()">
+            <i data-lucide="check-circle"></i>
+            Entendido
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+  </script>
+  <script src="js/novedadesPage.js"></script>
+</body>
+</html>
