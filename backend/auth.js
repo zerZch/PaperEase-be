@@ -163,6 +163,7 @@ router.post('/register', async (req, res) => {
           email: email,
           nombre: nombre,
           apellido: apellido,
+          cedula: usuario.Cedula,  // ← AGREGAR ESTA LÍNEA
           rol: 2,
           tipoUsuario: 'trabajadora'
         }
