@@ -144,9 +144,9 @@ document.addEventListener('DOMContentLoaded', () => {
         rol: selectedRole === 'estudiante' ? 1 : 2
       };
 
-      // Agregar facultad solo si es estudiante
+      // Agregar facultad solo si es estudiante (CORRECCIÓN: usar idFacultad)
       if (selectedRole === 'estudiante') {
-        datosRegistro.facultad = parseInt(facultad);
+        datosRegistro.idFacultad = parseInt(facultad);
       }
 
       // Llamada al backend para registrar el usuario

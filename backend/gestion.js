@@ -1,13 +1,14 @@
 const express = require('express');
 const conexion = require('./conexion');
 const PDFDocument = require('pdfkit');
+const { crearNotificacion } = require('./notificaciones');
 const router = express.Router();
 
 // ============================================
 // ENDPOINT: Aprobar Solicitud
 // PUT /api/gestion/solicitud/:id/aprobar
 // ============================================
-router.put('/solicitud/:id/aprobar', (req, res) => {
+router.put('/solicitud/:id/aprobar', async (req, res) => {
   const { id } = req.params;
   const { notas } = req.body;
 
@@ -22,7 +23,7 @@ router.put('/solicitud/:id/aprobar', (req, res) => {
     WHERE id_formulario = ?
   `;
 
-  conexion.query(sql, [notas || null, id], (err, result) => {
+  conexion.query(sql, [notas || null, id], async (err, result) => {
     if (err) {
       console.error('❌ Error al aprobar solicitud:', err);
       return res.status(500).json({
@@ -40,6 +41,31 @@ router.put('/solicitud/:id/aprobar', (req, res) => {
     }
 
     console.log(`✅ Solicitud ${id} aprobada exitosamente`);
+
+    // Obtener el IdEstudiante de la solicitud para crear la notificación
+    const sqlEstudiante = 'SELECT IdEstudiante FROM formulario_estudiante WHERE id_formulario = ?';
+    conexion.query(sqlEstudiante, [id], async (err, rows) => {
+      if (err || rows.length === 0) {
+        console.error('⚠️  No se pudo obtener el IdEstudiante para la notificación');
+      } else {
+        const idEstudiante = rows[0].IdEstudiante;
+
+        // Crear notificación
+        try {
+          await crearNotificacion(
+            idEstudiante,
+            id,
+            'aprobada',
+            '¡Solicitud Aprobada!',
+            `Tu solicitud #${id} ha sido aprobada. ${notas ? 'Notas: ' + notas : ''}`
+          );
+          console.log(`🔔 Notificación de aprobación enviada al estudiante ${idEstudiante}`);
+        } catch (notifErr) {
+          console.error('❌ Error al crear notificación:', notifErr);
+        }
+      }
+    });
+
     res.json({
       success: true,
       message: 'Solicitud aprobada exitosamente',
@@ -53,7 +79,7 @@ router.put('/solicitud/:id/aprobar', (req, res) => {
 // ENDPOINT: Rechazar Solicitud
 // PUT /api/gestion/solicitud/:id/rechazar
 // ============================================
-router.put('/solicitud/:id/rechazar', (req, res) => {
+router.put('/solicitud/:id/rechazar', async (req, res) => {
   const { id } = req.params;
   const { notas } = req.body;
 
@@ -68,7 +94,7 @@ router.put('/solicitud/:id/rechazar', (req, res) => {
     WHERE id_formulario = ?
   `;
 
-  conexion.query(sql, [notas || null, id], (err, result) => {
+  conexion.query(sql, [notas || null, id], async (err, result) => {
     if (err) {
       console.error('❌ Error al rechazar solicitud:', err);
       return res.status(500).json({
@@ -86,6 +112,31 @@ router.put('/solicitud/:id/rechazar', (req, res) => {
     }
 
     console.log(`✅ Solicitud ${id} rechazada exitosamente`);
+
+    // Obtener el IdEstudiante de la solicitud para crear la notificación
+    const sqlEstudiante = 'SELECT IdEstudiante FROM formulario_estudiante WHERE id_formulario = ?';
+    conexion.query(sqlEstudiante, [id], async (err, rows) => {
+      if (err || rows.length === 0) {
+        console.error('⚠️  No se pudo obtener el IdEstudiante para la notificación');
+      } else {
+        const idEstudiante = rows[0].IdEstudiante;
+
+        // Crear notificación
+        try {
+          await crearNotificacion(
+            idEstudiante,
+            id,
+            'rechazada',
+            'Solicitud Rechazada',
+            `Tu solicitud #${id} ha sido rechazada. ${notas ? 'Motivo: ' + notas : 'Por favor, contacta con Bienestar Estudiantil para más información.'}`
+          );
+          console.log(`🔔 Notificación de rechazo enviada al estudiante ${idEstudiante}`);
+        } catch (notifErr) {
+          console.error('❌ Error al crear notificación:', notifErr);
+        }
+      }
+    });
+
     res.json({
       success: true,
       message: 'Solicitud rechazada exitosamente',

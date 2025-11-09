@@ -128,58 +128,87 @@
  </div>
  </footer>
 
+<script src="js/authHelper.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('.formulario');
     const messageDiv = document.getElementById('message');
     const loadingDiv = document.getElementById('loading');
 
-    // ⭐⭐⭐ OBTENER LA CÉDULA DESDE LA SESIÓN AL CARGAR LA PÁGINA ⭐⭐⭐
+    // ⭐⭐⭐ OBTENER LOS DATOS DEL USUARIO DESDE EL NUEVO ENDPOINT ⭐⭐⭐
     async function cargarDatosSesion() {
         try {
-            console.log('🔍 Obteniendo datos de sesión...');
-            
-            const response = await fetch('http://localhost:3000/api/auth/sesion', {
+            console.log('🔍 Obteniendo datos del usuario autenticado...');
+
+            // Obtener el token de autenticación
+            const token = getAuthToken();
+
+            if (!token) {
+                console.warn('⚠️ No hay token de autenticación');
+                showMessage('⚠️ Debes iniciar sesión para hacer una solicitud', true);
+                setTimeout(() => {
+                    window.location.href = 'LogIn.html';
+                }, 2000);
+                return;
+            }
+
+            // Llamar al nuevo endpoint /api/auth/me
+            const response = await fetch('http://localhost:3000/api/auth/me', {
                 method: 'GET',
-                credentials: 'include' // Importante para enviar cookies de sesión
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
             });
 
             const data = await response.json();
-            
-            if (data.autenticado && data.cedula) {
-                console.log('✅ Cédula obtenida de la sesión:', data.cedula);
-                
-                // ⭐ Llenar el campo oculto de cédula
-                document.getElementById('cedula').value = data.cedula;
-                
-                // Opcional: prellenar otros campos si existen
-                if (data.nombre) {
-                    document.getElementById('nombre').value = data.nombre;
-                }
-                if (data.apellido) {
-                    document.getElementById('apellido').value = data.apellido;
-                }
-                if (data.genero) {
-                    const radioGenero = document.querySelector(`input[name="genero"][value="${data.genero}"]`);
-                    if (radioGenero) radioGenero.checked = true;
-                }
-                if (data.facultad) {
-                    document.getElementById('facultad').value = data.facultad;
-                }
-                
-            } else {
-                console.warn('⚠️ Usuario no autenticado o sin cédula');
-                showMessage('⚠️ Debes iniciar sesión para hacer una solicitud', true);
-                
 
+            if (data.autenticado && data.Cedula) {
+                console.log('✅ Datos del usuario obtenidos:', data);
+
+                // ⭐ Llenar el campo oculto de cédula
+                document.getElementById('cedula').value = data.Cedula;
+
+                // Prellenar otros campos automáticamente
+                if (data.Nombre) {
+                    document.getElementById('nombre').value = data.Nombre;
+                    document.getElementById('nombre').setAttribute('readonly', true);
+                }
+                if (data.Apellido) {
+                    document.getElementById('apellido').value = data.Apellido;
+                    document.getElementById('apellido').setAttribute('readonly', true);
+                }
+                if (data.IdGenero) {
+                    const radioGenero = document.querySelector(`input[name="genero"][value="${data.IdGenero}"]`);
+                    if (radioGenero) {
+                        radioGenero.checked = true;
+                        // Hacer readonly todos los radios de género
+                        document.querySelectorAll('input[name="genero"]').forEach(radio => {
+                            radio.setAttribute('disabled', true);
+                        });
+                    }
+                }
+                if (data.IdFacultad) {
+                    document.getElementById('facultad').value = data.IdFacultad;
+                    document.getElementById('facultad').setAttribute('disabled', true);
+                }
+
+                console.log('✅ Campos del formulario prellenados con datos del usuario');
+
+            } else {
+                console.warn('⚠️ Usuario no autenticado o sin datos completos');
+                showMessage('⚠️ Debes iniciar sesión para hacer una solicitud', true);
+                setTimeout(() => {
+                    window.location.href = 'LogIn.html';
+                }, 2000);
             }
-            
+
         } catch (error) {
-            console.error('❌ Error al obtener datos de sesión:', error);
+            console.error('❌ Error al obtener datos del usuario:', error);
             showMessage('❌ Error al verificar sesión. Por favor, inicia sesión nuevamente.', true);
-            
+
             setTimeout(() => {
-                window.location.href = 'login.html';
+                window.location.href = 'LogIn.html';
             }, 2000);
         }
     }
@@ -245,11 +274,24 @@ document.addEventListener('DOMContentLoaded', function() {
         showLoading(true);
 
         const formData = new FormData(form);
-        
+
+        // Habilitar campos deshabilitados temporalmente para que se envíen
+        const facultadSelect = document.getElementById('facultad');
+        const wasDisabled = facultadSelect.disabled;
+        if (wasDisabled) {
+            facultadSelect.disabled = false;
+            formData.set('facultad', facultadSelect.value);
+        }
+
         // Verificar que la cédula esté en el FormData
         console.log('📤 Datos del formulario:');
         for (let [key, value] of formData.entries()) {
             console.log(`   ${key}: ${value}`);
+        }
+
+        // Restaurar estado disabled
+        if (wasDisabled) {
+            facultadSelect.disabled = true;
         }
 
         fetch('http://localhost:3000/api/formulario', {
