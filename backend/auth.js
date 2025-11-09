@@ -291,6 +291,7 @@ router.post('/login', async (req, res) => {
         email: usuario.Email,
         nombre: usuario.Nombre,
         apellido: usuario.Apellido,
+        cedula: usuario.Cedula,  // ← AGREGAR ESTA LÍNEA
         rol: tipoUsuario,
         tipoUsuario: rol
       }

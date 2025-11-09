@@ -26,6 +26,10 @@
         <a href="Estadisticas_Dashboard.html">Estadísticas</a>
         <a href="eventos.html">Eventos</a>
         <a href="gestion.html" class="active">Gestión</a>
+                <!-- Botón de Cerrar Sesión -->
+        <button id="btnCerrarSesion" class="btn-logout" style="background: #4D869C; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 6px;">
+          <i data-lucide="log-out" style="width: 16px; height: 16px;"></i>
+        </button>
       </nav>
       </div>
   </header>
@@ -238,5 +242,37 @@
       </div>
     </div>
   </footer>
+  <!-- Socket.IO Client -->
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+
+<!-- Sistema de Notificaciones -->
+<script src="js/notificaciones.js"></script>
+
+<!-- Botón de Cerrar Sesión -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const btnCerrarSesion = document.getElementById('btnCerrarSesion');
+
+  if (btnCerrarSesion) {
+    btnCerrarSesion.addEventListener('click', async () => {
+      const confirmar = confirm('¿Estás seguro de que deseas cerrar sesión?');
+
+      if (confirmar) {
+        // Usar la función logout del authHelper.js
+        if (typeof logout === 'function') {
+          await logout();
+        } else {
+          // Fallback si authHelper no está disponible
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('currentUser');
+          localStorage.removeItem('isLoggedIn');
+          localStorage.removeItem('userRole');
+          window.location.href = 'LogIn.html';
+        }
+      }
+    });
+  }
+});
+</script>
 </body>
 </html>
