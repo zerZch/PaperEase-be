@@ -42,22 +42,29 @@ router.put('/solicitud/:id/aprobar', async (req, res) => {
 
     console.log(`✅ Solicitud ${id} aprobada exitosamente`);
 
-    // CAMBIO: Obtener la Cedula del estudiante (no IdEstudiante, ya que esa columna no existe en formulario_estudiante)
-    const sqlEstudiante = 'SELECT Cedula FROM formulario_estudiante WHERE id_formulario = ?';
+    // CAMBIO: Obtener la Cedula y el nombre del Programa
+    const sqlEstudiante = `
+      SELECT fe.Cedula, p.Programa 
+      FROM formulario_estudiante fe
+      LEFT JOIN programa p ON fe.IdPrograma = p.IdPrograma
+      WHERE fe.id_formulario = ?
+    `;
+    
     conexion.query(sqlEstudiante, [id], async (err, rows) => {
       if (err || rows.length === 0) {
         console.error('⚠️  No se pudo obtener la Cedula del estudiante para la notificación');
       } else {
         const cedula = rows[0].Cedula;
+        const nombrePrograma = rows[0].Programa || 'Programa no especificado';
 
-        // Crear notificación
+        // Crear notificación con el nombre del programa
         try {
           await crearNotificacion(
             cedula,
             id,
             'aprobada',
             '¡Solicitud Aprobada!',
-            `Tu solicitud #${id} ha sido aprobada. ${notas ? 'Notas: ' + notas : ''}`
+            `Tu solicitud para el programa "${nombrePrograma}" ha sido aprobada. ${notas ? 'Notas: ' + notas : ''}`
           );
           console.log(`🔔 Notificación de aprobación enviada al estudiante con cédula ${cedula}`);
         } catch (notifErr) {
@@ -113,22 +120,29 @@ router.put('/solicitud/:id/rechazar', async (req, res) => {
 
     console.log(`✅ Solicitud ${id} rechazada exitosamente`);
 
-    // CAMBIO: Obtener la Cedula del estudiante (no IdEstudiante, ya que esa columna no existe en formulario_estudiante)
-    const sqlEstudiante = 'SELECT Cedula FROM formulario_estudiante WHERE id_formulario = ?';
+    // CAMBIO: Obtener la Cedula y el nombre del Programa
+    const sqlEstudiante = `
+      SELECT fe.Cedula, p.Programa 
+      FROM formulario_estudiante fe
+      LEFT JOIN programa p ON fe.IdPrograma = p.IdPrograma
+      WHERE fe.id_formulario = ?
+    `;
+    
     conexion.query(sqlEstudiante, [id], async (err, rows) => {
       if (err || rows.length === 0) {
         console.error('⚠️  No se pudo obtener la Cedula del estudiante para la notificación');
       } else {
         const cedula = rows[0].Cedula;
+        const nombrePrograma = rows[0].Programa || 'Programa no especificado';
 
-        // Crear notificación
+        // Crear notificación con el nombre del programa
         try {
           await crearNotificacion(
             cedula,
             id,
             'rechazada',
             'Solicitud Rechazada',
-            `Tu solicitud #${id} ha sido rechazada. ${notas ? 'Motivo: ' + notas : 'Por favor, contacta con Bienestar Estudiantil para más información.'}`
+            `Tu solicitud para el programa "${nombrePrograma}" ha sido rechazada. ${notas ? 'Motivo: ' + notas : 'Por favor, contacta con Bienestar Estudiantil para más información.'}`
           );
           console.log(`🔔 Notificación de rechazo enviada al estudiante con cédula ${cedula}`);
         } catch (notifErr) {
