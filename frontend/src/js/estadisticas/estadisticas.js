@@ -1,18 +1,16 @@
 // Variables globales
 let facultadesChart;
 let timeChart;
-let yearChart;
 
 // Estados de filtro separados para cada gráfica
 let facultadesFilters = {
     programa: '',
     tipo: '',
-    facultad: '',
-    year: 2025  // Año por defecto 2025
+    year: 2025
 };
 
 let timeChartFilters = {
-    yearStart: 2023,  // Rango por defecto 2023-2025
+    yearStart: 2025,
     yearEnd: 2025
 };
 
@@ -37,10 +35,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Actualizar títulos iniciales
     updateChartTitles();
 
-    // Event listeners para filtros en cascada de la gráfica de facultades
-    const tipoSelectFacultades = document.getElementById('tipoProgramaFacultades');
-    if (tipoSelectFacultades) {
-        tipoSelectFacultades.addEventListener('change', function() {
+    // Event listeners para filtros en cascada
+    const tipoSelect = document.getElementById('tipoProgramaFacultades');
+    if (tipoSelect) {
+        tipoSelect.addEventListener('change', function() {
             const tipoSeleccionado = this.value;
             console.log('Tipo de programa seleccionado:', tipoSeleccionado);
             filtrarProgramasPorTipo(tipoSeleccionado, 'programaFacultades');
@@ -61,7 +59,6 @@ async function loadDashboardData() {
         const data = await response.json();
         console.log('Datos del dashboard recibidos:', data);
         
-        // Actualizar métricas en el HTML
         updateMetrics(data);
         
     } catch (error) {
@@ -93,7 +90,6 @@ async function loadFacultadesData() {
         const params = new URLSearchParams();
         if (facultadesFilters.programa) params.append('programa', facultadesFilters.programa);
         if (facultadesFilters.tipo) params.append('tipo', facultadesFilters.tipo);
-        if (facultadesFilters.facultad) params.append('facultad', facultadesFilters.facultad);
         if (facultadesFilters.year) params.append('year', facultadesFilters.year);
 
         const url = `${API_BASE_URL}/facultades${params.toString() ? '?' + params.toString() : ''}`;
@@ -132,7 +128,8 @@ function createFacultadesChart(data) {
     
     const colors = [
         '#10b981', '#06d6a0', '#2dd4bf', '#22d3ee', 
-        '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7'
+        '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7',
+        '#ec4899', '#f43f5e', '#f59e0b', '#eab308'
     ];
     
     facultadesChart = new Chart(ctx, {
@@ -173,7 +170,7 @@ function createFacultadesChart(data) {
                             const label = context.label || '';
                             const value = context.parsed;
                             const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                            const percentage = ((value / total) * 100).toFixed(1);
+                            const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
                             return `${label}: ${value} (${percentage}%)`;
                         }
                     }
@@ -185,110 +182,58 @@ function createFacultadesChart(data) {
     console.log('Gráfico de facultades creado');
 }
 
-
-
 // Función para crear el gráfico por año (Hombres y Mujeres)
 async function loadYearData() {
     try {
         console.log('=== CARGANDO DATOS DE PARTICIPACIÓN POR GÉNERO ===');
         console.log('Filtros de gráfica temporal:', timeChartFilters);
 
-        // Construir parámetros de filtro usando solo los filtros del timeChart
         const params = new URLSearchParams();
         if (timeChartFilters.yearStart) params.append('yearStart', timeChartFilters.yearStart);
         if (timeChartFilters.yearEnd) params.append('yearEnd', timeChartFilters.yearEnd);
 
-        // Intentar múltiples rutas por si hay problemas de configuración
-        const possibleUrls = [
-            `/api/participacion-genero-anual${params.toString() ? '?' + params.toString() : ''}`,
-            `/participacion-genero-anual${params.toString() ? '?' + params.toString() : ''}`,
-            `participacion-genero-anual${params.toString() ? '?' + params.toString() : ''}`
-        ];
+        const url = `${API_BASE_URL}/participacion-genero-anual${params.toString() ? '?' + params.toString() : ''}`;
+        console.log('URL:', url);
+        
+        const response = await fetch(url);
 
-        let response = null;
-        let usedUrl = '';
-
-        for (const url of possibleUrls) {
-            try {
-                console.log(`Intentando cargar desde: ${url}`);
-                response = await fetch(url);
-                if (response.ok) {
-                    usedUrl = url;
-                    break;
-                }
-            } catch (error) {
-                console.log(`Error con URL ${url}:`, error.message);
-                continue;
-            }
-        }
-
-        if (!response || !response.ok) {
-            throw new Error(`No se pudo cargar desde ninguna URL. Último status: ${response?.status}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
-        console.log('Datos recibidos desde', usedUrl, ':', data);
+        console.log('Datos recibidos:', data);
 
-        // Verificar que los datos tengan la estructura correcta
         if (!data.years || !data.hombres || !data.mujeres) {
             console.error('Estructura de datos incorrecta:', data);
             throw new Error('Datos incompletos recibidos del servidor');
         }
 
-        // Crear el gráfico
         createYearChart(data);
-
-        // Mostrar información de debug si está disponible
-        if (data.debug) {
-            console.log('=== INFORMACIÓN DE DEBUG ===');
-            console.log('Total participantes:', data.debug.totalParticipantes);
-            console.log('Géneros disponibles:', data.debug.generosDisponibles);
-        }
-
-        if (data.emergency) {
-            console.warn('⚠️ Usando datos de emergencia debido a error en el servidor');
-        }
 
     } catch (error) {
         console.error('Error cargando datos de participación por género:', error);
-
-        // Datos de emergencia para mostrar algo en el gráfico
-        const yearStart = timeChartFilters.yearStart || 2023;
-        const yearEnd = timeChartFilters.yearEnd || 2025;
-        const years = [];
-        for (let year = yearStart; year <= yearEnd; year++) {
-            years.push(year.toString());
-        }
-
-        const emergencyData = {
-            years: years,
-            hombres: years.map(() => Math.floor(Math.random() * 50) + 30),
-            mujeres: years.map(() => Math.floor(Math.random() * 50) + 25)
-        };
-
-        console.log('Usando datos de emergencia:', emergencyData);
-        createYearChart(emergencyData);
+        showError('No se pudieron cargar los datos de participación por género');
     }
 }
 
-// Función mejorada para crear el gráfico
+// Función para crear el gráfico
 function createYearChart(data) {
     const canvas = document.getElementById('timeChart');
     if (!canvas) {
-        console.error('Canvas yearChart no encontrado - verificar que existe en el HTML');
+        console.error('Canvas timeChart no encontrado');
         return;
     }
     
     const ctx = canvas.getContext('2d');
     
-    // Destruir gráfico anterior si existe
-    if (window.yearChartInstance) {
-        window.yearChartInstance.destroy();
+    if (timeChart) {
+        timeChart.destroy();
     }
     
     console.log('Creando gráfico con datos:', data);
     
-    window.yearChartInstance = new Chart(ctx, {
+    timeChart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: data.years,
@@ -331,12 +276,17 @@ function createYearChart(data) {
             },
             plugins: {
                 title: {
-                    display: true,
-                    text: 'Participación por Género y Año'
+                    display: false
                 },
                 legend: {
                     display: true,
                     position: 'top'
+                },
+                tooltip: {
+                    backgroundColor: '#1f2937',
+                    titleColor: '#fff',
+                    bodyColor: '#fff',
+                    cornerRadius: 8
                 }
             },
             animation: {
@@ -347,17 +297,11 @@ function createYearChart(data) {
     
     console.log('Gráfico de participación por género creado exitosamente');
 }
+
 // Función para cargar opciones de filtros
 async function loadFilterOptions() {
     try {
-        // Cargar facultades para la gráfica de facultades
-        const facultadesResponse = await fetch(`${API_BASE_URL}/facultades-lista`);
-        if (facultadesResponse.ok) {
-            const facultades = await facultadesResponse.json();
-            populateSelect('facultadFacultades', facultades, 'Facultad', 'Facultad');
-        }
-
-        // Cargar tipos de programa para la gráfica de facultades
+        // Cargar tipos de programa para filtros
         const tiposResponse = await fetch(`${API_BASE_URL}/tipos-programa`);
         if (tiposResponse.ok) {
             const tipos = await tiposResponse.json();
@@ -365,7 +309,7 @@ async function loadFilterOptions() {
             populateSelect('tipoProgramaFacultades', tipos, 'TipoPrograma', 'TipoPrograma');
         }
 
-        // Cargar programas para la gráfica de facultades
+        // Cargar programas para filtros
         const programasResponse = await fetch(`${API_BASE_URL}/programas`);
         if (programasResponse.ok) {
             const programas = await programasResponse.json();
@@ -384,7 +328,6 @@ function populateProgramasSelect(programas, selectId) {
     const select = document.getElementById(selectId);
     if (!select) return;
 
-    // Limpiar select
     select.innerHTML = '<option value="">Todos los programas</option>';
 
     const grupos = {};
@@ -416,24 +359,20 @@ function filtrarProgramasPorTipo(tipoSeleccionado, selectId) {
     const select = document.getElementById(selectId);
     if (!select || !todosLosProgramas) return;
 
-    // Limpiar select y resetear valor seleccionado
     select.innerHTML = '<option value="">Todos los programas</option>';
     select.value = '';
 
-    // Si no hay tipo seleccionado, mostrar todos
     if (!tipoSeleccionado) {
         populateProgramasSelect(todosLosProgramas, selectId);
         return;
     }
 
-    // Filtrar programas por tipo
     const programasFiltrados = todosLosProgramas.filter(p =>
         p.TipoPrograma === tipoSeleccionado
     );
 
     console.log(`Programas filtrados para ${tipoSeleccionado}:`, programasFiltrados);
 
-    // Agregar solo los programas del tipo seleccionado
     if (programasFiltrados.length > 0) {
         const optgroup = document.createElement('optgroup');
         optgroup.label = tipoSeleccionado;
@@ -487,19 +426,16 @@ function closeFacultadesModal() {
 }
 
 function applyFacultadesFilters() {
-    const facultadSelect = document.getElementById('facultadFacultades');
     const tipoSelect = document.getElementById('tipoProgramaFacultades');
     const programaSelect = document.getElementById('programaFacultades');
     const yearSelect = document.getElementById('yearFacultades');
 
-    facultadesFilters.facultad = facultadSelect ? facultadSelect.value : '';
     facultadesFilters.tipo = tipoSelect ? tipoSelect.value : '';
     facultadesFilters.programa = programaSelect ? programaSelect.value : '';
     facultadesFilters.year = yearSelect ? parseInt(yearSelect.value) || 2025 : 2025;
 
     console.log('Aplicando filtros de facultades:', facultadesFilters);
 
-    // Solo recargar la gráfica de facultades
     loadFacultadesData();
     updateFacultadesChartTitles();
     closeFacultadesModal();
@@ -509,20 +445,16 @@ function resetFacultadesFilters() {
     facultadesFilters = {
         programa: '',
         tipo: '',
-        facultad: '',
         year: 2025
     };
 
-    const facultadSelect = document.getElementById('facultadFacultades');
     const tipoSelect = document.getElementById('tipoProgramaFacultades');
     const programaSelect = document.getElementById('programaFacultades');
     const yearSelect = document.getElementById('yearFacultades');
 
-    if (facultadSelect) facultadSelect.value = '';
     if (tipoSelect) tipoSelect.value = '';
     if (yearSelect) yearSelect.value = '2025';
 
-    // Restaurar todos los programas en el select
     if (todosLosProgramas && todosLosProgramas.length > 0) {
         populateProgramasSelect(todosLosProgramas, 'programaFacultades');
     }
@@ -553,10 +485,9 @@ function applyTimeChartFilters() {
     const yearStartSelect = document.getElementById('yearStartTime');
     const yearEndSelect = document.getElementById('yearEndTime');
 
-    timeChartFilters.yearStart = yearStartSelect ? parseInt(yearStartSelect.value) || 2023 : 2023;
+    timeChartFilters.yearStart = yearStartSelect ? parseInt(yearStartSelect.value) || 2025 : 2025;
     timeChartFilters.yearEnd = yearEndSelect ? parseInt(yearEndSelect.value) || 2025 : 2025;
 
-    // Validar que yearStart no sea mayor que yearEnd
     if (timeChartFilters.yearStart > timeChartFilters.yearEnd) {
         showError('El año de inicio no puede ser mayor que el año final');
         return;
@@ -564,7 +495,6 @@ function applyTimeChartFilters() {
 
     console.log('Aplicando filtros de gráfica temporal:', timeChartFilters);
 
-    // Solo recargar la gráfica temporal
     loadYearData();
     updateTimeChartTitles();
     closeTimeChartModal();
@@ -572,14 +502,14 @@ function applyTimeChartFilters() {
 
 function resetTimeChartFilters() {
     timeChartFilters = {
-        yearStart: 2023,
+        yearStart: 2025,
         yearEnd: 2025
     };
 
     const yearStartSelect = document.getElementById('yearStartTime');
     const yearEndSelect = document.getElementById('yearEndTime');
 
-    if (yearStartSelect) yearStartSelect.value = '2023';
+    if (yearStartSelect) yearStartSelect.value = '2025';
     if (yearEndSelect) yearEndSelect.value = '2025';
 
     loadYearData();
@@ -590,42 +520,29 @@ function resetTimeChartFilters() {
 // FUNCIONES PARA ACTUALIZAR TÍTULOS
 // ============================================
 
-// Función para actualizar títulos de la gráfica de facultades
 function updateFacultadesChartTitles() {
     const chartTitle = document.getElementById('chartTitle');
     const chartSubtitle = document.getElementById('chartSubtitle');
     const chartBadges = document.getElementById('chartBadges');
 
-    // Actualizar título
     if (chartTitle) {
         let title = 'Facultades - Participación';
         if (facultadesFilters.programa) {
             title += ` - ${facultadesFilters.programa}`;
         } else if (facultadesFilters.tipo) {
             title += ` - ${facultadesFilters.tipo}`;
-        } else if (facultadesFilters.facultad) {
-            title += ` - ${facultadesFilters.facultad}`;
         } else {
             title += ' General';
         }
         chartTitle.textContent = title;
     }
 
-    // Actualizar subtítulo con el año
     if (chartSubtitle) {
         chartSubtitle.textContent = `Período ${facultadesFilters.year || 2025}`;
     }
 
-    // Actualizar badges
     if (chartBadges) {
         chartBadges.innerHTML = '';
-
-        if (facultadesFilters.facultad) {
-            const badge = document.createElement('span');
-            badge.className = 'badge';
-            badge.textContent = facultadesFilters.facultad;
-            chartBadges.appendChild(badge);
-        }
 
         if (facultadesFilters.programa) {
             const badge = document.createElement('span');
@@ -648,7 +565,6 @@ function updateFacultadesChartTitles() {
     }
 }
 
-// Función para actualizar títulos de la gráfica temporal
 function updateTimeChartTitles() {
     const timeChartTitle = document.getElementById('timeChartTitle');
     const timeChartSubtitle = document.getElementById('timeChartSubtitle');
@@ -656,7 +572,11 @@ function updateTimeChartTitles() {
     if (timeChartTitle) {
         let title = 'Participación por Año';
         if (timeChartFilters.yearStart && timeChartFilters.yearEnd) {
-            title += ` (${timeChartFilters.yearStart}-${timeChartFilters.yearEnd})`;
+            if (timeChartFilters.yearStart === timeChartFilters.yearEnd) {
+                title += ` (${timeChartFilters.yearStart})`;
+            } else {
+                title += ` (${timeChartFilters.yearStart}-${timeChartFilters.yearEnd})`;
+            }
         }
         timeChartTitle.textContent = title;
     }
@@ -666,7 +586,6 @@ function updateTimeChartTitles() {
     }
 }
 
-// Función para actualizar todos los títulos (llamada en inicialización)
 function updateChartTitles() {
     updateFacultadesChartTitles();
     updateTimeChartTitles();
