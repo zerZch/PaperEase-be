@@ -32,12 +32,6 @@
     <!-- Header Section -->
     <div class="header-section">
       <h1 class="page-title">Panel Central</h1>
-      <button class="filter-button" onclick="openModal()">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z"/>
-        </svg>
-        Filtrar
-      </button>
     </div>
 
     <!-- Métricas principales -->
@@ -101,21 +95,41 @@
       <div class="charts-grid">
         <div class="chart-card">
           <div class="chart-header">
-            <div class="badges" id="chartBadges">
-              <div class="badge">Todos los Programas</div>
+            <div class="chart-header-top">
+              <div>
+                <div class="badges" id="chartBadges">
+                  <div class="badge">Todos los Programas</div>
+                </div>
+                <h3 class="chart-title" id="chartTitle">Facultades - Participación General</h3>
+                <p class="chart-subtitle" id="chartSubtitle">Período 2025</p>
+              </div>
+              <button class="chart-filter-button" onclick="openFacultadesModal()">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z"/>
+                </svg>
+                Filtrar
+              </button>
             </div>
-            <h3 class="chart-title" id="chartTitle">Facultades - Participación General</h3>
-            <p class="chart-subtitle">Período 2023-2024</p>
           </div>
           <div class="chart-container">
             <canvas id="facultadesChart"></canvas>
           </div>
         </div>
-        
+
         <div class="chart-card">
           <div class="chart-header">
-            <h3 class="chart-title" id="timeChartTitle">Participación por Año</h3>
-            <p class="chart-subtitle">Banco de Sangre 2023-2024</p>
+            <div class="chart-header-top">
+              <div>
+                <h3 class="chart-title" id="timeChartTitle">Participación por Año</h3>
+                <p class="chart-subtitle" id="timeChartSubtitle">Distribución por género (2023-2025)</p>
+              </div>
+              <button class="chart-filter-button" onclick="openTimeChartModal()">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z"/>
+                </svg>
+                Filtrar
+              </button>
+            </div>
           </div>
           <div class="chart-container">
             <canvas id="timeChart"></canvas>
@@ -126,53 +140,95 @@
   </div>
 </div>
 
-<!-- Modal de Filtros -->
-<div class="modal-overlay" id="filterModal">
+<!-- Modal de Filtros - Gráfica de Facultades -->
+<div class="modal-overlay" id="facultadesModal">
   <div class="modal">
     <div class="modal-header">
-      <h3 class="modal-title">Filtros de Estadísticas</h3>
-      <button class="close-button" onclick="closeModal()">
+      <h3 class="modal-title">Filtros - Gráfica de Programas</h3>
+      <button class="close-button" onclick="closeFacultadesModal()">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
         </svg>
       </button>
     </div>
 
+    <!-- Filtro de Facultad -->
     <div class="filter-group">
-        <label for="tipoPrograma">Tipo de Programa:</label>
-        <select id="tipoPrograma" class="filter-select">
-            <option value="">Todos los tipos</option>
-            <option value="salud">Salud</option>
-            <option value="promocion_social">Promoción Social</option>
+        <label for="facultadFacultades">Facultad:</label>
+        <select id="facultadFacultades" class="filter-select">
+            <option value="">Todas las facultades</option>
         </select>
     </div>
 
     <div class="filter-group">
-        <label for="programa">Programa Específico:</label>
-        <select id="programa" class="filter-select">
-            <option value="">Seleccione una opción</option>
-            <optgroup label="Salud">
-                <option value="consejeria">Consejería Personal</option>
-                <option value="sangre">Banco de Sangre</option>
-                <option value="gastos_medicos">Ayuda en Gastos Médicos</option>
-                <option value="feria_salud">Feria de Salud</option>
-                <option value="gafas">Compra de Lentes</option>
-                <option value="medicina">Apoyo en Medicamentos</option>
-                <option value="poliza">Póliza de Salud</option>
-            </optgroup>
-            <optgroup label="Promoción Social">
-                <option value="canasta">Canasta Navideña</option>
-                <option value="valores">Campaña de Fortalecimiento de Valores</option>
-                <option value="concienciacion">Campaña de Concienciación de Instalaciones</option>
-                <option value="feria_empleo">Feria de Empleo</option>
-                <option value="siniestros">Apoyo en Casos de Siniestros</option>
-            </optgroup>
+        <label for="tipoProgramaFacultades">Tipo de Programa:</label>
+        <select id="tipoProgramaFacultades" class="filter-select">
+            <option value="">Todos los tipos</option>
+        </select>
+    </div>
+
+    <div class="filter-group">
+        <label for="programaFacultades">Programa Específico:</label>
+        <select id="programaFacultades" class="filter-select">
+            <option value="">Todos los programas</option>
+        </select>
+    </div>
+
+    <!-- Filtro de Año -->
+    <div class="filter-group">
+        <label for="yearFacultades">Año:</label>
+        <select id="yearFacultades" class="filter-select">
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <option value="2025" selected>2025</option>
         </select>
     </div>
 
     <div class="modal-actions">
-      <button class="reset-button" onclick="resetFilters()">Reiniciar Filtros</button>
-      <button class="apply-button" onclick="applyFilters()">Aplicar Filtros</button>
+      <button class="reset-button" onclick="resetFacultadesFilters()">Reiniciar Filtros</button>
+      <button class="apply-button" onclick="applyFacultadesFilters()">Aplicar Filtros</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Filtros - Gráfica de Participación por Año -->
+<div class="modal-overlay" id="timeChartModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Filtros - Participación por Año</h3>
+      <button class="close-button" onclick="closeTimeChartModal()">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Filtro de Rango de Años -->
+    <div class="filter-group">
+        <label>Rango de Años (2023-2025):</label>
+        <div class="year-range-container">
+            <div class="year-input-group">
+                <label for="yearStartTime" class="year-label">Desde:</label>
+                <select id="yearStartTime" class="filter-select">
+                    <option value="2023" selected>2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                </select>
+            </div>
+            <div class="year-input-group">
+                <label for="yearEndTime" class="year-label">Hasta:</label>
+                <select id="yearEndTime" class="filter-select">
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025" selected>2025</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="reset-button" onclick="resetTimeChartFilters()">Reiniciar Filtros</button>
+      <button class="apply-button" onclick="applyTimeChartFilters()">Aplicar Filtros</button>
     </div>
   </div>
 </div>
