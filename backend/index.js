@@ -2,7 +2,19 @@ const express = require('express');
 const path = require('path');
 const multer = require('multer');
 const session = require('express-session');
+const http = require('http');
+const socketIO = require('socket.io');
 const app = express();
+const server = http.createServer(app);
+
+// Configurar Socket.IO
+const io = socketIO(server, {
+  cors: {
+    origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5500'],
+    credentials: true
+  }
+});
+
 const novedadesRouter = require('./novedades.js');
 const eventosRouter = require('./eventos.js');
 const cors = require('cors');
@@ -10,6 +22,7 @@ const estadisticasRoutes = require('./estadisticas.js');
 const formularioRoutes = require('./formulario');
 const authRoutes = require('./auth.js');
 const gestionRoutes = require('./gestion.js');
+const notificacionesRoutes = require('./notificaciones.js');
 
 // Configurar CORS
 app.use(cors({
@@ -38,6 +51,9 @@ app.use((req, res, next) => {
   next();
 });
 
+// Inyectar Socket.IO en el módulo de notificaciones
+notificacionesRoutes.setSocketIO(io);
+
 // Montar routers con las rutas correctas
 app.use('/api/novedades', novedadesRouter);     // http://localhost:3000/api/novedades
 app.use('/api/eventos', eventosRouter);         // http://localhost:3000/api/eventos
@@ -45,6 +61,7 @@ app.use('/api/estadisticas', estadisticasRoutes); // http://localhost:3000/api/e
 app.use('/api', formularioRoutes);
 app.use('/api/auth', authRoutes);               // http://localhost:3000/api/auth
 app.use('/api/gestion', gestionRoutes);         // http://localhost:3000/api/gestion
+app.use('/api/notificaciones', notificacionesRoutes); // http://localhost:3000/api/notificaciones
 // Servir archivos estáticos
 // Servir archivos estáticos
 app.use('/public', express.static(path.join(__dirname, '../frontend/public')));
@@ -111,12 +128,30 @@ app.use((error, req, res, next) => {
   });
 });
 
+// ============================================
+// CONFIGURACIÓN DE SOCKET.IO
+// ============================================
+io.on('connection', (socket) => {
+  console.log(`🔌 Cliente conectado: ${socket.id}`);
+
+  // CAMBIO: El cliente envía su cédula (no IdEstudiante) al conectarse
+  socket.on('registrar_estudiante', (cedula) => {
+    socket.join(`estudiante_${cedula}`);
+    console.log(`📝 Estudiante con cédula ${cedula} registrado en la sala`);
+  });
+
+  socket.on('disconnect', () => {
+    console.log(`🔌 Cliente desconectado: ${socket.id}`);
+  });
+});
+
 // Iniciar servidor
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
   console.log(`📊 Estadísticas disponibles en http://localhost:${PORT}/api/estadisticas/dashboard`);
   console.log(`🧪 Prueba la API en http://localhost:${PORT}/api/test`);
+  console.log(`🔔 Sistema de notificaciones en tiempo real activado`);
 });
 
 module.exports = app;

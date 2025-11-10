@@ -292,6 +292,7 @@ router.post('/login', async (req, res) => {
         email: usuario.Email,
         nombre: usuario.Nombre,
         apellido: usuario.Apellido,
+        cedula: usuario.Cedula,  // ← AGREGAR ESTA LÍNEA
         rol: tipoUsuario,
         tipoUsuario: rol
       }
@@ -458,6 +459,12 @@ router.get('/verificar', async (req, res) => {
         email: usuario.Email,
         nombre: usuario.Nombre,
         apellido: usuario.Apellido,
+        cedula: usuario.Cedula,
+        idGenero: usuario.IdGenero,
+        genero: usuario.Genero,
+        idFacultad: usuario.IdFacultad,
+        facultad: usuario.Facultad,
+        fechaNacimiento: usuario.FechaNacimiento,
         rol: TipoUsuario,
         tipoUsuario: TipoUsuario === 1 ? 'estudiante' : 'trabajadora'
       }
@@ -467,6 +474,109 @@ router.get('/verificar', async (req, res) => {
     console.error('Error al verificar sesión:', error);
     return res.status(500).json({
       autenticado: false,
+    });
+  }
+});
+
+// =====================================================
+// FUNCIÓN: Obtener Datos del Usuario Completos (⭐ NUEVO)
+// =====================================================
+/**
+ * GET /api/auth/me
+ * Headers: { Authorization: Bearer <token> }
+ * Devuelve TODOS los datos del usuario autenticado (incluyendo cédula)
+ */
+router.get('/me', async (req, res) => {
+  const token = req.headers.authorization?.replace('Bearer ', '');
+
+  if (!token) {
+    return res.status(401).json({
+      autenticado: false,
+      error: 'Token no proporcionado'
+    });
+  }
+
+  try {
+    // Verificar token en BD
+    const [sesion] = await conexion.promise().query(
+      'SELECT * FROM sesiones WHERE TokenSesion = ? AND Activa = 1 AND FechaExpiracion > NOW()',
+      [token]
+    );
+
+    if (sesion.length === 0) {
+      return res.status(401).json({
+        autenticado: false,
+        error: 'Sesión inválida o expirada'
+      });
+    }
+
+    const { IdUsuarioRef, TipoUsuario } = sesion[0];
+
+    // Obtener información completa del usuario
+    let usuario = null;
+
+    if (TipoUsuario === 1) {
+      // ESTUDIANTE - Incluir TODOS los campos
+      const [estudiantes] = await conexion.promise().query(
+        `SELECT
+          e.IdEstudiante as id,
+          e.Email,
+          e.Nombre,
+          e.Apellido,
+          e.Cedula,
+          e.IdGenero,
+          e.IdFacultad,
+          e.FechaNacimiento,
+          g.Genero,
+          f.Facultad
+        FROM estudiante e
+        LEFT JOIN genero g ON e.IdGenero = g.IdGenero
+        LEFT JOIN facultad f ON e.IdFacultad = f.IdFacultad
+        WHERE e.IdEstudiante = ? AND e.Activo = 1`,
+        [IdUsuarioRef]
+      );
+      usuario = estudiantes[0];
+
+    } else {
+      // TRABAJADOR SOCIAL
+      const [trabajadores] = await conexion.promise().query(
+        `SELECT
+          ts.IdTrabajadorSocial as id,
+          ts.Email,
+          ts.Nombre,
+          ts.Apellido,
+          ts.Cedula,
+          ts.IdGenero,
+          ts.Departamento,
+          ts.Oficina,
+          g.Genero
+        FROM trabajador_social ts
+        LEFT JOIN genero g ON ts.IdGenero = g.IdGenero
+        WHERE ts.IdTrabajadorSocial = ? AND ts.Activo = 1`,
+        [IdUsuarioRef]
+      );
+      usuario = trabajadores[0];
+    }
+
+    if (!usuario) {
+      return res.status(401).json({
+        autenticado: false,
+        error: 'Usuario no encontrado'
+      });
+    }
+
+    return res.status(200).json({
+      autenticado: true,
+      ...usuario,
+      rol: TipoUsuario,
+      tipoUsuario: TipoUsuario === 1 ? 'estudiante' : 'trabajadora'
+    });
+
+  } catch (error) {
+    console.error('Error al obtener datos del usuario:', error);
+    return res.status(500).json({
+      autenticado: false,
+      error: 'Error al obtener datos del usuario'
     });
   }
 });

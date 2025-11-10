@@ -253,51 +253,76 @@ router.post('/formulario', upload.single('archivo'), (req, res) => {
       validarId('SELECT IdTipoP FROM tipoprograma WHERE IdTipoP = ?', [tipoProgramaId], 'tipo de programa'),
       validarId('SELECT IdPrograma FROM programa WHERE IdPrograma = ? AND IdTipoP = ?', [programaId, tipoProgramaId], 'programa')
     ]).then(() => {
-      // 6. TODAS LAS VALIDACIONES PASARON - INSERTAR LA NUEVA SOLICITUD
-      console.log('💾 Insertando nueva solicitud en la base de datos...');
-      const insertSQL = `
-        INSERT INTO formulario_estudiante 
-        (id_formulario, Nombre, Apellido, Cedula, IdGenero, IdFacultad, IdTipoP, IdPrograma, Archivo) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `;
-      
-      const insertParams = [
-        idFormulario, 
-        nombre, 
-        apellido, 
-        cedula, 
-        generoId, 
-        facultadId, 
-        tipoProgramaId, 
-        programaId, 
-        archivo
-      ];
-      
-      console.log('📝 Parámetros para inserción:', insertParams);
-      
-      conexion.query(insertSQL, insertParams, (err, result) => {
+      // 6. VERIFICAR QUE EL ESTUDIANTE EXISTE CON ESA CÉDULA
+      // CAMBIO: Ya no necesitamos IdEstudiante, solo verificamos que la cédula existe
+      console.log('🔍 Verificando que existe estudiante con cédula:', cedula);
+      const sqlGetEstudiante = 'SELECT Cedula FROM estudiante WHERE Cedula = ? AND Activo = 1';
+
+      conexion.query(sqlGetEstudiante, [cedula], (err, estudianteRows) => {
         if (err) {
-          console.error('❌ Error al insertar solicitud:', err);
-          console.error('❌ SQL:', insertSQL);
-          console.error('❌ Parámetros:', insertParams);
-          return res.status(500).json({ 
-            error: 'Error al guardar la solicitud',
-            sql_error: err.message,
-            sql_code: err.code,
-            sql_errno: err.errno
+          console.error('❌ Error al verificar estudiante:', err);
+          return res.status(500).json({
+            error: 'Error al verificar información del estudiante',
+            sql_error: err.message
           });
         }
-        
-        console.log('✅ Solicitud insertada exitosamente:', result);
-        console.log('🎉 === FIN DE PROCESAMIENTO EXITOSO ===\n');
-        
-        res.json({ 
-          success: true,
-          message: 'Solicitud registrada exitosamente', 
-          id: idFormulario,
-          archivo: archivo,
-          insertId: result.insertId,
-          affectedRows: result.affectedRows
+
+        if (estudianteRows.length === 0) {
+          console.error('❌ No se encontró estudiante con la cédula:', cedula);
+          return res.status(404).json({
+            error: 'No se encontró un estudiante registrado con esa cédula. Por favor, verifica que estás autenticado correctamente.'
+          });
+        }
+
+        console.log('✅ Estudiante encontrado con cédula:', cedula);
+
+        // 7. TODAS LAS VALIDACIONES PASARON - INSERTAR LA NUEVA SOLICITUD
+        // CAMBIO: Ya no se inserta IdEstudiante, solo Cedula (la tabla formulario_estudiante NO tiene columna IdEstudiante)
+        console.log('💾 Insertando nueva solicitud en la base de datos...');
+        const insertSQL = `
+          INSERT INTO formulario_estudiante
+          (id_formulario, Nombre, Apellido, Cedula, IdGenero, IdFacultad, IdTipoP, IdPrograma, Archivo)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+
+        const insertParams = [
+          idFormulario,
+          nombre,
+          apellido,
+          cedula,
+          generoId,
+          facultadId,
+          tipoProgramaId,
+          programaId,
+          archivo
+        ];
+
+        console.log('📝 Parámetros para inserción:', insertParams);
+
+        conexion.query(insertSQL, insertParams, (err, result) => {
+          if (err) {
+            console.error('❌ Error al insertar solicitud:', err);
+            console.error('❌ SQL:', insertSQL);
+            console.error('❌ Parámetros:', insertParams);
+            return res.status(500).json({
+              error: 'Error al guardar la solicitud',
+              sql_error: err.message,
+              sql_code: err.code,
+              sql_errno: err.errno
+            });
+          }
+
+          console.log('✅ Solicitud insertada exitosamente:');
+          console.log('🎉 === FIN DE PROCESAMIENTO EXITOSO ===\n');
+
+          res.json({
+            success: true,
+            message: 'Solicitud registrada exitosamente',
+            id: idFormulario,
+            archivo: archivo,
+            insertId: result.insertId,
+            affectedRows: result.affectedRows
+          });
         });
       });
       
