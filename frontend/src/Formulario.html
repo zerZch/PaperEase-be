@@ -14,7 +14,8 @@
  <div class="logo-container">
  <img src="imagenes/logo.png" alt="PaperEase Logo" class="logo" />
  <span class="logo-text">PaperEase</span>
-
+ </div>
+ </div>
  </header>
 
 <!-- Contenido principal -->
@@ -314,6 +315,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('cedula').value = cedula;
                 
                 messageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // ⭐ REDIRIGIR A LA PÁGINA DE INICIO DESPUÉS DE 2 SEGUNDOS ⭐
+                setTimeout(() => {
+                    window.location.href = 'MenuPE.html';
+                }, 2000);
             } else {
                 showMessage(`❌ ${data.error || 'Ocurrió un error inesperado.'}`, true);
             }

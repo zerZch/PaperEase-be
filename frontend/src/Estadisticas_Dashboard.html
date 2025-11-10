@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="css/estadisticas.css"/>
   <link rel="stylesheet" href="css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 </head>
 <body>
 
@@ -238,10 +239,44 @@
       </div>
   </div>
 </footer>
+<script>
+  lucide.createIcons();
+</script>
 
 <script src="js/estadisticas/estadisticas.js"></script>
 <!-- Socket.IO Client -->
 <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+
+<!-- Botón de Cerrar Sesión -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const btnCerrarSesion = document.getElementById('btnCerrarSesion');
+
+  if (btnCerrarSesion) {
+    btnCerrarSesion.addEventListener('click', async () => {
+      const confirmar = confirm('¿Estás seguro de que deseas cerrar sesión?');
+
+      if (confirmar) {
+        // Usar la función logout del authHelper.js
+        if (typeof logout === 'function') {
+          await logout();
+        } else {
+          // Fallback si authHelper no está disponible
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('currentUser');
+          localStorage.removeItem('isLoggedIn');
+          localStorage.removeItem('userRole');
+          window.location.href = 'LogIn.html';
+        }
+      }
+    });
+  }
+});
+</script>
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+
+<!-- Sistema de Notificaciones -->
+<script src="js/notificaciones.js"></script>
 
 <!-- Botón de Cerrar Sesión -->
 <script>

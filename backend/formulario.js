@@ -312,7 +312,7 @@ router.post('/formulario', upload.single('archivo'), (req, res) => {
             });
           }
 
-          console.log('✅ Solicitud insertada exitosamente:', result);
+          console.log('✅ Solicitud insertada exitosamente:');
           console.log('🎉 === FIN DE PROCESAMIENTO EXITOSO ===\n');
 
           res.json({
