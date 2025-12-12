@@ -6,12 +6,12 @@ let timeChart;
 let facultadesFilters = {
     programa: '',
     tipo: '',
-    year: 2025
+    year: 2025  // CAMBIADO: era 2026, ahora 2025
 };
 
 let timeChartFilters = {
-    yearStart: 2025,
-    yearEnd: 2025
+    yearStart: 2023,  // CAMBIADO: era 2025, ahora 2023
+    yearEnd: 2025     // CAMBIADO: era 2025, se mantiene 2025
 };
 
 // URLs de la API
@@ -445,7 +445,7 @@ function resetFacultadesFilters() {
     facultadesFilters = {
         programa: '',
         tipo: '',
-        year: 2025
+        year: 2025  // CAMBIADO: era 2026, ahora 2025
     };
 
     const tipoSelect = document.getElementById('tipoProgramaFacultades');
@@ -453,7 +453,7 @@ function resetFacultadesFilters() {
     const yearSelect = document.getElementById('yearFacultades');
 
     if (tipoSelect) tipoSelect.value = '';
-    if (yearSelect) yearSelect.value = '2025';
+    if (yearSelect) yearSelect.value = '2025';  // CAMBIADO
 
     if (todosLosProgramas && todosLosProgramas.length > 0) {
         populateProgramasSelect(todosLosProgramas, 'programaFacultades');
@@ -485,7 +485,7 @@ function applyTimeChartFilters() {
     const yearStartSelect = document.getElementById('yearStartTime');
     const yearEndSelect = document.getElementById('yearEndTime');
 
-    timeChartFilters.yearStart = yearStartSelect ? parseInt(yearStartSelect.value) || 2025 : 2025;
+    timeChartFilters.yearStart = yearStartSelect ? parseInt(yearStartSelect.value) || 2023 : 2023;
     timeChartFilters.yearEnd = yearEndSelect ? parseInt(yearEndSelect.value) || 2025 : 2025;
 
     if (timeChartFilters.yearStart > timeChartFilters.yearEnd) {
@@ -502,14 +502,14 @@ function applyTimeChartFilters() {
 
 function resetTimeChartFilters() {
     timeChartFilters = {
-        yearStart: 2025,
-        yearEnd: 2025
+        yearStart: 2023,  // CAMBIADO: era 2025, ahora 2023
+        yearEnd: 2025     // Se mantiene 2025
     };
 
     const yearStartSelect = document.getElementById('yearStartTime');
     const yearEndSelect = document.getElementById('yearEndTime');
 
-    if (yearStartSelect) yearStartSelect.value = '2025';
+    if (yearStartSelect) yearStartSelect.value = '2023';  // CAMBIADO
     if (yearEndSelect) yearEndSelect.value = '2025';
 
     loadYearData();
