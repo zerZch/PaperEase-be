@@ -7,10 +7,14 @@ const socketIO = require('socket.io');
 const app = express();
 const server = http.createServer(app);
 
+const ALLOWED_ORIGINS = process.env.FRONTEND_URL
+  ? [process.env.FRONTEND_URL, 'http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5500']
+  : ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5500'];
+
 // Configurar Socket.IO
 const io = socketIO(server, {
   cors: {
-    origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5500'],
+    origin: ALLOWED_ORIGINS,
     credentials: true
   }
 });
@@ -26,22 +30,25 @@ const notificacionesRoutes = require('./notificaciones.js');
 
 // Configurar CORS
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5500'],
+  origin: ALLOWED_ORIGINS,
   credentials: true
 }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Railway usa reverse proxy — necesario para cookies secure
+app.set('trust proxy', 1);
+
 // Configurar sesiones
 app.use(session({
-  secret: 'paperease-secret-key-2025', // CAMBIAR en producción
+  secret: process.env.SESSION_SECRET || 'paperease-secret-key-dev',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false, // Cambiar a true en producción con HTTPS
+    secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 24 horas
+    maxAge: 24 * 60 * 60 * 1000
   }
 }));
 
