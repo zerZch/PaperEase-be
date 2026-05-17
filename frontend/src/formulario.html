@@ -112,7 +112,7 @@
   </div>
   
   <div class="cta-section">
-     <button type="submit" class="cta-primary">Enviar Solicitud</button>
+     <button type="submit" class="cta-primary" id="btnEnviar" disabled>Enviar Solicitud</button>
      <button type="button" onclick="window.location.href='programas.html'" class="cta-secondary">Cancelar</button>
   </div>
  
@@ -200,6 +200,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 // ⭐ Llenar el campo oculto de cédula
                 document.getElementById('cedula').value = data.Cedula;
 
+                // Habilitar el botón de envío ahora que la cédula está cargada
+                document.getElementById('btnEnviar').disabled = false;
+
                 // Prellenar otros campos automáticamente
                 if (data.Nombre) {
                     document.getElementById('nombre').value = data.Nombre;
@@ -266,13 +269,33 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ⭐ ENVÍO DEL FORMULARIO CON CÉDULA AUTOMÁTICA
-    form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', async function(e) {
         e.preventDefault();
         messageDiv.style.display = 'none';
         
         // ⭐ Verificar que la cédula esté presente
-        const cedula = document.getElementById('cedula').value;
+        let cedula = document.getElementById('cedula').value;
         
+        // Si la cédula está vacía, intentar cargarla una vez más
+        if (!cedula) {
+            try {
+                const token = getAuthToken();
+                if (token) {
+                    const resp = await fetch(`${API_BASE}/api/auth/me`, {
+                        method: 'GET',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    const userData = await resp.json();
+                    if (userData.autenticado && userData.Cedula) {
+                        document.getElementById('cedula').value = userData.Cedula;
+                        cedula = userData.Cedula;
+                    }
+                }
+            } catch (err) {
+                console.error('Error al reintentar carga de cédula:', err);
+            }
+        }
+
         if (!cedula) {
             showMessage('❌ Error: No se pudo obtener tu cédula. Por favor, inicia sesión nuevamente.', true);
             return;
@@ -284,23 +307,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const formData = new FormData(form);
 
+        // Asegurar que la cédula esté en FormData (por si el hidden no se capturó)
+        formData.set('cedula', cedula);
+
         // Habilitar campos deshabilitados temporalmente para que se envíen
         const facultadSelect = document.getElementById('facultad');
         const wasDisabled = facultadSelect.disabled;
         if (wasDisabled) {
-            facultadSelect.disabled = false;
             formData.set('facultad', facultadSelect.value);
+        }
+
+        // Asegurar que género se envíe aunque esté disabled
+        const generoChecked = document.querySelector('input[name="genero"]:checked');
+        if (generoChecked) {
+            formData.set('genero', generoChecked.value);
         }
 
         // Verificar que la cédula esté en el FormData
         console.log('📤 Datos del formulario:');
         for (let [key, value] of formData.entries()) {
             console.log(`   ${key}: ${value}`);
-        }
-
-        // Restaurar estado disabled
-        if (wasDisabled) {
-            facultadSelect.disabled = true;
         }
 
         fetch(`${API_BASE}/api/formulario`, {

@@ -553,7 +553,7 @@ header .container {
   transform: scale(1.1);
 }
 
-.card-header h4 {
+.card-header h2 {
   margin: 0;
   color: var(--color-primario);
   font-size: var(--text-lg);
@@ -566,6 +566,20 @@ header .container {
   padding: clamp(0.75rem, 2vw, 1rem) clamp(1rem, 3vw, 1.25rem);
   color: #444;
   font-size: var(--text-base);
+}
+
+.card-body h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--color-primario);
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+.card-body h4 {
+  margin: 1rem 0 0.4rem 0;
+  color: #333;
+  font-size: var(--text-base);
+  font-weight: 600;
 }
 
 .card-body ul {
