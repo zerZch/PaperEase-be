@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/novedades.css">
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="js/authHelper.js"></script>
 </head>
 <body>
   <!-- Header -->
@@ -23,7 +24,7 @@
         <a href="MenuPE.html">Inicio</a>
         <a href="Programas.html">Programas</a>
         <a href="Novedades.html">Novedades</a>
-        <a href="Solicitudes.html" id="linkMisSolicitudes" style="display:none;">Mis Solicitudes</a>
+        <a href="Solicitudes.html" id="linkMisSolicitudes">Mis Solicitudes</a>
         <!-- Botón de Notificaciones -->
         <button id="btnNotificaciones" class="btn-notificaciones" style="position: relative; background: none; border: none; cursor: pointer; padding: 8px;">
           <i data-lucide="bell" style="width: 24px; height: 24px; color: #4D869C;"></i>
@@ -212,21 +213,25 @@
 <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 
 <!-- Sistema de Notificaciones -->
-<script src="js/authHelper.js"></script>
 <script src="js/notificaciones.js"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  // Verificar autenticación
-  if (typeof isAuthenticated === 'function' && !isAuthenticated()) {
-    window.location.href = 'Login.html';
-    return;
-  }
-
-  // Mostrar link Mis Solicitudes solo para estudiantes
+  // Mostrar/ocultar links basados en el rol del usuario
   const linkMisSolicitudes = document.getElementById('linkMisSolicitudes');
-  if (linkMisSolicitudes && typeof getUserRole === 'function') {
-    linkMisSolicitudes.style.display = getUserRole() === 1 ? '' : 'none';
+
+  if (typeof getCurrentUser === 'function' && typeof getUserRole === 'function') {
+    const user = getCurrentUser();
+    const userRole = getUserRole();
+
+    if (user && userRole) {
+      // Rol 1 = Estudiante, Rol 2 = Trabajador Social
+      if (userRole === 1) {
+        if (linkMisSolicitudes) linkMisSolicitudes.style.display = '';
+      } else if (userRole === 2) {
+        if (linkMisSolicitudes) linkMisSolicitudes.style.display = 'none';
+      }
+    }
   }
 
   // Botón de Cerrar Sesión

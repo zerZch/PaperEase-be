@@ -1505,6 +1505,29 @@ body:has(.registro-form) .login-right {
   width: 100%;
 }
 
+.back-to-landing {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-primario);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  transition: all 0.2s ease;
+  padding: 0.5rem 0;
+}
+
+.back-to-landing:hover {
+  color: var(--color-primario-profundo);
+  transform: translateX(-4px);
+}
+
+.back-to-landing i {
+  width: 18px;
+  height: 18px;
+}
+
 /* Tamaños de header para Login (más grandes) */
 .login-form ~ .login-footer,
 .login-form {
@@ -2516,6 +2539,22 @@ body:has(.registro-form) .role-selector {
       font-size: 1.5rem;
     }
   }
+}
+
+/* === PAGE TRANSITION ANIMATION === */
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+body {
+  animation: pageFadeIn 0.35s ease-out;
 }
 
 /* === PAPER EASE FINAL VISUAL OVERRIDES === */

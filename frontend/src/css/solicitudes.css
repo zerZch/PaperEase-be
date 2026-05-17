@@ -423,6 +423,16 @@
   height: 16px;
 }
 
+/* SVG alignment inside buttons */
+.empty-state .cta-primary svg,
+.btn-retry svg,
+.empty-state .cta-primary i {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
 /* Empty State */
 .empty-state {
   text-align: center;
