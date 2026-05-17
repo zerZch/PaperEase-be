@@ -8,7 +8,7 @@
   // ============================================
   let socket = null;
   let cedulaEstudiante = null;  // CAMBIO: Ahora usamos cedula en vez de idEstudiante
-  const API_BASE = 'http://localhost:3000';
+  const API_BASE = window.location.origin;
 
   // Elementos del DOM
   const btnNotificaciones = document.getElementById('btnNotificaciones');
@@ -38,7 +38,7 @@
     // CAMBIO: Obtener la cédula del usuario desde el endpoint /api/auth/me
     try {
       const token = getAuthToken();
-      const response = await fetch('http://localhost:3000/api/auth/me', {
+      const response = await fetch(`${API_BASE}/api/auth/me`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

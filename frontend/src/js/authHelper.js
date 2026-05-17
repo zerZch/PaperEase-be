@@ -1,4 +1,5 @@
 // authHelper.js - Helper de autenticación para el frontend
+const API_BASE = window.location.origin;
 
 /**
  * Verifica si el usuario está autenticado
@@ -107,7 +108,7 @@ async function logout() {
   if (token) {
     try {
       // Llamar al backend para cerrar sesión
-      await fetch('http://localhost:3000/api/auth/logout', {
+      await fetch(`${API_BASE}/api/auth/logout`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -141,7 +142,7 @@ async function verificarSesion() {
   }
 
   try {
-    const response = await fetch('http://localhost:3000/api/auth/verificar', {
+    const response = await fetch(`${API_BASE}/api/auth/verificar`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,

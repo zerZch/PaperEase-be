@@ -173,26 +173,14 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Registro exitoso - Guardar datos en localStorage
-      localStorage.setItem('authToken', data.token || '');
-      localStorage.setItem('currentUser', JSON.stringify(data.usuario));
-      localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('userRole', data.usuario.tipoUsuario);
-
+      // Registro exitoso - Mostrar mensaje y redirigir al login
       // Mostrar mensaje de éxito
-      showMessage('¡Cuenta creada exitosamente! Redirigiendo...', 'success');
+      showMessage('¡Cuenta creada exitosamente! Ahora puedes iniciar sesión.', 'success');
 
-      // Esperar un momento antes de redirigir
+      // Redirigir a la página de login
       setTimeout(() => {
-        // Redirigir según el rol seleccionado
-        if (data.usuario.rol === 1) {
-          // Redirigir al menú principal para estudiantes
-          window.location.href = 'MenuPE.html';
-        } else if (data.usuario.rol === 2) {
-          // Redirigir a la página de gestión para trabajadoras sociales
-          window.location.href = 'gestion.html';
-        }
-      }, 1500);
+        window.location.href = 'LogIn.html';
+      }, 2000);
 
     } catch (error) {
       console.error('Error en el registro:', error);

@@ -1,4 +1,6 @@
 // Mapeo de iconos por categoría
+const API_BASE = window.location.origin;
+
 const iconosPorCategoria = {
   'Programa de Salud': 'heart-pulse',
   'Promoción Social': 'users',
@@ -26,7 +28,7 @@ let eventosCargadosMenu = [];
 
 async function cargarEventos() {
   try {
-    const res = await fetch('http://localhost:3000/api/eventos');
+    const res = await fetch(`${API_BASE}/api/eventos`);
     const eventos = await res.json();
 
     // Filtrar solo eventos futuros

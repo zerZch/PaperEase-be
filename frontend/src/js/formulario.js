@@ -1,3 +1,4 @@
+const API_BASE = window.location.origin;
 const form = document.querySelector('.formulario');
 
 form.addEventListener('submit', async (e) => {
@@ -6,7 +7,7 @@ form.addEventListener('submit', async (e) => {
   const formData = new FormData(form);
 
   try {
-    const res = await fetch('http://localhost:3000/api/formulario', {
+    const res = await fetch(`${API_BASE}/api/formulario`, {
       method: 'POST',
       body: formData
     });

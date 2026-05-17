@@ -1,6 +1,7 @@
 // ============================
 // Variables globales
 // ============================
+const API_BASE = window.location.origin;
 let currentDate = new Date();
 let eventoActualSeleccionado = null;
 let fechaActualSeleccionada = null;
@@ -302,7 +303,7 @@ function mostrarModalEventos(eventos, dateKey) {
 // ============================
 async function cargarEventos() {
   try {
-    const response = await fetch('http://localhost:3000/api/eventos');
+    const response = await fetch(`${API_BASE}/api/eventos`);
     
     if (!response.ok) {
       throw new Error(`Error HTTP: ${response.status}`);
@@ -425,13 +426,13 @@ async function guardarEvento(e) {
 
     if (isEditMode) {
       const eventId = formCrearEvento.dataset.editId;
-      url = `http://localhost:3000/api/eventos/${eventId}`;
+      url = `${API_BASE}/api/eventos/${eventId}`;
       response = await fetch(url, {
         method: 'PUT',
         body: submitFormData
       });
     } else {
-      url = 'http://localhost:3000/api/eventos';
+      url = `${API_BASE}/api/eventos`;
       response = await fetch(url, {
         method: 'POST',
         body: submitFormData
@@ -535,7 +536,7 @@ async function duplicarEvento() {
   };
 
   try {
-    const response = await fetch('http://localhost:3000/api/eventos', {
+    const response = await fetch(`${API_BASE}/api/eventos`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(eventoData)
@@ -567,7 +568,7 @@ async function eliminarEvento() {
 
   try {
     const response = await fetch(
-      `http://localhost:3000/api/eventos/${eventoActualSeleccionado.id}`,
+      `${API_BASE}/api/eventos/${eventoActualSeleccionado.id}`,
       { method: 'DELETE' }
     );
 

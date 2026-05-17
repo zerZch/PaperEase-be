@@ -15,7 +15,7 @@ let timeChartFilters = {
 };
 
 // URLs de la API
-const API_BASE_URL = 'http://localhost:3000/api/estadisticas';
+const API_BASE_URL = window.location.origin + '/api/estadisticas';
 
 // Variable global para guardar todos los programas
 let todosLosProgramas = [];

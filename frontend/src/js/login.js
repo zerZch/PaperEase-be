@@ -1,4 +1,5 @@
 // login.js - Lógica para el formulario de login de PaperEase
+const API_BASE = window.location.origin;
 
 document.addEventListener('DOMContentLoaded', () => {
   // Elementos del DOM
@@ -63,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       // Llamada al backend para autenticar
-      const response = await fetch('http://localhost:3000/api/auth/login', {
+      const response = await fetch(`${API_BASE}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

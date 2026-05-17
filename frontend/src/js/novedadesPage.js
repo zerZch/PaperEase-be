@@ -1,6 +1,7 @@
 // ================================
 // NOVEDADES PAGE - JavaScript
 // ================================
+const API_BASE = window.location.origin;
 
 let todosLosEventos = [];
 let eventosFiltrados = [];
@@ -44,7 +45,7 @@ async function cargarEventos() {
       </div>
     `;
 
-    const response = await fetch('http://localhost:3000/api/eventos');
+    const response = await fetch(`${API_BASE}/api/eventos`);
     if (!response.ok) throw new Error('Error al cargar eventos');
 
     todosLosEventos = await response.json();
