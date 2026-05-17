@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PaperEase • Bienestar Estudiantil UTP</title>
+  <link rel="stylesheet" href="css/landing.css">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="landing-nav">
+    <div class="container nav-container">
+      <div class="logo-container">
+        <img src="imagenes/logo.png" alt="PaperEase Logo" class="logo">
+        <span class="logo-text">PaperEase</span>
+      </div>
+      <div class="nav-actions">
+        <a href="Login.html" class="nav-link">Iniciar sesión</a>
+        <a href="Registro.html" class="btn-nav-primary">Registrarse</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero-landing">
+    <div class="container hero-content">
+      <div class="hero-text">
+        <span class="hero-badge">Universidad Tecnológica de Panamá</span>
+        <h1>Centraliza los servicios de <span class="highlight">Bienestar Estudiantil</span></h1>
+        <p class="hero-subtitle">Consulta programas, revisa requisitos, envía solicitudes y da seguimiento a tus procesos desde un solo lugar. Menos confusión, más claridad.</p>
+        <div class="hero-ctas">
+          <a href="Programas.html" class="btn-primary">
+            <i data-lucide="compass"></i>
+            Ver programas
+          </a>
+          <a href="Login.html" class="btn-secondary">
+            <i data-lucide="log-in"></i>
+            Iniciar sesión
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat">
+            <span class="stat-number">10+</span>
+            <span class="stat-label">Programas disponibles</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">100%</span>
+            <span class="stat-label">Seguimiento en línea</span>
+          </div>
+          <div class="stat">
+            <span class="stat-number">24/7</span>
+            <span class="stat-label">Acceso disponible</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="mockup-container">
+          <div class="mockup-browser">
+            <div class="browser-dots">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+          <div class="mockup-content">
+            <div class="mockup-header">
+              <img src="imagenes/logo.png" alt="Logo" class="mockup-logo">
+              <span>PaperEase</span>
+            </div>
+            <div class="mockup-nav">
+              <span>Inicio</span><span>Programas</span><span>Novedades</span>
+            </div>
+            <div class="mockup-hero-box">
+              <h3>Bienvenido a PaperEase</h3>
+              <p>Gestiona tus solicitudes de Bienestar Estudiantil</p>
+            </div>
+            <div class="mockup-cards">
+              <div class="mockup-card"></div>
+              <div class="mockup-card"></div>
+              <div class="mockup-card"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-wave">
+      <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+        <path fill="#fff" d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Problema Section -->
+  <section class="problema-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">El problema</span>
+        <h2>¿Te ha pasado esto?</h2>
+      </div>
+      <div class="problema-grid">
+        <div class="problema-card">
+          <div class="problema-icon">
+            <i data-lucide="search"></i>
+          </div>
+          <h3>No sé qué programa necesito</h3>
+          <p>Son demasiadas opciones y no entiendo cuáles aplican a mi situación.</p>
+        </div>
+        <div class="problema-card">
+          <div class="problema-icon">
+            <i data-lucide="file-question"></i>
+          </div>
+          <h3>No sé qué documentos necesito</h3>
+          <p>Cada programa tiene requisitos distintos y no queda claro qué debo adjuntar.</p>
+        </div>
+        <div class="problema-card">
+          <div class="problema-icon">
+            <i data-lucide="clock"></i>
+          </div>
+          <h3>No sé si mi solicitud fue recibida</h3>
+          <p>Envío documentos y no tengo forma de saber si ya están en proceso o fueron rechazados.</p>
+        </div>
+        <div class="problema-card">
+          <div class="problema-icon">
+            <i data-lucide="bell-off"></i>
+          </div>
+          <h3>Me pierdo de eventos y novedades</h3>
+          <p>No hay una forma fácil de enterarme de las actividades de Bienestar Estudiantil.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Solución Section -->
+  <section class="solucion-section">
+    <div class="container">
+      <div class="solucion-content">
+        <div class="solucion-text">
+          <span class="section-tag">La solución</span>
+          <h2>PaperEase centraliza todo</h2>
+          <p>Somos el portal oficial de Bienestar Estudiantil de la UTP. Aquí encontrarás todos los programas, podrás enviar solicitudes, dar seguimiento y recibir notificaciones sobre el estado de tus trámites.</p>
+          <ul class="solucion-list">
+            <li>
+              <i data-lucide="check-circle"></i>
+              <span>Información clara de requisitos</span>
+            </li>
+            <li>
+              <i data-lucide="check-circle"></i>
+              <span>Envío de documentos digital</span>
+            </li>
+            <li>
+              <i data-lucide="check-circle"></i>
+              <span>Seguimiento en tiempo real</span>
+            </li>
+            <li>
+              <i data-lucide="check-circle"></i>
+              <span>Notificaciones automáticas</span>
+            </li>
+          </ul>
+        </div>
+        <div class="solucion-visual">
+          <div class="phone-mockup">
+            <div class="phone-frame">
+              <div class="phone-notch"></div>
+              <div class="phone-screen">
+                <div class="app-header">
+                  <img src="imagenes/logo.png" alt="Logo" class="app-logo">
+                  <span>PaperEase</span>
+                </div>
+                <div class="app-status">
+                  <span class="status-badge approved">Aprobado</span>
+                  <p>Solicitud de Canasta Navideña</p>
+                </div>
+                <div class="app-timeline">
+                  <div class="timeline-item active">
+                    <i data-lucide="check"></i>
+                    <span>Enviado</span>
+                  </div>
+                  <div class="timeline-item active">
+                    <i data-lucide="check"></i>
+                    <span>Revisión</span>
+                  </div>
+                  <div class="timeline-item active">
+                    <i data-lucide="check"></i>
+                    <span>Aprobado</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Servicios Section -->
+  <section class="servicios-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Qué puedes hacer</span>
+        <h2>Tus servicios en un solo lugar</h2>
+        <p class="section-subtitle">Todo lo que necesitas para gestionar tu bienestar desde la plataforma.</p>
+      </div>
+      <div class="servicios-grid">
+        <div class="servicio-card">
+          <div class="servicio-icon">
+            <i data-lucide="book-open"></i>
+          </div>
+          <h3>Consultar programas</h3>
+          <p>Explora todos los programas de Bienestar Estudiantil con requisitos claros.</p>
+        </div>
+        <div class="servicio-card">
+          <div class="servicio-icon">
+            <i data-lucide="file-text"></i>
+          </div>
+          <h3>Revisar requisitos</h3>
+          <p>Antes de aplicar, conoce exactamente qué documentos necesitas.</p>
+        </div>
+        <div class="servicio-card">
+          <div class="servicio-icon">
+            <i data-lucide="send"></i>
+          </div>
+          <h3>Enviar solicitudes</h3>
+          <p>Completa tu formulario y adjunta documentos desde cualquier lugar.</p>
+        </div>
+        <div class="servicio-card">
+          <div class="servicio-icon">
+            <i data-lucide="activity"></i>
+          </div>
+          <h3>Dar seguimiento</h3>
+          <p>Consulta el estado de tus solicitudes en tiempo real.</p>
+        </div>
+        <div class="servicio-card">
+          <div class="servicio-icon">
+            <i data-lucide="bell"></i>
+          </div>
+          <h3>Recibir notificaciones</h3>
+          <p>Sé alertado cuando tu solicitud avance o necesite algo.</p>
+        </div>
+        <div class="servicio-card">
+          <div class="servicio-icon">
+            <i data-lucide="calendar-days"></i>
+          </div>
+          <h3>Ver eventos</h3>
+          <p>Entérate de ferias, jornadas y actividades disponibles.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cómo Funciona Section -->
+  <section class="como-funciona-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Paso a paso</span>
+        <h2>Así de fácil es usar PaperEase</h2>
+      </div>
+      <div class="pasos-container">
+        <div class="paso">
+          <div class="paso-number">1</div>
+          <div class="paso-content">
+            <h3>Explora los programas</h3>
+            <p>Navega por las categorías de Salud, Promoción Social y más. Encuentra el que necesitas.</p>
+          </div>
+        </div>
+        <div class="paso-connector"></div>
+        <div class=" paso">
+          <div class="paso-number">2</div>
+          <div class=" paso-content">
+            <h3>Completa tu solicitud</h3>
+            <p>Llena el formulario con tus datos y adjunta los documentos requeridos.</p>
+          </div>
+        </div>
+        <div class="paso-connector"></div>
+        <div class=" paso">
+          <div class=" paso-number">3</div>
+          <div class=" paso-content">
+            <h3>Consulta el estado</h3>
+            <p>Recibe notificaciones y revisa cuándo tu solicitud ha sido aprobada o necesita cambios.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Programas Destacados Section -->
+  <section class="programas-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Programas</span>
+        <h2>Descubre lo que tenemos para ti</h2>
+        <p class="section-subtitle">Estas son algunas de las categorías disponibles en PaperEase.</p>
+      </div>
+      <div class="categorias-grid">
+        <div class="categoria-card salud">
+          <div class="categoria-icon">
+            <i data-lucide="heart"></i>
+          </div>
+          <h3>Salud</h3>
+          <ul>
+            <li>Banco de Sangre</li>
+            <li>Feria de Salud</li>
+            <li>Compra de Lentes</li>
+            <li>Asesoría Médica</li>
+          </ul>
+          <a href="Programas.html" class="categoria-link">
+            Ver programas <i data-lucide="arrow-right"></i>
+          </a>
+        </div>
+        <div class="categoria-card social">
+          <div class="categoria-icon">
+            <i data-lucide="users"></i>
+          </div>
+          <h3>Promoción Social</h3>
+          <ul>
+            <li>Canasta Navideña</li>
+            <li>Ayuda Económica</li>
+            <li>Materiales Escolares</li>
+            <li>Becas</li>
+          </ul>
+          <a href="Programas.html" class="categoria-link">
+            Ver programas <i data-lucide="arrow-right"></i>
+          </a>
+        </div>
+        <div class="categoria-card bienestar">
+          <div class="categoria-icon">
+            <i data-lucide="smile"></i>
+          </div>
+          <h3>Bienestar Integral</h3>
+          <ul>
+            <li>Consejería Personal</li>
+            <li>Apoyo Psicológico</li>
+            <li>Talleres de Desarrollo</li>
+            <li>Actividades Recreativas</li>
+          </ul>
+          <a href="Programas.html" class="categoria-link">
+            Ver programas <i data-lucide="arrow-right"></i>
+          </a>
+        </div>
+        <div class="categoria-card empleo">
+          <div class="categoria-icon">
+            <i data-lucide="briefcase"></i>
+          </div>
+          <h3>Empleo y Formación</h3>
+          <ul>
+            <li>Feria de Empleo</li>
+            <li>Bolsa de Trabajo</li>
+            <li>Capacitaciones</li>
+            <li>Prácticas Profesionales</li>
+          </ul>
+          <a href="Programas.html" class="categoria-link">
+            Ver programas <i data-lucide="arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Panel Admin Section -->
+  <section class="admin-section">
+    <div class="container">
+      <div class="admin-content">
+        <div class="admin-visual">
+          <div class="dashboard-preview">
+            <div class="dashboard-header">
+              <span class="dashboard-title">Panel de Bienestar Estudiantil</span>
+            </div>
+            <div class="dashboard-stats">
+              <div class="dash-stat">
+                <span class="dash-number">24</span>
+                <span class="dash-label">Pendientes</span>
+              </div>
+              <div class="dash-stat">
+                <span class="dash-number">18</span>
+                <span class="dash-label">Aprobados</span>
+              </div>
+              <div class="dash-stat">
+                <span class="dash-number">5</span>
+                <span class="dash-label">Rechazados</span>
+              </div>
+            </div>
+            <div class="dashboard-list">
+              <div class="dash-item">
+                <span class="dash-name">María González</span>
+                <span class="dash-status pendiente">Pendiente</span>
+              </div>
+              <div class="dash-item">
+                <span class="dash-name">Carlos Ruiz</span>
+                <span class="dash-status aprobado">Aprobado</span>
+              </div>
+              <div class="dash-item">
+                <span class="dash-name">Ana López</span>
+                <span class="dash-status pendiente">Pendiente</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="admin-text">
+          <span class="section-tag">Para el equipo de Bienestar</span>
+          <h2>Herramienta de gestión centralizada</h2>
+          <p>PaperEase también facilita el trabajo del personal administrativo. Gestiona solicitudes, filtra por prioridad, revisa estados y visualiza estadísticas de participación.</p>
+          <ul class="admin-features">
+            <li>
+              <i data-lucide="clipboard-list"></i>
+              <span>Gestión de solicitudes con historial</span>
+            </li>
+            <li>
+              <i data-lucide="filter"></i>
+              <span>Filtros por estado, programa y fecha</span>
+            </li>
+            <li>
+              <i data-lucide="calendar"></i>
+              <span>Gestión de eventos y actividades</span>
+            </li>
+            <li>
+              <i data-lucide="bar-chart-3"></i>
+              <span>Estadísticas y reportes</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chatbot Section -->
+  <section class="chatbot-section">
+    <div class="container">
+      <div class="chatbot-content">
+        <div class="chatbot-text">
+          <span class="section-tag">Asistencia</span>
+          <h2>¿Tienes dudas? Nuestro chatbot te orienta</h2>
+          <p>No sabes qué programa aplica a tu situación? El asistente virtual de PaperEase te ayuda a encontrar lo que necesitas con preguntas simples.</p>
+          <a href="Login.html" class="btn-primary">
+            <i data-lucide="message-circle"></i>
+            Probar el asistente
+          </a>
+        </div>
+        <div class="chatbot-preview">
+          <div class="chat-window">
+            <div class="chat-header">
+              <i data-lucide="message-circle"></i>
+              <span>Asistente PaperEase</span>
+            </div>
+            <div class="chat-messages">
+              <div class="chat-msg bot">Hola! En qué puedo ayudarte hoy?</div>
+              <div class="chat-msg user">Necesito ayuda con servicios de salud</div>
+              <div class="chat-msg bot">Perfecto! Contamos con Banco de Sangre, Feria de Salud, Compra de Lentes y Asesoría Médica. Cuál te interesa?</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Confianza Section -->
+  <section class="confianza-section">
+    <div class="container">
+      <div class="confianza-grid">
+        <div class="confianza-item">
+          <div class="confianza-icon">
+            <i data-lucide="shield-check"></i>
+          </div>
+          <h3>Datos seguros</h3>
+          <p>Tu información está protegida y solo accessible por personal autorizado.</p>
+        </div>
+        <div class="confianza-item">
+          <div class="confianza-icon">
+            <i data-lucide="landmark"></i>
+          </div>
+          <h3>Institucional UTP</h3>
+          <p>Plataforma oficial de Bienestar Estudiantil de la Universidad Tecnológica de Panamá.</p>
+        </div>
+        <div class="confianza-item">
+          <div class="confianza-icon">
+            <i data-lucide="history"></i>
+          </div>
+          <h3>Trazabilidad total</h3>
+          <p>Cada solicitud tiene historial completo, para que nunca pierdas seguimiento.</p>
+        </div>
+        <div class="confianza-item">
+          <div class="confianza-icon">
+            <i data-lucide="headphones"></i>
+          </div>
+          <h3>Soporte dedicado</h3>
+          <p>Tienes acceso a ayuda cuando la necesites a través del chatbot o presencial.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Final Section -->
+  <section class="cta-final-section">
+    <div class="container">
+      <div class="cta-final-content">
+        <h2>Encuentra el apoyo que necesitas</h2>
+        <p>Regístrate ahora y descubre cómo PaperEase simplifica tu acceso a los servicios de Bienestar Estudiantil.</p>
+        <div class="cta-final-buttons">
+          <a href="Programas.html" class="btn-primary btn-large">
+            <i data-lucide="compass"></i>
+            Ver programas
+          </a>
+          <a href="Registro.html" class="btn-outline btn-large">
+            <i data-lucide="user-plus"></i>
+            Crear cuenta
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="landing-footer">
+    <div class="container footer-content">
+      <div class="footer-main">
+        <div class="footer-brand">
+          <img src="imagenes/logo.png" alt="PaperEase Logo" class="footer-logo">
+          <div>
+            <span class="footer-title">PaperEase</span>
+            <p class="footer-subtitle">Bienestar Estudiantil UTP</p>
+          </div>
+        </div>
+        <div class="footer-links">
+          <a href="#">Ayuda</a>
+          <a href="#">Privacidad</a>
+          <a href="#">Términos</a>
+          <a href="#">Contacto</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 PaperEase • Universidad Tecnológica de Panamá</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

@@ -94,7 +94,7 @@ El chatbot utiliza un sistema de **matching basado en palabras clave** para iden
 | **Notificaciones** | notificación, notificaciones, aviso, alerta | Explica sistema de notificaciones |
 | **Mensajería** | mensaje, mensajería, hablar, trabajadora social | Explica sistema de mensajería |
 | **Calendario/Eventos** | calendario, evento, eventos, actividad, fecha | Explica calendario y redirige a Eventos.html |
-| **Registro/Login** | registro, registrar, login, iniciar sesión, entrar | Redirige a Registro.html o LogIn.html |
+| **Registro/Login** | registro, registrar, login, iniciar sesión, entrar | Redirige a Registro.html o Login.html |
 | **Ayuda General** | ayuda, no sé, no entiendo, cómo funciona | Muestra opciones principales |
 | **Saludos** | hola, buenas, buenos días, hey | Saluda y muestra opciones |
 | **Despedidas** | gracias, ok, entendido, adiós, bye | Se despide amablemente |
@@ -289,7 +289,7 @@ return {
   text: 'Para ver tus solicitudes necesitas iniciar sesión.',
   isBot: true,
   quickReplies: [
-    { text: 'Iniciar Sesión', action: 'navigate', url: 'LogIn.html' }
+    { text: 'Iniciar Sesión', action: 'navigate', url: 'Login.html' }
   ]
 };
 ```

@@ -499,7 +499,7 @@ Deberías ver la página de registro de PaperEase.
 
 ### Iniciar Sesión
 
-1. **Accede a**: `http://localhost:3000/LogIn.html`
+1. **Accede a**: `http://localhost:3000/Login.html`
 2. Ingresa:
    - Correo electrónico
    - Contraseña
@@ -561,7 +561,7 @@ PaperEase-be/
 │       └── authMiddleware.js         # Middleware de autenticación
 ├── frontend/
 │   └── src/
-│       ├── LogIn.html                # Página de login
+│       ├── Login.html                # Página de login
 │       ├── Registro.html             # Página de registro
 │       ├── MenuPE.html               # Menú para estudiantes
 │       ├── gestion.html              # Panel para trabajadoras sociales

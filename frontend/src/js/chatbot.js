@@ -224,7 +224,7 @@ class StudentChatbot {
         isBot: true,
         quickReplies: [
           { text: 'Registrarme', action: 'navigate', url: 'Registro.html' },
-          { text: 'Iniciar Sesión', action: 'navigate', url: 'LogIn.html' }
+          { text: 'Iniciar Sesión', action: 'navigate', url: 'Login.html' }
         ]
       };
     }

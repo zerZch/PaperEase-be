@@ -65,7 +65,7 @@ function isTrabajadorSocial() {
  */
 function requireAuth() {
   if (!isAuthenticated()) {
-    window.location.href = 'LogIn.html';
+    window.location.href = 'Login.html';
   }
 }
 
@@ -74,7 +74,7 @@ function requireAuth() {
  */
 function requireEstudiante() {
   if (!isAuthenticated()) {
-    window.location.href = 'LogIn.html';
+    window.location.href = 'Login.html';
     return;
   }
 
@@ -89,7 +89,7 @@ function requireEstudiante() {
  */
 function requireTrabajadorSocial() {
   if (!isAuthenticated()) {
-    window.location.href = 'LogIn.html';
+    window.location.href = 'Login.html';
     return;
   }
 
@@ -127,7 +127,7 @@ async function logout() {
   localStorage.removeItem('userRole');
 
   // Redirigir al login
-  window.location.href = 'LogIn.html';
+  window.location.href = 'Login.html';
 }
 
 /**
@@ -201,7 +201,7 @@ async function authenticatedFetch(url, options = {}) {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('userRole');
-    window.location.href = 'LogIn.html';
+    window.location.href = 'Login.html';
   }
 
   return response;
