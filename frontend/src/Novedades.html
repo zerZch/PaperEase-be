@@ -9,21 +9,21 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 </head>
 <body>
-  <!-- Header dinámico según autenticación -->
+  <!-- Header -->
   <header class="header">
     <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
       <!-- Logo + Texto -->
-      <div class="logo-container">
+      <a href="MenuPE.html" class="logo-container" style="text-decoration: none;">
          <img src="imagenes/logo.png" alt="PaperEase Logo" class="logo" />
         <span class="logo-text">PaperEase</span>
-      </div>
+      </a>
 
-      <!-- Navegación para usuario autenticado -->
-      <nav class="nav" id="navAutenticado" style="display: none;">
+      <!-- Navegación -->
+      <nav class="nav">
         <a href="MenuPE.html">Inicio</a>
         <a href="Programas.html">Programas</a>
         <a href="Novedades.html">Novedades</a>
-        <a href="Solicitudes.html" id="linkMisSolicitudes">Mis Solicitudes</a>
+        <a href="Solicitudes.html" id="linkMisSolicitudes" style="display:none;">Mis Solicitudes</a>
         <!-- Botón de Notificaciones -->
         <button id="btnNotificaciones" class="btn-notificaciones" style="position: relative; background: none; border: none; cursor: pointer; padding: 8px;">
           <i data-lucide="bell" style="width: 24px; height: 24px; color: #4D869C;"></i>
@@ -32,14 +32,8 @@
 
         <!-- Botón de Cerrar Sesión -->
         <button id="btnCerrarSesion" class="btn-logout" style="background: #4D869C; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 6px;">
-          <i data-lucide="log-out" style="width: 16px; height: 16px;"></i>
+          <i data-lucide="log-in" style="width: 16px; height: 16px;"></i>
         </button>
-      </nav>
-
-      <!-- Navegación para visitante (no autenticado) -->
-      <nav class="nav" id="navVisitante" style="display: none;">
-        <a href="Login.html" style="color: #4D869C; text-decoration: none; font-weight: 600; padding: 8px 16px;">Iniciar sesión</a>
-        <a href="Registro.html" style="background: #4D869C; color: white; text-decoration: none; padding: 8px 16px; border-radius: 6px; font-weight: 500;">Registrarse</a>
       </nav>
     </div>
   </header>
@@ -221,20 +215,18 @@
 <script src="js/authHelper.js"></script>
 <script src="js/notificaciones.js"></script>
 
-<!-- Control de navegación según autenticación -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-  // Control de navegación según autenticación
-  const isAuth = typeof isAuthenticated === 'function' && isAuthenticated();
-  const navAuth = document.getElementById('navAutenticado');
-  const navVisitante = document.getElementById('navVisitante');
+  // Verificar autenticación
+  if (typeof isAuthenticated === 'function' && !isAuthenticated()) {
+    window.location.href = 'Login.html';
+    return;
+  }
 
-  if (isAuth) {
-    if (navAuth) navAuth.style.display = 'flex';
-    if (navVisitante) navVisitante.style.display = 'none';
-  } else {
-    if (navAuth) navAuth.style.display = 'none';
-    if (navVisitante) navVisitante.style.display = 'flex';
+  // Mostrar link Mis Solicitudes solo para estudiantes
+  const linkMisSolicitudes = document.getElementById('linkMisSolicitudes');
+  if (linkMisSolicitudes && typeof getUserRole === 'function') {
+    linkMisSolicitudes.style.display = getUserRole() === 1 ? '' : 'none';
   }
 
   // Botón de Cerrar Sesión
@@ -245,11 +237,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const confirmar = confirm('¿Estás seguro de que deseas cerrar sesión?');
 
       if (confirmar) {
-        // Usar la función logout del authHelper.js
         if (typeof logout === 'function') {
           await logout();
         } else {
-          // Fallback si authHelper no está disponible
           localStorage.removeItem('authToken');
           localStorage.removeItem('currentUser');
           localStorage.removeItem('isLoggedIn');

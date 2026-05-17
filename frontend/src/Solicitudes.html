@@ -22,10 +22,10 @@
   <header class="header">
     <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
       <!-- Logo + Texto -->
-      <div class="logo-container">
+      <a href="MenuPE.html" class="logo-container" style="text-decoration: none;">
          <img src="imagenes/logo.png" alt="PaperEase Logo" class="logo" />
         <span class="logo-text">PaperEase</span>
-      </div>
+      </a>
 
       <!-- Navegación -->
       <nav class="nav">
@@ -41,7 +41,7 @@
 
         <!-- Botón de Cerrar Sesión -->
         <button id="btnCerrarSesion" class="btn-logout" style="background: #4D869C; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 6px;">
-          <i data-lucide="log-out" style="width: 16px; height: 16px;"></i>
+          <i data-lucide="log-in" style="width: 16px; height: 16px;"></i>
         </button>
       </nav>
     </div>
@@ -188,6 +188,9 @@
   </div>
 </footer>
 
+<script>
+  lucide.createIcons();
+</script>
 <script src="js/solicitudes.js"></script>
 <!-- Socket.IO Client -->
 <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>

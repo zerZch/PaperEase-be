@@ -3,31 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contacto - PaperEase</title>
+  <title>Contacto • PaperEase</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/novedades.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="js/authHelper.js"></script>
 </head>
 <body>
-  <nav class="navbar">
-    <div class="nav-container">
-      <a href="index.html" class="logo-container">
-        <img src="imagenes/logo.png" alt="PaperEase Logo" class="logo">
+  <header class="header">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+      <a href="MenuPE.html" class="logo-container" style="text-decoration: none;">
+        <img src="imagenes/logo.png" alt="PaperEase Logo" class="logo" />
         <span class="logo-text">PaperEase</span>
       </a>
-      <div class="nav-menu">
+      <nav class="nav">
+        <a href="MenuPE.html">Inicio</a>
         <a href="Programas.html">Programas</a>
-        <a href="Ayuda.html">Ayuda</a>
-        <a href="Login.html">Iniciar sesion</a>
+        <a href="Novedades.html">Novedades</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="novedades-hero" style="margin-bottom: 0;">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-icon" data-lucide="mail"></div>
+        <h1>Contacto</h1>
+        <p>Si necesitas recuperar el acceso, resolver dudas o reportar un problema, contáctanos.</p>
       </div>
     </div>
-  </nav>
+  </section>
 
-  <main class="container" style="padding: 4rem 1rem; max-width: 900px;">
-    <h1>Contacto</h1>
-    <p>Si necesitas recuperar el acceso, resolver dudas o reportar un problema, contacta al equipo de Bienestar Estudiantil.</p>
-    <div class="cta-buttons" style="margin-top: 2rem;">
-      <a href="Login.html" class="cta-primary">Volver al login</a>
-      <a href="Programas.html" class="cta-secondary">Ver programas</a>
+  <section class="eventos-section">
+    <div class="container">
+      <div style="text-align: center; padding: 2rem; max-width: 600px; margin: 0 auto;">
+        <div data-lucide="message-circle" style="width: 48px; height: 48px; color: var(--color-primario); margin: 0 auto 1rem;"></div>
+        <p style="font-size: 1.125rem; color: #666; margin-bottom: 2rem; line-height: 1.7;">
+          Si necesitas recuperar el acceso, resolver dudas o reportar un problema, contacta al equipo de Bienestar Estudiantil.
+        </p>
+        <div class="cta-buttons" style="margin-top: 2rem;">
+          <a href="Login.html" class="cta-primary">Volver al login</a>
+          <a href="Programas.html" class="cta-secondary">Ver programas</a>
+        </div>
+      </div>
     </div>
-  </main>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer-flex">
+      <p>© 2025 PaperEase • Universidad Tecnológica de Panamá</p>
+      <div class="footer-links">
+        <a href="Ayuda.html">Ayuda</a>
+        <a href="Privacidad.html">Privacidad</a>
+        <a href="Terminos.html">Términos</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>lucide.createIcons();</script>
 </body>
 </html>

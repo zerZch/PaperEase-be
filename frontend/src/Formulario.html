@@ -19,10 +19,10 @@
 <!-- Header -->
  <header>
  <div class="container">
- <div class="logo-container">
+ <a href="MenuPE.html" class="logo-container" style="text-decoration: none;">
  <img src="imagenes/logo.png" alt="PaperEase Logo" class="logo" />
  <span class="logo-text">PaperEase</span>
- </div>
+ </a>
  </div>
  </header>
 
@@ -33,7 +33,7 @@
  <h2>Formulario de Solicitud</h2>
  <p>Completa los campos con tus datos personales y elige el programa de Bienestar Estudiantil que deseas solicitar.</p>
 
-<form id="formulario" method="POST" enctype="multipart/form-data" class="formulario">
+<form id="formulario" method="POST" enctype="multipart/form-data" class="formulario" action="/api/formulario">
   
   <!-- ⭐ Campo de cédula OCULTO - se llena automáticamente desde la sesión -->
   <input type="hidden" id="cedula" name="cedula" />
@@ -146,6 +146,26 @@ document.addEventListener('DOMContentLoaded', function() {
     const messageDiv = document.getElementById('message');
     const loadingDiv = document.getElementById('loading');
 
+    // Función para mostrar mensajes (definida ANTES de usarse)
+    function showMessage(message, isError = false) {
+        messageDiv.style.display = 'block';
+        messageDiv.textContent = message;
+        messageDiv.style.backgroundColor = isError ? '#fee2e2' : '#dcfce7';
+        messageDiv.style.color = isError ? '#dc2626' : '#16a34a';
+        messageDiv.style.border = isError ? '1px solid #fca5a5' : '1px solid #86efac';
+        messageDiv.classList.add('success-animation');
+        
+        setTimeout(() => {
+            messageDiv.classList.remove('success-animation');
+        }, 500);
+    }
+    
+    // Función para mostrar/ocultar loading
+    function showLoading(show) {
+        loadingDiv.style.display = show ? 'block' : 'none';
+        loadingDiv.textContent = show ? '📤 Enviando solicitud...' : '';
+    }
+
     // ⭐⭐⭐ OBTENER LOS DATOS DEL USUARIO DESDE EL NUEVO ENDPOINT ⭐⭐⭐
     async function cargarDatosSesion() {
         try {
@@ -193,7 +213,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     const radioGenero = document.querySelector(`input[name="genero"][value="${data.IdGenero}"]`);
                     if (radioGenero) {
                         radioGenero.checked = true;
-                        // Hacer readonly todos los radios de género
                         document.querySelectorAll('input[name="genero"]').forEach(radio => {
                             radio.setAttribute('disabled', true);
                         });
@@ -217,7 +236,6 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             console.error('❌ Error al obtener datos del usuario:', error);
             showMessage('❌ Error al verificar sesión. Por favor, inicia sesión nuevamente.', true);
-
             setTimeout(() => {
                 window.location.href = 'Login.html';
             }, 2000);
@@ -247,26 +265,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 100);
     }
 
-    // Función para mostrar mensajes
-    function showMessage(message, isError = false) {
-        messageDiv.style.display = 'block';
-        messageDiv.textContent = message;
-        messageDiv.style.backgroundColor = isError ? '#fee2e2' : '#dcfce7';
-        messageDiv.style.color = isError ? '#dc2626' : '#16a34a';
-        messageDiv.style.border = isError ? '1px solid #fca5a5' : '1px solid #86efac';
-        messageDiv.classList.add('success-animation');
-        
-        setTimeout(() => {
-            messageDiv.classList.remove('success-animation');
-        }, 500);
-    }
-    
-    // Función para mostrar/ocultar loading
-    function showLoading(show) {
-        loadingDiv.style.display = show ? 'block' : 'none';
-        loadingDiv.textContent = show ? '📤 Enviando solicitud...' : '';
-    }
-  
     // ⭐ ENVÍO DEL FORMULARIO CON CÉDULA AUTOMÁTICA
     form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -308,25 +306,20 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch(`${API_BASE}/api/formulario`, {
             method: 'POST',
             body: formData,
-            credentials: 'include' // Importante para mantener sesión
+            credentials: 'include'
         })
         .then(response => response.json())
         .then(data => {
             showLoading(false);
 
             if (data.success) {
-                showMessage(`✅ ¡Solicitud registrada exitosamente!
-                             📝 ID: ${data.id}`, false);
+                showMessage(`✅ ¡Solicitud registrada exitosamente! ID: ${data.id}`, false);
                 
-                // Limpiar el formulario EXCEPTO la cédula (que está oculta)
                 form.reset();
-                
-                // Re-llenar la cédula después del reset
                 document.getElementById('cedula').value = cedula;
                 
                 messageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 
-                // ⭐ REDIRIGIR A LA PÁGINA DE INICIO DESPUÉS DE 2 SEGUNDOS ⭐
                 setTimeout(() => {
                     window.location.href = 'MenuPE.html';
                 }, 2000);

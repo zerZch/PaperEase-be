@@ -369,11 +369,16 @@ header .container {
 }
 
 .requisito-card {
+  display: none;
   background: var(--color-fondo-claro);
   border-radius: 1rem;
   box-shadow: 0 6px 12px rgba(0,0,0,0.05);
   overflow: hidden;
   transition: transform 0.3s ease;
+}
+
+.requisito-card[data-cat="salud"] {
+  display: block;
 }
 
 .requisito-card:hover {
