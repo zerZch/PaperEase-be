@@ -1,6 +1,8 @@
 // registro.js - Lógica para el formulario de registro de PaperEase
 
 document.addEventListener('DOMContentLoaded', () => {
+  const API_BASE_URL = window.location.origin;
+
   // Elementos del DOM
   const roleBtns = document.querySelectorAll('.role-btn');
   const registroForm = document.getElementById('registroForm');
@@ -150,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Llamada al backend para registrar el usuario
-      const response = await fetch('http://localhost:3000/api/auth/register', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
