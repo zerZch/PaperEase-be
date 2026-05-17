@@ -81,17 +81,11 @@ app.get('/index.html', (req, res) => {
   res.redirect(301, '/');
 });
 
-// Servir archivos estáticos del frontend
-app.use(express.static(FRONTEND_DIR));
-app.use('/public', express.static(path.join(__dirname, '../frontend/public')));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Ruta dinámica para formulario.html con SEO por programa (ANTES del static)
+const fs = require('fs');
+const formularioHtmlPath = path.join(FRONTEND_DIR, 'formulario.html');
 
-// Página principal - Servir landing page pública
-app.get('/', (req, res) => {
-  res.sendFile(path.join(FRONTEND_DIR, 'index.html'));
-});
-
-// Mapa de programas para SEO dinámico en Formulario.html
+// Mapa de programas para SEO dinámico
 const programasMap = {
   '1': { nombre: 'Canasta Navideña', tipo: 'Bienestar Social' },
   '2': { nombre: 'Campaña de Fortalecimiento de Valores', tipo: 'Bienestar Social' },
@@ -105,10 +99,6 @@ const programasMap = {
   '10': { nombre: 'Apoyo en Medicamentos', tipo: 'Bienestar en Salud' },
   '11': { nombre: 'Póliza de Salud', tipo: 'Bienestar en Salud' }
 };
-
-// Ruta dinámica para Formulario.html con SEO por programa
-const fs = require('fs');
-const formularioHtmlPath = path.join(FRONTEND_DIR, 'formulario.html');
 
 app.get(['/Formulario.html', '/formulario.html', '/Formulario', '/formulario'], (req, res) => {
   const { tipo, programa } = req.query;
@@ -161,6 +151,16 @@ app.get(['/Formulario.html', '/formulario.html', '/Formulario', '/formulario'], 
     res.set('Content-Type', 'text/html');
     res.send(html);
   });
+});
+
+// Servir archivos estáticos del frontend
+app.use(express.static(FRONTEND_DIR));
+app.use('/public', express.static(path.join(__dirname, '../frontend/public')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Página principal - Servir landing page pública
+app.get('/', (req, res) => {
+  res.sendFile(path.join(FRONTEND_DIR, 'index.html'));
 });
 
 // Mapa de redirects 301: URLs antiguas con mayúsculas → nuevas en minúsculas
