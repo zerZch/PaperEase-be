@@ -10,6 +10,16 @@
   <!-- Iconos -->
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 
+  <!-- Auth -->
+  <script src="js/authHelper.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!isAuthenticated()) {
+        window.location.href = 'Login.html';
+      }
+    });
+  </script>
+
   <!-- Script del calendario -->
   <script src="./js/eventos.js" defer></script>
 </head>

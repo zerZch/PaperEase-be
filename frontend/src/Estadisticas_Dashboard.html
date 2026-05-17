@@ -8,6 +8,14 @@
   <link rel="stylesheet" href="css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="js/authHelper.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!isAuthenticated()) {
+        window.location.href = 'Login.html';
+      }
+    });
+  </script>
 </head>
 <body>
 

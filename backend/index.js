@@ -75,13 +75,11 @@ app.use('/public', express.static(path.join(__dirname, '../frontend/public')));
 app.use('/src', express.static(path.join(__dirname, '../frontend/src')));
 // También exponer el contenido de frontend/src en la raíz para que rutas como
 // /Estadisticas_Dashboard.html funcionen directamente.
-app.use(express.static(path.join(__dirname, '../frontend/src')));
+// Usar fallthrough: false para evitar conflictos con la captura de rutas
+app.use(express.static(path.join(__dirname, '../frontend/src'), {
+  extensions: ['html']
+}));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-// Servir archivos HTML directamente - ej: /Login.html, /Programas.html, etc.
-app.get('*.html', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/src', req.path));
-});
 
 // Página principal - Servir landing page pública
 app.get('/', (req, res) => {

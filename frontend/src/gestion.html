@@ -7,6 +7,20 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/gestion.css">
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="js/authHelper.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!isAuthenticated()) {
+        window.location.href = 'Login.html';
+        return;
+      }
+      // Verificar que sea trabajador social (rol 2)
+      if (!isTrabajadorSocial()) {
+        alert('Esta sección es solo para trabajadores sociales');
+        window.location.href = 'MenuPE.html';
+      }
+    });
+  </script>
 </head>
 <body>
 
