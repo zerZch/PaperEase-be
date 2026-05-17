@@ -86,6 +86,27 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/src/index.html'));
 });
 
+// Rutas HTML directas para que /Login.html, /MenuPE.html, etc. funcionen
+// aunque el static middleware no resuelva la extension en algun entorno.
+const htmlPages = [
+  'Login.html',
+  'Registro.html',
+  'MenuPE.html',
+  'Programas.html',
+  'Novedades.html',
+  'Solicitudes.html',
+  'Formulario.html',
+  'Eventos.html',
+  'Estadisticas_Dashboard.html',
+  'gestion.html'
+];
+
+htmlPages.forEach((page) => {
+  app.get([`/${page}`, `/${page.replace('.html', '')}`], (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/src', page));
+  });
+});
+
 // Ruta de prueba para verificar que el servidor funciona
 app.get('/api/test', (req, res) => {
   res.json({ 

@@ -11,15 +11,15 @@ main {
 }
 
 :root {
-  --color-primario: #2f6f86;
-  --color-primario-profundo: #164457;
-  --color-secundario: #5fb4aa;
-  --color-acento: #e0f2fe;
-  --color-fondo: #f7fafb;
-  --color-fondo-claro: #eef7ff;
-  --color-fondo-medio: #d7eeee;
-  --color-texto: #172a35;
-  --color-texto-suave: rgba(23, 42, 53, 0.72);
+  --color-primario: #4D869C;
+  --color-primario-profundo: #3f7286;
+  --color-secundario: #7AB2B2;
+  --color-acento: #EEF7FF;
+  --color-fondo: #f9fafb;
+  --color-fondo-claro: #EEF7FF;
+  --color-fondo-medio: #CDE8E5;
+  --color-texto: #263238;
+  --color-texto-suave: rgba(38, 50, 56, 0.72);
   --color-borde: #dce7ea;
   --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
   --shadow-md: 0 10px 28px rgba(15, 23, 42, 0.08);
@@ -974,7 +974,7 @@ header {
 
 .hero.hero-paperease {
   background:
-    linear-gradient(135deg, rgba(22, 68, 87, 0.94), rgba(47, 111, 134, 0.9)),
+    linear-gradient(135deg, rgba(77, 134, 156, 0.95), rgba(122, 178, 178, 0.88)),
     linear-gradient(135deg, var(--color-fondo-claro), var(--color-fondo-medio));
   min-height: min(720px, calc(100dvh - 72px));
   text-align: left;
@@ -1180,8 +1180,8 @@ header {
 }
 
 .admin-section {
-  background: linear-gradient(135deg, var(--color-primario-profundo), var(--color-primario));
-  color: white;
+  background: linear-gradient(135deg, var(--color-fondo-claro), var(--color-fondo-medio));
+  color: var(--color-texto);
   padding: clamp(3rem, 7vw, 5rem) 0;
 }
 
@@ -1195,11 +1195,11 @@ header {
 .admin-layout h2,
 .admin-layout p,
 .admin-layout .section-kicker {
-  color: white;
+  color: var(--color-primario-profundo);
 }
 
 .admin-layout p {
-  color: rgba(255, 255, 255, 0.78);
+  color: var(--color-texto-suave);
 }
 
 .admin-feature-list {
@@ -1214,8 +1214,9 @@ header {
   gap: 0.85rem;
   padding: 1rem;
   border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  background: white;
+  box-shadow: var(--shadow-md);
+  border-left: 4px solid rgba(122, 178, 178, 0.65);
 }
 
 .admin-feature-list i {
@@ -1224,11 +1225,12 @@ header {
   padding: 0.6rem;
   box-sizing: content-box;
   border-radius: 0.75rem;
-  background: rgba(255, 255, 255, 0.14);
+  background: var(--color-fondo-claro);
+  color: var(--color-primario);
 }
 
 .cta {
-  background: linear-gradient(135deg, var(--color-primario-profundo), var(--color-primario));
+  background: linear-gradient(to right, var(--color-primario), var(--color-secundario));
 }
 
 .cta-text p {
@@ -1237,6 +1239,7 @@ header {
 
 .cta-buttons-left {
   justify-content: flex-start;
+  align-items: center;
 }
 
 .cta-primary,
@@ -1247,16 +1250,30 @@ button,
   min-height: 44px;
 }
 
+.cta-buttons a,
+.cta-primary,
+.cta-secondary,
+.btn-ver-todos,
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0.75rem 1.35rem;
+  border-radius: 999px;
+  line-height: 1;
+}
+
 .cta-primary,
 .btn-ver-todos {
   border: 0;
-  border-radius: var(--radius-md);
+  border-radius: 999px;
   box-shadow: 0 10px 24px rgba(22, 68, 87, 0.18);
 }
 
 .cta-secondary,
 .btn-secondary {
-  border-radius: var(--radius-md);
+  border-radius: 999px;
 }
 
 footer {
@@ -2504,7 +2521,7 @@ body {
 
 .hero.hero-paperease {
   background:
-    linear-gradient(135deg, rgba(22, 68, 87, 0.94), rgba(47, 111, 134, 0.9)),
+    linear-gradient(135deg, rgba(77, 134, 156, 0.95), rgba(122, 178, 178, 0.88)),
     linear-gradient(135deg, var(--color-fondo-claro), var(--color-fondo-medio));
   color: white;
   text-align: left;
@@ -2564,9 +2581,24 @@ body {
   color: var(--color-primario-profundo);
 }
 
+.hero-paperease .cta-secondary,
+.cta .cta-secondary {
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.88);
+  background: transparent;
+}
+
+.cta-buttons-left .cta-secondary {
+  min-width: 150px;
+}
+
+.cta-buttons-left .cta-primary {
+  min-width: 150px;
+}
+
 .cta-secondary,
 .btn-secondary {
-  border-radius: var(--radius-md);
+  border-radius: 999px;
   border-color: currentColor;
 }
 
