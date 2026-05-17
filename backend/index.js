@@ -6,6 +6,7 @@ const http = require('http');
 const socketIO = require('socket.io');
 const app = express();
 const server = http.createServer(app);
+const FRONTEND_DIR = path.join(__dirname, '../frontend/src');
 
 const ALLOWED_ORIGINS = process.env.FRONTEND_URL
   ? [process.env.FRONTEND_URL, 'http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5500']
@@ -69,21 +70,14 @@ app.use('/api', formularioRoutes);
 app.use('/api/auth', authRoutes);               // http://localhost:3000/api/auth
 app.use('/api/gestion', gestionRoutes);         // http://localhost:3000/api/gestion
 app.use('/api/notificaciones', notificacionesRoutes); // http://localhost:3000/api/notificaciones
-// Servir archivos estáticos
-// Servir archivos estáticos
+// Servir archivos estáticos del frontend
+app.use(express.static(FRONTEND_DIR));
 app.use('/public', express.static(path.join(__dirname, '../frontend/public')));
-app.use('/src', express.static(path.join(__dirname, '../frontend/src')));
-// También exponer el contenido de frontend/src en la raíz para que rutas como
-// /Estadisticas_Dashboard.html funcionen directamente.
-// Usar fallthrough: false para evitar conflictos con la captura de rutas
-app.use(express.static(path.join(__dirname, '../frontend/src'), {
-  extensions: ['html']
-}));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Página principal - Servir landing page pública
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/src/index.html'));
+  res.sendFile(path.join(FRONTEND_DIR, 'index.html'));
 });
 
 // Rutas HTML directas para que /Login.html, /MenuPE.html, etc. funcionen
@@ -98,12 +92,24 @@ const htmlPages = [
   'Formulario.html',
   'Eventos.html',
   'Estadisticas_Dashboard.html',
-  'gestion.html'
+  'gestion.html',
+  'Ayuda.html',
+  'Privacidad.html',
+  'Terminos.html',
+  'Contacto.html'
 ];
 
 htmlPages.forEach((page) => {
-  app.get([`/${page}`, `/${page.replace('.html', '')}`], (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/src', page));
+  const pageWithoutExtension = page.replace('.html', '');
+  const aliases = [
+    `/${page}`,
+    `/${pageWithoutExtension}`,
+    `/${page.toLowerCase()}`,
+    `/${pageWithoutExtension.toLowerCase()}`
+  ];
+
+  app.get([...new Set(aliases)], (req, res) => {
+    res.sendFile(path.join(FRONTEND_DIR, page));
   });
 });
 
