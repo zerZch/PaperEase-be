@@ -10,6 +10,27 @@ const conexion = require('./conexion');
 // Constante para el número de rounds de bcrypt (seguridad)
 const SALT_ROUNDS = 10;
 
+function getDatabaseErrorResponse(error) {
+  const unavailableCodes = new Set([
+    'ER_BAD_DB_ERROR',
+    'ECONNREFUSED',
+    'PROTOCOL_CONNECTION_LOST',
+    'ER_NO_SUCH_TABLE'
+  ]);
+
+  if (!unavailableCodes.has(error.code)) {
+    return null;
+  }
+
+  return {
+    status: 503,
+    body: {
+      error: 'Base de datos no disponible',
+      message: 'No se pudo acceder a la base de datos de PaperEase. Verifica que MySQL este activo y que la base paperease exista.'
+    }
+  };
+}
+
 // =====================================================
 // FUNCIÓN: Registrar Usuario
 // =====================================================
@@ -176,6 +197,11 @@ router.post('/register', async (req, res) => {
     // Registrar intento fallido en auditoría
     await registrarAuditoria(null, rolNumerico, email, 'registro', `Error en registro: ${error.message}`, req.ip, req.get('user-agent'), false);
 
+    const databaseError = getDatabaseErrorResponse(error);
+    if (databaseError) {
+      return res.status(databaseError.status).json(databaseError.body);
+    }
+
     return res.status(500).json({
       error: 'Error al registrar usuario',
       detalle: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -303,6 +329,11 @@ router.post('/login', async (req, res) => {
 
     // Registrar error en auditoría
     await registrarAuditoria(null, null, email, 'login', `Error en login: ${error.message}`, req.ip, req.get('user-agent'), false);
+
+    const databaseError = getDatabaseErrorResponse(error);
+    if (databaseError) {
+      return res.status(databaseError.status).json(databaseError.body);
+    }
 
     return res.status(500).json({
       error: 'Error al procesar login',

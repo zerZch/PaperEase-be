@@ -142,6 +142,10 @@ app.use((req, res, next) => {
 // Manejo de errores
 app.use((error, req, res, next) => {
   console.error('Error capturado:', error);
+
+  if (error instanceof SyntaxError && error.status === 400 && 'body' in error) {
+    return res.status(400).json({ error: 'JSON inválido en la solicitud' });
+  }
   
   if (error instanceof multer.MulterError) {
     if (error.code === 'LIMIT_FILE_SIZE') {

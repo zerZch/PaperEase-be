@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (!response.ok) {
         // Si hay error, mostrar mensaje
-        showMessage(data.error || 'Credenciales inválidas', 'error');
+        showMessage(data.message || data.error || 'Credenciales inválidas', 'error');
 
         // Rehabilitar botón
         btnLogin.disabled = false;
@@ -106,6 +106,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Esperar un momento antes de redirigir
       setTimeout(() => {
+        const postAuthRedirect = localStorage.getItem('postAuthRedirect');
+        if (postAuthRedirect && data.usuario.rol === 1) {
+          localStorage.removeItem('postAuthRedirect');
+          window.location.href = postAuthRedirect;
+          return;
+        }
+
         // Redirigir según el rol del usuario
         if (data.usuario.rol === 1) {
           // Estudiante

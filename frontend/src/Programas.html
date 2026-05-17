@@ -508,6 +508,21 @@
           document.body.style.overflow = 'auto';
         }
       });
+
+      // Aplicar ahora: si el usuario esta autenticado va al formulario;
+      // si no, se guarda el destino y se envia a registro.
+      document.addEventListener('click', (e) => {
+        const applyLink = e.target.closest('a[href^="Formulario.html"]');
+        if (!applyLink) return;
+
+        if (typeof isAuthenticated === 'function' && isAuthenticated()) {
+          return;
+        }
+
+        e.preventDefault();
+        localStorage.setItem('postAuthRedirect', applyLink.getAttribute('href'));
+        window.location.href = 'Registro.html';
+      });
   
       // Tabs: filtra por categoría
       document.querySelectorAll(".tabs .tab").forEach(tab => {

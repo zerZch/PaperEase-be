@@ -17,16 +17,21 @@ const config = databaseUrl
       port: Number(process.env.DB_PORT || process.env.MYSQLPORT || 3306),
       user: process.env.DB_USER || process.env.MYSQLUSER || 'root',
       password: process.env.DB_PASSWORD || process.env.MYSQLPASSWORD || '',
-      database: process.env.DB_NAME || process.env.MYSQL_DATABASE || 'paperease',
       ...baseConfig
     };
 
 async function main() {
   const schemaPath = path.join(__dirname, '..', 'schema.sql');
   const sql = fs.readFileSync(schemaPath, 'utf8');
+  const databaseName = process.env.DB_NAME || process.env.MYSQL_DATABASE || 'paperease';
 
   const connection = await mysql.createConnection(config);
   try {
+    if (!databaseUrl) {
+      await connection.query(`CREATE DATABASE IF NOT EXISTS \`${databaseName}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
+      await connection.query(`USE \`${databaseName}\``);
+    }
+
     await connection.query(sql);
     console.log('Database schema initialized successfully.');
   } finally {

@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (!response.ok) {
         // Si hay error, mostrar mensaje
-        showMessage(data.error || 'Error al crear la cuenta', 'error');
+        showMessage(data.message || data.error || 'Error al crear la cuenta', 'error');
 
         // Rehabilitar botón
         btnRegistro.disabled = false;
@@ -177,7 +177,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // Mostrar mensaje de éxito
       showMessage('¡Cuenta creada exitosamente! Ahora puedes iniciar sesión.', 'success');
 
-      // Redirigir a la página de login
+      // Redirigir a la página de login. Si venia de "Aplicar ahora",
+      // login.js conserva el destino guardado y lo envia al formulario.
       setTimeout(() => {
         window.location.href = 'Login.html';
       }, 2000);

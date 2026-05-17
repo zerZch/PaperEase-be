@@ -429,7 +429,7 @@
           <span class="section-tag">Asistencia</span>
           <h2>¿Tienes dudas? Nuestro chatbot te orienta</h2>
           <p>No sabes qué programa aplica a tu situación? El asistente virtual de PaperEase te ayuda a encontrar lo que necesitas con preguntas simples.</p>
-          <a href="Login.html" class="btn-primary">
+          <a href="MenuPE.html" class="btn-primary" data-requires-auth="true" data-guest-target="Registro.html">
             <i data-lucide="message-circle"></i>
             Probar el asistente
           </a>
@@ -533,6 +533,21 @@
 
   <script>
     lucide.createIcons();
+
+    document.querySelectorAll('[data-requires-auth="true"]').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        const token = localStorage.getItem('authToken');
+        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+
+        if (token && isLoggedIn) {
+          return;
+        }
+
+        event.preventDefault();
+        localStorage.setItem('postAuthRedirect', link.getAttribute('href'));
+        window.location.href = link.dataset.guestTarget || 'Registro.html';
+      });
+    });
   </script>
 </body>
 </html>
