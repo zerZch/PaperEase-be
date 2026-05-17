@@ -3,15 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mis Solicitudes • PaperEase</title>
+  <title>Mis Solicitudes - Estado y Seguimiento | PaperEase</title>
+  <meta name="description" content="Revisa el estado de tus solicitudes de Bienestar Estudiantil en PaperEase. Consulta aprobaciones, pendientes y el historial de tus trámites en la UTP." />
+  <link rel="canonical" href="https://paperease.up.railway.app/solicitudes.html" />
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/solicitudes.css">
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <script src="js/authHelper.js"></script>
+  <script src="js/navRBAC.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       if (!isAuthenticated()) {
-        window.location.href = 'Login.html';
+        window.location.href = 'login.html';
       }
     });
   </script>
@@ -22,17 +25,17 @@
   <header class="header">
     <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
       <!-- Logo + Texto -->
-      <a href="MenuPE.html" class="logo-container" style="text-decoration: none;">
-         <img src="imagenes/logo.png" alt="PaperEase Logo" class="logo" />
+      <a href="menupe.html" class="logo-container" style="text-decoration: none;">
+         <img src="imagenes/logo.png" alt="PaperEase Logo" class="logo" width="40" height="40" />
         <span class="logo-text">PaperEase</span>
       </a>
 
       <!-- Navegación -->
       <nav class="nav">
-        <a href="MenuPE.html">Inicio</a>
-        <a href="Programas.html">Programas</a>
-        <a href="Novedades.html">Novedades</a>
-        <a href="Solicitudes.html" id="linkMisSolicitudes">Mis Solicitudes</a>
+        <a href="menupe.html">Inicio</a>
+        <a href="programas.html">Programas</a>
+        <a href="novedades.html">Novedades</a>
+        <a href="solicitudes.html" id="linkMisSolicitudes">Mis Solicitudes</a>
         <!-- Botón de Notificaciones -->
         <button id="btnNotificaciones" class="btn-notificaciones" style="position: relative; background: none; border: none; cursor: pointer; padding: 8px;">
           <i data-lucide="bell" style="width: 24px; height: 24px; color: #4D869C;"></i>
@@ -133,7 +136,7 @@
       <svg data-lucide="inbox"></svg>
       <h3>No se encontraron solicitudes</h3>
       <p>No has realizado ninguna solicitud aún o no se encontraron resultados con los filtros aplicados.</p>
-      <a href="Formulario.html" class="cta-primary">
+      <a href="formulario.html" class="cta-primary">
         <svg data-lucide="plus"></svg>
         Nueva Solicitud
       </a>
@@ -181,9 +184,9 @@
   <div class="footer-flex container">
     <p>© 2025 PaperEase • Universidad Tecnológica de Panamá</p>
     <div class="footer-links">
-      <a href="Ayuda.html">Ayuda</a>
-      <a href="Privacidad.html">Privacidad</a>
-      <a href="Terminos.html">Términos</a>
+      <a href="ayuda.html">Ayuda</a>
+      <a href="privacidad.html">Privacidad</a>
+      <a href="terminos.html">Términos</a>
     </div>
   </div>
 </footer>
@@ -217,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
           localStorage.removeItem('currentUser');
           localStorage.removeItem('isLoggedIn');
           localStorage.removeItem('userRole');
-          window.location.href = 'Login.html';
+          window.location.href = 'login.html';
         }
       }
     });

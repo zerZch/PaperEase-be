@@ -3,6 +3,7 @@ const path = require('path');
 const multer = require('multer');
 const http = require('http');
 const socketIO = require('socket.io');
+const { verificarAutenticacion, verificarEstudiante, verificarTrabajadorSocial } = require('./middleware/authMiddleware');
 const app = express();
 const server = http.createServer(app);
 const FRONTEND_DIR = path.join(__dirname, '../frontend/src');
@@ -37,6 +38,24 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Headers de seguridad con helmet
+const helmet = require('helmet');
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com", "https://cdn.jsdelivr.net", "https://cdn.socket.io"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
+      imgSrc: ["'self'", "data:", "blob:"],
+      connectSrc: ["'self'", "wss:", "ws:"],
+      fontSrc: ["'self'", "https://cdn.jsdelivr.net"],
+      objectSrc: ["'none'"],
+      frameAncestors: ["'none'"]
+    }
+  },
+  crossOriginEmbedderPolicy: false // Necesario para cargar recursos de CDNs
+}));
+
 // Railway usa reverse proxy — necesario para cookies secure
 app.set('trust proxy', 1);
 
@@ -51,12 +70,17 @@ notificacionesRoutes.setSocketIO(io);
 
 // Montar routers con las rutas correctas
 app.use('/api/novedades', novedadesRouter);     // http://localhost:3000/api/novedades
-app.use('/api/eventos', eventosRouter);         // http://localhost:3000/api/eventos
-app.use('/api/estadisticas', estadisticasRoutes); // http://localhost:3000/api/estadisticas
+app.use('/api/eventos', verificarAutenticacion, verificarTrabajadorSocial, eventosRouter);         // http://localhost:3000/api/eventos
+app.use('/api/estadisticas', verificarAutenticacion, estadisticasRoutes); // http://localhost:3000/api/estadisticas
 app.use('/api', formularioRoutes);
 app.use('/api/auth', authRoutes);               // http://localhost:3000/api/auth
-app.use('/api/gestion', gestionRoutes);         // http://localhost:3000/api/gestion
-app.use('/api/notificaciones', notificacionesRoutes); // http://localhost:3000/api/notificaciones
+app.use('/api/gestion', verificarAutenticacion, verificarTrabajadorSocial, gestionRoutes);         // http://localhost:3000/api/gestion
+app.use('/api/notificaciones', verificarAutenticacion, notificacionesRoutes); // http://localhost:3000/api/notificaciones
+// Redirect 301: /index.html → / (evita contenido duplicado)
+app.get('/index.html', (req, res) => {
+  res.redirect(301, '/');
+});
+
 // Servir archivos estáticos del frontend
 app.use(express.static(FRONTEND_DIR));
 app.use('/public', express.static(path.join(__dirname, '../frontend/public')));
@@ -67,33 +91,122 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(FRONTEND_DIR, 'index.html'));
 });
 
-// Rutas HTML directas para que /Login.html, /MenuPE.html, etc. funcionen
-// aunque el static middleware no resuelva la extension en algun entorno.
+// Mapa de programas para SEO dinámico en Formulario.html
+const programasMap = {
+  '1': { nombre: 'Canasta Navideña', tipo: 'Bienestar Social' },
+  '2': { nombre: 'Campaña de Fortalecimiento de Valores', tipo: 'Bienestar Social' },
+  '3': { nombre: 'Campaña de Concienciación de Instalaciones', tipo: 'Bienestar Social' },
+  '4': { nombre: 'Feria de Empleo', tipo: 'Bienestar Social' },
+  '5': { nombre: 'Consejería Personal', tipo: 'Bienestar Social' },
+  '6': { nombre: 'Banco de Sangre', tipo: 'Bienestar en Salud' },
+  '7': { nombre: 'Ayuda en Gastos Médicos', tipo: 'Bienestar en Salud' },
+  '8': { nombre: 'Feria de Salud', tipo: 'Bienestar en Salud' },
+  '9': { nombre: 'Compra de Lentes', tipo: 'Bienestar en Salud' },
+  '10': { nombre: 'Apoyo en Medicamentos', tipo: 'Bienestar en Salud' },
+  '11': { nombre: 'Póliza de Salud', tipo: 'Bienestar en Salud' }
+};
+
+// Ruta dinámica para Formulario.html con SEO por programa
+const fs = require('fs');
+const formularioHtmlPath = path.join(FRONTEND_DIR, 'formulario.html');
+
+app.get(['/Formulario.html', '/formulario.html', '/Formulario', '/formulario'], (req, res) => {
+  const { tipo, programa } = req.query;
+
+  // Redirect 301 desde versiones con mayúsculas
+  if (req.path === '/Formulario.html' || req.path === '/Formulario') {
+    const qs = req.originalUrl.includes('?') ? req.originalUrl.substring(req.originalUrl.indexOf('?')) : '';
+    return res.redirect(301, '/formulario.html' + qs);
+  }
+  
+  fs.readFile(formularioHtmlPath, 'utf8', (err, html) => {
+    if (err) {
+      return res.status(500).send('Error interno del servidor');
+    }
+
+    const prog = programa ? programasMap[programa] : null;
+    const baseUrl = 'https://paperease.up.railway.app';
+
+    if (prog) {
+      // Título, meta description y canonical dinámicos
+      const title = `Solicitar ${prog.nombre} | PaperEase`;
+      const description = `Solicita ${prog.nombre} del programa de ${prog.tipo} en la UTP. Completa el formulario en PaperEase y gestiona tu solicitud en línea.`;
+      const canonical = `${baseUrl}/formulario.html?tipo=${tipo}&programa=${programa}`;
+
+      html = html.replace(
+        '<title>Formulario de Solicitud • PaperEase</title>',
+        `<title>${title}</title>\n  <meta name="description" content="${description}" />\n  <link rel="canonical" href="${canonical}" />`
+      );
+
+      // H1 dinámico (reemplaza el h2 actual)
+      html = html.replace(
+        '<h2>Formulario de Solicitud</h2>',
+        `<h1>Solicitar ${prog.nombre}</h1>`
+      );
+    } else {
+      // Sin parámetros: versión genérica
+      const canonical = `${baseUrl}/formulario.html`;
+      html = html.replace(
+        '<title>Formulario de Solicitud • PaperEase</title>',
+        `<title>Formulario de Solicitud | PaperEase</title>\n  <meta name="description" content="Formulario de solicitud de programas de Bienestar Estudiantil en la UTP. Selecciona tu programa y completa tus datos en PaperEase." />\n  <link rel="canonical" href="${canonical}" />`
+      );
+
+      // H1 genérico
+      html = html.replace(
+        '<h2>Formulario de Solicitud</h2>',
+        '<h1>Formulario de Solicitud</h1>'
+      );
+    }
+
+    res.set('Content-Type', 'text/html');
+    res.send(html);
+  });
+});
+
+// Mapa de redirects 301: URLs antiguas con mayúsculas → nuevas en minúsculas
+const legacyRedirects = {
+  'Login.html': 'login.html',
+  'Registro.html': 'registro.html',
+  'MenuPE.html': 'menupe.html',
+  'Programas.html': 'programas.html',
+  'Novedades.html': 'novedades.html',
+  'Solicitudes.html': 'solicitudes.html',
+  'Eventos.html': 'eventos.html',
+  'Estadisticas_Dashboard.html': 'estadisticas_dashboard.html',
+  'Ayuda.html': 'ayuda.html',
+  'Privacidad.html': 'privacidad.html',
+  'Terminos.html': 'terminos.html',
+  'Contacto.html': 'contacto.html'
+};
+
+// Redirects 301 desde URLs con mayúsculas
+Object.entries(legacyRedirects).forEach(([oldPage, newPage]) => {
+  const oldWithout = oldPage.replace('.html', '');
+  app.get([`/${oldPage}`, `/${oldWithout}`], (req, res) => {
+    res.redirect(301, `/${newPage}`);
+  });
+});
+
+// Rutas HTML en minúsculas (archivos reales)
 const htmlPages = [
-  'Login.html',
-  'Registro.html',
-  'MenuPE.html',
-  'Programas.html',
-  'Novedades.html',
-  'Solicitudes.html',
-  'Formulario.html',
-  'Eventos.html',
-  'Estadisticas_Dashboard.html',
+  'login.html',
+  'registro.html',
+  'menupe.html',
+  'programas.html',
+  'novedades.html',
+  'solicitudes.html',
+  'eventos.html',
+  'estadisticas_dashboard.html',
   'gestion.html',
-  'Ayuda.html',
-  'Privacidad.html',
-  'Terminos.html',
-  'Contacto.html'
+  'ayuda.html',
+  'privacidad.html',
+  'terminos.html',
+  'contacto.html'
 ];
 
 htmlPages.forEach((page) => {
   const pageWithoutExtension = page.replace('.html', '');
-  const aliases = [
-    `/${page}`,
-    `/${pageWithoutExtension}`,
-    `/${page.toLowerCase()}`,
-    `/${pageWithoutExtension.toLowerCase()}`
-  ];
+  const aliases = [`/${page}`, `/${pageWithoutExtension}`];
 
   app.get([...new Set(aliases)], (req, res) => {
     res.sendFile(path.join(FRONTEND_DIR, page));

@@ -156,7 +156,7 @@ class StudentChatbot {
         text: 'Puedes ver todos los programas disponibles en la sección <strong>Programas</strong>. Ahí encontrarás los requisitos y descripción de cada uno.',
         isBot: true,
         quickReplies: [
-          { text: 'Ir a Programas', action: 'navigate', url: 'Programas.html' }
+          { text: 'Ir a Programas', action: 'navigate', url: 'programas.html' }
         ]
       };
     }
@@ -167,8 +167,8 @@ class StudentChatbot {
         text: 'Para aplicar a un programa: <br>1. Selecciona el programa que te interesa<br>2. Revisa los requisitos<br>3. Pulsa "Aplicar"<br>4. Completa el formulario con tus datos y archivos<br><br>Recuerda que debes estar registrado para aplicar.',
         isBot: true,
         quickReplies: [
-          { text: 'Ver Programas', action: 'navigate', url: 'Programas.html' },
-          { text: 'Formulario', action: 'navigate', url: 'Formulario.html' }
+          { text: 'Ver Programas', action: 'navigate', url: 'programas.html' },
+          { text: 'Formulario', action: 'navigate', url: 'formulario.html' }
         ]
       };
     }
@@ -179,7 +179,7 @@ class StudentChatbot {
         text: 'Puedes ver el estado de tus solicitudes en la sección <strong>Mis Solicitudes</strong>. Los estados posibles son:<br><br>• <strong>Pendiente:</strong> En espera de revisión<br>• <strong>En revisión:</strong> Siendo evaluada<br>• <strong>Aprobada:</strong> Solicitud aceptada<br>• <strong>Rechazada:</strong> No cumple requisitos<br><br>Necesitas estar registrado para ver tus solicitudes.',
         isBot: true,
         quickReplies: [
-          { text: 'Ir a Mis Solicitudes', action: 'navigate', url: 'Solicitudes.html' }
+          { text: 'Ir a Mis Solicitudes', action: 'navigate', url: 'solicitudes.html' }
         ]
       };
     }
@@ -190,7 +190,7 @@ class StudentChatbot {
         text: 'Cada programa tiene requisitos específicos. Para conocer los requisitos:<br><br>1. Ve a la sección <strong>Programas</strong><br>2. Selecciona el programa que te interesa<br>3. Lee la descripción y requisitos<br><br>Los documentos comunes incluyen: cédula, certificado de matrícula, comprobantes, etc.',
         isBot: true,
         quickReplies: [
-          { text: 'Ver Programas', action: 'navigate', url: 'Programas.html' }
+          { text: 'Ver Programas', action: 'navigate', url: 'programas.html' }
         ]
       };
     }
@@ -223,8 +223,8 @@ class StudentChatbot {
         text: 'Para usar todas las funciones de PaperEase necesitas tener una cuenta:<br><br>• <strong>Registrarse:</strong> Si eres nuevo, crea tu cuenta con tus datos<br>• <strong>Iniciar sesión:</strong> Si ya tienes cuenta, ingresa con tu correo y contraseña<br><br>Una vez dentro, podrás aplicar a programas y ver tus solicitudes.',
         isBot: true,
         quickReplies: [
-          { text: 'Registrarme', action: 'navigate', url: 'Registro.html' },
-          { text: 'Iniciar Sesión', action: 'navigate', url: 'Login.html' }
+          { text: 'Registrarme', action: 'navigate', url: 'registro.html' },
+          { text: 'Iniciar Sesión', action: 'navigate', url: 'login.html' }
         ]
       };
     }
@@ -366,7 +366,7 @@ class StudentChatbot {
 // Inicializar el chatbot cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
   // Solo inicializar el chatbot en MenuPE.html (página principal)
-  if (window.location.pathname.includes('MenuPE.html') || window.location.pathname === '/' || window.location.pathname === '/frontend/src/' || window.location.pathname === '/frontend/src/index.html') {
+  if (window.location.pathname.includes('menupe.html') || window.location.pathname === '/' || window.location.pathname === '/frontend/src/' || window.location.pathname === '/frontend/src/index.html') {
     const chatbot = new StudentChatbot();
     // Hacer el chatbot disponible globalmente para debug
     window.papereaseChatbot = chatbot;

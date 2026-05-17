@@ -10,7 +10,7 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       if (!isAuthenticated()) {
-        window.location.href = 'Login.html';
+        window.location.href = 'login.html';
       }
     });
   </script>
@@ -19,8 +19,8 @@
 <!-- Header -->
  <header>
  <div class="container">
- <a href="MenuPE.html" class="logo-container" style="text-decoration: none;">
- <img src="imagenes/logo.png" alt="PaperEase Logo" class="logo" />
+ <a href="menupe.html" class="logo-container" style="text-decoration: none;">
+ <img src="imagenes/logo.png" alt="PaperEase Logo" class="logo" width="40" height="40" />
  <span class="logo-text">PaperEase</span>
  </a>
  </div>
@@ -113,7 +113,7 @@
   
   <div class="cta-section">
      <button type="submit" class="cta-primary">Enviar Solicitud</button>
-     <button type="button" onclick="window.location.href='Programas.html'" class="cta-secondary">Cancelar</button>
+     <button type="button" onclick="window.location.href='programas.html'" class="cta-secondary">Cancelar</button>
   </div>
  
 </form>
@@ -130,9 +130,9 @@
  <div class="footer-flex container">
  <p>© 2025 PaperEase • Universidad Tecnológica de Panamá</p>
  <div class="footer-links">
- <a href="Ayuda.html">Ayuda</a>
- <a href="Privacidad.html">Privacidad</a>
- <a href="Terminos.html">Términos</a>
+ <a href="ayuda.html">Ayuda</a>
+ <a href="privacidad.html">Privacidad</a>
+ <a href="terminos.html">Términos</a>
  </div>
  </div>
  </footer>
@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.warn('⚠️ No hay token de autenticación');
                 showMessage('⚠️ Debes iniciar sesión para hacer una solicitud', true);
                 setTimeout(() => {
-                    window.location.href = 'Login.html';
+                    window.location.href = 'login.html';
                 }, 2000);
                 return;
             }
@@ -229,7 +229,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.warn('⚠️ Usuario no autenticado o sin datos completos');
                 showMessage('⚠️ Debes iniciar sesión para hacer una solicitud', true);
                 setTimeout(() => {
-                    window.location.href = 'Login.html';
+                    window.location.href = 'login.html';
                 }, 2000);
             }
 
@@ -237,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('❌ Error al obtener datos del usuario:', error);
             showMessage('❌ Error al verificar sesión. Por favor, inicia sesión nuevamente.', true);
             setTimeout(() => {
-                window.location.href = 'Login.html';
+                window.location.href = 'login.html';
             }, 2000);
         }
     }
@@ -321,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 messageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 
                 setTimeout(() => {
-                    window.location.href = 'MenuPE.html';
+                    window.location.href = 'menupe.html';
                 }, 2000);
             } else {
                 showMessage(`❌ ${data.error || 'Ocurrió un error inesperado.'}`, true);

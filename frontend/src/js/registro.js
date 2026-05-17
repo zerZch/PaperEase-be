@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Redirigir a la página de login. Si venia de "Aplicar ahora",
       // login.js conserva el destino guardado y lo envia al formulario.
       setTimeout(() => {
-        window.location.href = 'Login.html';
+        window.location.href = 'login.html';
       }, 2000);
 
     } catch (error) {

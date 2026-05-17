@@ -116,13 +116,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Redirigir según el rol del usuario
         if (data.usuario.rol === 1) {
           // Estudiante
-          window.location.href = 'MenuPE.html';
+          window.location.href = 'menupe.html';
         } else if (data.usuario.rol === 2) {
           // Trabajador Social
           window.location.href = 'gestion.html';
         } else {
           // Por defecto, ir al menú principal
-          window.location.href = 'MenuPE.html';
+          window.location.href = 'menupe.html';
         }
       }, 1500);
 

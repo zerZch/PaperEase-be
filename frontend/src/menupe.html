@@ -3,17 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PaperEase • Bienestar Estudiantil UTP</title>
+  <title>Panel Estudiantil - Inicio | PaperEase</title>
+  <meta name="description" content="Accede a tu panel de Bienestar Estudiantil en PaperEase. Consulta programas disponibles, revisa novedades y gestiona tus solicitudes desde un solo lugar." />
+  <link rel="canonical" href="https://paperease.up.railway.app/menupe.html" />
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/novedades.css">
   <link rel="stylesheet" href="css/chatbot.css">
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <script src="js/authHelper.js"></script>
+  <script src="js/navRBAC.js"></script>
   <script>
     // Verificar autenticación al cargar la página
     document.addEventListener('DOMContentLoaded', () => {
       if (!isAuthenticated()) {
-        window.location.href = 'Login.html';
+        window.location.href = 'login.html';
       }
     });
   </script>
@@ -23,17 +26,17 @@
   <header class="header">
     <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
       <!-- Logo + Texto -->
-      <a href="MenuPE.html" class="logo-container" style="text-decoration: none;">
-         <img src="imagenes/logo.png" alt="PaperEase Logo" class="logo" />
+      <a href="menupe.html" class="logo-container" style="text-decoration: none;">
+         <img src="imagenes/logo.png" alt="PaperEase Logo" class="logo" width="40" height="40" />
         <span class="logo-text">PaperEase</span>
       </a>
 
       <!-- Navegación -->
       <nav class="nav">
-        <a href="MenuPE.html">Inicio</a>
-        <a href="Programas.html">Programas</a>
-        <a href="Novedades.html">Novedades</a>
-        <a href="Solicitudes.html" id="linkMisSolicitudes">Mis Solicitudes</a>
+        <a href="menupe.html">Inicio</a>
+        <a href="programas.html">Programas</a>
+        <a href="novedades.html">Novedades</a>
+        <a href="solicitudes.html" id="linkMisSolicitudes">Mis Solicitudes</a>
         <!-- Botón de Notificaciones -->
         <button id="btnNotificaciones" class="btn-notificaciones" style="position: relative; background: none; border: none; cursor: pointer; padding: 8px;">
           <i data-lucide="bell" style="width: 24px; height: 24px; color: #4D869C;"></i>
@@ -67,8 +70,8 @@
         <h1>PaperEase centraliza tus servicios estudiantiles</h1>
         <p>Consulta programas, revisa requisitos, envia solicitudes y da seguimiento a tus procesos desde un solo lugar.</p>
         <div class="cta-buttons">
-          <a href="Programas.html" class="cta-primary">Ver programas</a>
-          <a href="Formulario.html" class="cta-secondary">Iniciar solicitud</a>
+          <a href="programas.html" class="cta-primary">Ver programas</a>
+          <a href="formulario.html" class="cta-secondary">Iniciar solicitud</a>
         </div>
       </div>
       <div class="hero-product-card" aria-label="Resumen de funciones de PaperEase">
@@ -163,7 +166,7 @@
         <h2>Proximos eventos</h2>
         <p>Descubre actividades, jornadas y novedades de Bienestar Estudiantil.</p>
       </div>
-      <a href="Novedades.html" class="btn-ver-todos">
+      <a href="novedades.html" class="btn-ver-todos">
         <span>Ver todos</span>
         <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
       </a>
@@ -273,10 +276,10 @@
     <div class="cta-text">
       <h2>Empieza a usar PaperEase hoy</h2>
       <p>Regístrate y descubre cómo PaperEase puede facilitar tu gestión universitaria.</p>
-      <div class="cta-buttons cta-buttons-left"><a href="Programas.html" class="cta-primary">Ver programas</a><a href="Solicitudes.html" class="cta-secondary">Mis solicitudes</a></div>
+      <div class="cta-buttons cta-buttons-left"><a href="programas.html" class="cta-primary">Ver programas</a><a href="solicitudes.html" class="cta-secondary">Mis solicitudes</a></div>
     </div>
     <div class="cta-image">
-      <img src="imagenes\cta.avif" alt="Estudiante usando PaperEase">
+      <img src="imagenes/cta.avif" alt="Estudiante usando PaperEase" width="480" height="320">
     </div>
   </div>
 </section>
@@ -287,9 +290,9 @@
     <div class="container footer-flex">
       <p>© 2025 PaperEase • Universidad Tecnológica de Panamá</p>
       <div class="footer-links">
-        <a href="Ayuda.html">Ayuda</a>
-        <a href="Privacidad.html">Privacidad</a>
-        <a href="Terminos.html">Términos</a>
+        <a href="ayuda.html">Ayuda</a>
+        <a href="privacidad.html">Privacidad</a>
+        <a href="terminos.html">Términos</a>
       </div>
     </div>
   </footer>
@@ -298,29 +301,6 @@
 <script src="js/novedades.js" defer></script>
 <script>
   lucide.createIcons();
-
-  // Mostrar/ocultar links basados en el rol del usuario
-  document.addEventListener('DOMContentLoaded', () => {
-    const linkMisSolicitudes = document.getElementById('linkMisSolicitudes');
-    const linkGestion = document.getElementById('linkGestion');
-
-    // Verificar si el usuario está autenticado
-    if (typeof getCurrentUser === 'function' && typeof getUserRole === 'function') {
-      const user = getCurrentUser();
-      const userRole = getUserRole();
-
-      if (user && userRole) {
-        // Rol 1 = Estudiante, Rol 2 = Trabajador Social
-        if (userRole === 1) {
-          // Mostrar "Mis Solicitudes" para estudiantes
-          if (linkMisSolicitudes) linkMisSolicitudes.style.display = '';
-        } else if (userRole === 2) {
-          // Mostrar "Gestión" para trabajadores sociales
-          if (linkGestion) linkGestion.style.display = '';
-        }
-      }
-    }
-  });
 </script>
 
 <!-- Chatbot de Navegación -->
@@ -351,7 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
           localStorage.removeItem('currentUser');
           localStorage.removeItem('isLoggedIn');
           localStorage.removeItem('userRole');
-          window.location.href = 'Login.html';
+          window.location.href = 'login.html';
         }
       }
     });

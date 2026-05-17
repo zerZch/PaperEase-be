@@ -65,7 +65,7 @@ function isTrabajadorSocial() {
  */
 function requireAuth() {
   if (!isAuthenticated()) {
-    window.location.href = 'Login.html';
+    window.location.href = 'login.html';
   }
 }
 
@@ -74,7 +74,7 @@ function requireAuth() {
  */
 function requireEstudiante() {
   if (!isAuthenticated()) {
-    window.location.href = 'Login.html';
+    window.location.href = 'login.html';
     return;
   }
 
@@ -89,13 +89,13 @@ function requireEstudiante() {
  */
 function requireTrabajadorSocial() {
   if (!isAuthenticated()) {
-    window.location.href = 'Login.html';
+    window.location.href = 'login.html';
     return;
   }
 
   if (!isTrabajadorSocial()) {
     alert('Acceso denegado. Solo trabajadores sociales pueden acceder a esta página.');
-    window.location.href = 'MenuPE.html';
+    window.location.href = 'menupe.html';
   }
 }
 
@@ -127,7 +127,7 @@ async function logout() {
   localStorage.removeItem('userRole');
 
   // Redirigir al login
-  window.location.href = 'Login.html';
+  window.location.href = 'login.html';
 }
 
 /**
@@ -201,7 +201,7 @@ async function authenticatedFetch(url, options = {}) {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('userRole');
-    window.location.href = 'Login.html';
+    window.location.href = 'login.html';
   }
 
   return response;
