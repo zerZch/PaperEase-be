@@ -1,0 +1,16 @@
+packages:
+  - "."
+
+registries:
+  default: https://registry.npmjs.org/
+
+minimumReleaseAge: 1440
+minimumReleaseAgeStrict: true
+minimumReleaseAgeIgnoreMissingTime: false
+blockExoticSubdeps: true
+strictDepBuilds: true
+dangerouslyAllowAllBuilds: false
+verifyDepsBeforeRun: error
+
+allowBuilds:
+  bcrypt: true

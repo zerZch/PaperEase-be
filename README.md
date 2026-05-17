@@ -19,6 +19,31 @@ Sistema completo de autenticación y gestión para el Bienestar Estudiantil de l
 
 ---
 
+## Gestor de paquetes seguro
+
+Este proyecto usa **pnpm 11** en lugar de npm para reducir riesgos de supply chain.
+
+Comandos recomendados:
+
+```bash
+corepack enable
+corepack pnpm@11.1.2 install
+corepack pnpm@11.1.2 run dev
+```
+
+No uses `npm install` para el flujo normal del proyecto. El archivo `.npmrc` deja `ignore-scripts=true` para que, si alguien ejecuta npm por accidente, no se ejecuten scripts `preinstall`, `install` o `postinstall` de dependencias.
+
+La política de pnpm está en `pnpm-workspace.yaml`:
+
+- `minimumReleaseAge: 1440`: espera 24 horas antes de instalar versiones recién publicadas.
+- `blockExoticSubdeps: true`: bloquea subdependencias desde fuentes exóticas como tarballs o repos git no esperados.
+- `strictDepBuilds: true`: falla si una dependencia intenta ejecutar scripts sin aprobación.
+- `allowBuilds.bcrypt: true`: permite solo el build necesario de `bcrypt`.
+
+En Railway, el campo `packageManager` de `package.json` permite que el build use pnpm con Corepack.
+
+---
+
 ## Requisitos del Sistema
 
 ### Software Requerido
