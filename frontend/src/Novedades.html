@@ -9,6 +9,7 @@
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 </head>
 <body>
+  <!-- Header dinámico según autenticación -->
   <header class="header">
     <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
       <!-- Logo + Texto -->
@@ -17,8 +18,8 @@
         <span class="logo-text">PaperEase</span>
       </div>
 
-      <!-- Navegación -->
-      <nav class="nav">
+      <!-- Navegación para usuario autenticado -->
+      <nav class="nav" id="navAutenticado" style="display: none;">
         <a href="MenuPE.html">Inicio</a>
         <a href="Programas.html">Programas</a>
         <a href="Novedades.html">Novedades</a>
@@ -33,6 +34,12 @@
         <button id="btnCerrarSesion" class="btn-logout" style="background: #4D869C; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 6px;">
           <i data-lucide="log-out" style="width: 16px; height: 16px;"></i>
         </button>
+      </nav>
+
+      <!-- Navegación para visitante (no autenticado) -->
+      <nav class="nav" id="navVisitante" style="display: none;">
+        <a href="Login.html" style="color: #4D869C; text-decoration: none; font-weight: 600; padding: 8px 16px;">Iniciar sesión</a>
+        <a href="Registro.html" style="background: #4D869C; color: white; text-decoration: none; padding: 8px 16px; border-radius: 6px; font-weight: 500;">Registrarse</a>
       </nav>
     </div>
   </header>
@@ -211,11 +218,26 @@
 <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 
 <!-- Sistema de Notificaciones -->
+<script src="js/authHelper.js"></script>
 <script src="js/notificaciones.js"></script>
 
-<!-- Botón de Cerrar Sesión -->
+<!-- Control de navegación según autenticación -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+  // Control de navegación según autenticación
+  const isAuth = typeof isAuthenticated === 'function' && isAuthenticated();
+  const navAuth = document.getElementById('navAutenticado');
+  const navVisitante = document.getElementById('navVisitante');
+
+  if (isAuth) {
+    if (navAuth) navAuth.style.display = 'flex';
+    if (navVisitante) navVisitante.style.display = 'none';
+  } else {
+    if (navAuth) navAuth.style.display = 'none';
+    if (navVisitante) navVisitante.style.display = 'flex';
+  }
+
+  // Botón de Cerrar Sesión
   const btnCerrarSesion = document.getElementById('btnCerrarSesion');
 
   if (btnCerrarSesion) {
