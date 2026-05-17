@@ -60,42 +60,96 @@
   </div>
   
   <!-- Hero Section -->
-  <section class="hero">
-    <div class="container text-center">
-      <h1>Bienvenido a PaperEase</h1>
-      <p>Gestiona y explora los programas de Bienestar Estudiantil de la UTP de forma ágil y eficiente.</p>
-      <div class="cta-buttons">
-        <a href="Programas.html" class="cta-primary">Ver Programas</a>
-        <a href="Formulario.html" class="cta-secondary">Solicitar Servicio</a>
+  <section class="hero hero-paperease">
+    <div class="container hero-layout">
+      <div class="hero-copy">
+        <span class="section-kicker">Bienestar Estudiantil UTP</span>
+        <h1>PaperEase centraliza tus servicios estudiantiles</h1>
+        <p>Consulta programas, revisa requisitos, envia solicitudes y da seguimiento a tus procesos desde un solo lugar.</p>
+        <div class="cta-buttons">
+          <a href="Programas.html" class="cta-primary">Ver programas</a>
+          <a href="Formulario.html" class="cta-secondary">Iniciar solicitud</a>
+        </div>
       </div>
+      <div class="hero-product-card" aria-label="Resumen de funciones de PaperEase">
+        <div class="product-card-header">
+          <div><span>Panel estudiantil</span><strong>Solicitud en revision</strong></div>
+          <i data-lucide="shield-check"></i>
+        </div>
+        <div class="status-track">
+          <div class="status-step complete"><span></span><p>Programa elegido</p></div>
+          <div class="status-step active"><span></span><p>Documentos enviados</p></div>
+          <div class="status-step"><span></span><p>Respuesta pendiente</p></div>
+        </div>
+        <div class="product-metrics">
+          <div><strong>Programas</strong><span>Salud y Promocion Social</span></div>
+          <div><strong>Notificaciones</strong><span>Actualizaciones claras</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-paperease">
+    <div class="container about-layout">
+      <div>
+        <span class="section-kicker">Que resuelve</span>
+        <h2>Menos confusion, mas claridad para cada solicitud</h2>
+      </div>
+      <p>PaperEase organiza la informacion de Bienestar Estudiantil para que los estudiantes sepan que programas existen, que requisitos necesitan y como avanza cada tramite.</p>
     </div>
   </section>
 
  <!-- Features Section -->
  <section class="features">
   <div class="container">
-    <h2>¿Qué puedes hacer en PaperEase?</h2>
+    <span class="section-kicker">Funciones principales</span>
+    <h2>Que puedes hacer en PaperEase</h2>
     <div class="features-grid">
       <div class="feature-card">
-        <div class="icono-feature" data-lucide="file-text"></div>
-        <h3>Visualizar Requisitos</h3>
+        <div class="icon-shape"><div class="icono-feature" data-lucide="file-text"></div></div>
+        <h3>Visualizar requisitos</h3>
         <p>Consulta los requisitos detallados de cada programa de Bienestar Estudiantil.</p>
       </div>
       <div class="feature-card">
-        <div class="icono-feature" data-lucide="clipboard-list"></div>
-        <h3>Solicitud de Formulario</h3>
+        <div class="icon-shape"><div class="icono-feature" data-lucide="clipboard-list"></div></div>
+        <h3>Enviar solicitudes</h3>
         <p>Completa y envía tu formulario con datos personales y archivos adjuntos.</p>
       </div>
       <div class="feature-card">
-        <div class="icono-feature" data-lucide="bar-chart-2"></div>
-        <h3>Estadísticas Personalizadas</h3>
-        <p>Filtra y visualiza gráficos con métricas de uso y participación.</p>
+        <div class="icon-shape"><div class="icono-feature" data-lucide="bell"></div></div>
+        <h3>Recibir notificaciones</h3>
+        <p>Conoce cambios importantes sobre aprobaciones, rechazos o novedades.</p>
       </div>
       <div class="feature-card">
-        <div class="icono-feature" data-lucide="calendar"></div>
-        <h3>Calendario de Eventos</h3>
+        <div class="icon-shape"><div class="icono-feature" data-lucide="calendar"></div></div>
+        <h3>Calendario de eventos</h3>
         <p>Consulta y gestiona eventos interactivos en un calendario intuitivo.</p>
       </div>
+    </div>
+  </div>
+</section>
+<section class="process-section">
+  <div class="container">
+    <div class="section-heading">
+      <span class="section-kicker">Como funciona</span>
+      <h2>Un flujo simple para pedir apoyo estudiantil</h2>
+      <p>La experiencia esta pensada para que el estudiante avance sin perderse entre requisitos, formularios y estados.</p>
+    </div>
+    <div class="process-grid">
+      <article class="process-card"><span class="step-number">01</span><h3>Explora programas</h3><p>Encuentra servicios de Salud y Promocion Social con sus requisitos organizados.</p></article>
+      <article class="process-card"><span class="step-number">02</span><h3>Envia tu solicitud</h3><p>Completa el formulario y adjunta documentos en PDF, JPG o PNG.</p></article>
+      <article class="process-card"><span class="step-number">03</span><h3>Sigue el estado</h3><p>Consulta si tu solicitud esta pendiente, aprobada o rechazada desde tu panel.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="admin-section">
+  <div class="container admin-layout">
+    <div><span class="section-kicker">Para Bienestar Estudiantil</span><h2>Gestion mas clara para el equipo administrativo</h2><p>El personal puede revisar solicitudes, filtrar casos, actualizar estados, gestionar eventos y consultar metricas para tomar mejores decisiones.</p></div>
+    <div class="admin-feature-list">
+      <div><i data-lucide="filter"></i><span>Filtros por estado, prioridad y programa</span></div>
+      <div><i data-lucide="bar-chart-3"></i><span>Estadisticas de participacion y programas</span></div>
+      <div><i data-lucide="calendar-plus"></i><span>Administracion de eventos institucionales</span></div>
     </div>
   </div>
 </section>
@@ -105,8 +159,9 @@
   <div class="container">
     <div class="novedades-header">
       <div>
-        <h2>Próximos Eventos</h2>
-        <p>Descubre los próximos eventos y actividades de Bienestar Estudiantil.</p>
+        <span class="section-kicker">Vida universitaria</span>
+        <h2>Proximos eventos</h2>
+        <p>Descubre actividades, jornadas y novedades de Bienestar Estudiantil.</p>
       </div>
       <a href="Novedades.html" class="btn-ver-todos">
         <span>Ver todos</span>
@@ -218,7 +273,7 @@
     <div class="cta-text">
       <h2>Empieza a usar PaperEase hoy</h2>
       <p>Regístrate y descubre cómo PaperEase puede facilitar tu gestión universitaria.</p>
-      <a href="Formulario.html" class="cta-primary">Registrate</a>
+      <div class="cta-buttons cta-buttons-left"><a href="Programas.html" class="cta-primary">Ver programas</a><a href="Solicitudes.html" class="cta-secondary">Mis solicitudes</a></div>
     </div>
     <div class="cta-image">
       <img src="imagenes\cta.avif" alt="Estudiante usando PaperEase">
