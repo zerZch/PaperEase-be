@@ -1,7 +1,6 @@
 const express = require('express');
 const path = require('path');
 const multer = require('multer');
-const session = require('express-session');
 const http = require('http');
 const socketIO = require('socket.io');
 const app = express();
@@ -40,18 +39,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // Railway usa reverse proxy — necesario para cookies secure
 app.set('trust proxy', 1);
-
-// Configurar sesiones
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'paperease-secret-key-dev',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: process.env.NODE_ENV === 'production',
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000
-  }
-}));
 
 // Middleware de logging para debugging
 app.use((req, res, next) => {

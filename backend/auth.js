@@ -298,16 +298,6 @@ router.post('/login', async (req, res) => {
     // Registrar login exitoso en auditoría
     await registrarAuditoria(idUsuarioRef, tipoUsuario, email, 'login', 'Login exitoso', req.ip, req.get('user-agent'), true);
 
-    // ⭐⭐⭐ CAMBIO 1: Guardar sesión en express-session CON TODOS LOS DATOS ⭐⭐⭐
-    req.session.usuario = {
-      id: idUsuarioRef,
-      email: usuario.Email,
-      nombre: usuario.Nombre,
-      apellido: usuario.Apellido,
-      rol: tipoUsuario,
-      tipoUsuario: rol
-    };
-
     // Respuesta exitosa
     return res.status(200).json({
       success: true,
@@ -380,11 +370,6 @@ router.post('/logout', async (req, res) => {
         req.get('user-agent'),
         true
       );
-    }
-
-    // Destruir sesión de express
-    if (req.session) {
-      req.session.destroy();
     }
 
     return res.status(200).json({
@@ -626,5 +611,4 @@ async function registrarAuditoria(idUsuarioRef, tipoUsuario, email, accion, desc
   }
 }
 
-module.exports = router;
 module.exports = router;
