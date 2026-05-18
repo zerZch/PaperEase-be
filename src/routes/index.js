@@ -84,7 +84,17 @@ function mountLegacyRedirects(app) {
 
   Object.entries(legacyRedirects).forEach(([oldPage, newPage]) => {
     const oldWithout = oldPage.replace('.html', '');
-    app.get([`/${oldPage}`, `/${oldWithout}`], (req, res) => res.redirect(301, `/${newPage}`));
+    const newWithout = newPage.replace('.html', '');
+
+    app.get([`/${oldPage}`, `/${oldWithout}`], (req, res, next) => {
+      const requestedPage = req.path.replace(/^\/+/, '');
+
+      if (requestedPage === newPage || requestedPage === newWithout) {
+        return next();
+      }
+
+      return res.redirect(301, `/${newPage}`);
+    });
   });
 }
 
