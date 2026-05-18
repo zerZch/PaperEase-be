@@ -89,11 +89,10 @@ function mountLegacyRedirects(app) {
 }
 
 function mountStaticAndPages(app) {
-  app.use(express.static(FRONTEND_DIR));
-  app.use('/uploads', express.static(serverConfig.uploadsDir));
-
+  // Serve root index.html
   app.get('/', (req, res) => res.sendFile(path.join(FRONTEND_DIR, 'index.html')));
 
+  // Explicit page routes - must come BEFORE express.static to prevent conflicts
   const htmlPages = [
     'login.html', 'registro.html', 'menupe.html', 'programas.html', 'novedades.html',
     'solicitudes.html', 'eventos.html', 'estadisticas_dashboard.html', 'gestion.html',
@@ -107,6 +106,10 @@ function mountStaticAndPages(app) {
       res.sendFile(path.join(FRONTEND_DIR, 'pages', page));
     });
   });
+
+  // Static file serving - comes AFTER explicit routes
+  app.use(express.static(FRONTEND_DIR));
+  app.use('/uploads', express.static(serverConfig.uploadsDir));
 }
 
 function mountNotFound(app) {
