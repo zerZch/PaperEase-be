@@ -89,8 +89,21 @@
             </div>
           </div>
 
-          <!-- Fila 2: Cédula y Facultad -->
+          <!-- Fila 2: Género y Cédula -->
           <div class="form-row">
+            <div class="form-group">
+              <label for="idGenero">
+                <i data-lucide="user" class="label-icon"></i>
+                Sexo / Género
+              </label>
+              <div class="input-wrapper">
+                <i data-lucide="user" class="input-icon"></i>
+                <select id="idGenero" name="idGenero" required>
+                  <option value="">Cargando...</option>
+                </select>
+              </div>
+            </div>
+
             <div class="form-group">
               <label for="cedula">
                 <i data-lucide="credit-card" class="label-icon"></i>
@@ -107,24 +120,19 @@
                 />
               </div>
             </div>
+          </div>
 
-            <div class="form-group" id="facultadGroup">
-              <label for="facultad">
-                <i data-lucide="building-2" class="label-icon"></i>
-                Facultad
-              </label>
-              <div class="input-wrapper">
-                <i data-lucide="building-2" class="input-icon"></i>
-                <select id="facultad" name="facultad">
-                  <option value="">Selecciona tu facultad</option>
-                  <option value="1">Ciencias y Tecnología</option>
-                  <option value="2">Ingeniería Civil</option>
-                  <option value="3">Ingeniería Eléctrica</option>
-                  <option value="4">Ingeniería Industrial</option>
-                  <option value="5">Ingeniería Mecánica</option>
-                  <option value="6">Ing. Sistemas Computacionales</option>
-                </select>
-              </div>
+          <!-- Fila 3: Facultad (solo estudiante) -->
+          <div class="form-group form-full" id="facultadGroup">
+            <label for="facultad">
+              <i data-lucide="building-2" class="label-icon"></i>
+              Facultad
+            </label>
+            <div class="input-wrapper">
+              <i data-lucide="building-2" class="input-icon"></i>
+              <select id="facultad" name="facultad">
+                <option value="">Cargando...</option>
+              </select>
             </div>
           </div>
 

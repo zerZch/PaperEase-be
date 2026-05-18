@@ -111,12 +111,27 @@ function configurarEventListeners() {
 // ============================================
 async function cargarSolicitudes() {
   try {
-    console.log(`📥 Cargando solicitudes del estudiante: ${cedulaEstudiante}`);
+    const token = getAuthToken();
+    if (!token) {
+      mostrarEstado('error', 'Debes iniciar sesión para ver tus solicitudes.');
+      setTimeout(() => window.location.href = 'login.html', 2000);
+      return;
+    }
 
-    // Mostrar loading
     mostrarEstado('loading');
 
-    const response = await fetch(`${API_URL}/mis-solicitudes/${cedulaEstudiante}`);
+    const response = await fetch(`${API_URL}/mis-solicitudes`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (response.status === 401) {
+      mostrarEstado('error', 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
+      setTimeout(() => window.location.href = 'login.html', 2000);
+      return;
+    }
 
     if (!response.ok) {
       throw new Error(`Error ${response.status}: ${response.statusText}`);

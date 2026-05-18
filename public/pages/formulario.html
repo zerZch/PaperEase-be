@@ -78,6 +78,22 @@
     .profile-summary .summary-row .label {
       color: #9ca3af;
     }
+    .error-missing-params {
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      border-radius: 8px;
+      padding: 24px;
+      text-align: center;
+      margin: 20px 0;
+    }
+    .error-missing-params h3 {
+      color: #dc2626;
+      margin-bottom: 8px;
+    }
+    .error-missing-params p {
+      color: #6b7280;
+      margin-bottom: 16px;
+    }
   </style>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -105,14 +121,12 @@
   <h2>Formulario de Solicitud</h2>
 
   <div id="bannerPrograma" style="display:none;"></div>
+  <div id="missingParams" style="display:none;"></div>
 
-<form id="formulario" method="POST" enctype="multipart/form-data" class="formulario" action="/api/formulario">
+<form id="formulario" method="POST" enctype="multipart/form-data" class="formulario">
 
-  <input type="hidden" id="cedula" name="cedula" />
-  <input type="hidden" id="nombre" name="nombre" />
-  <input type="hidden" id="apellido" name="apellido" />
-  <input type="hidden" id="genero" name="genero" />
-  <input type="hidden" id="facultad" name="facultad" />
+  <input type="hidden" id="tipoProgramaHidden" name="tipoPrograma" />
+  <input type="hidden" id="programaHidden" name="programa" />
 
   <div class="profile-summary" id="profileSummary" style="display:none;">
     <h4>Tus datos del perfil</h4>
@@ -124,7 +138,7 @@
 
   <div class="form-group" id="groupTipoPrograma">
     <label for="tipoPrograma">Tipo de Programa</label>
-    <select id="tipoPrograma" name="tipoPrograma" required>
+    <select id="tipoPrograma" disabled>
       <option value="">Seleccione un tipo</option>
       <option value="1">Promoción Social</option>
       <option value="2">Salud</option>
@@ -133,22 +147,24 @@
 
   <div class="form-group" id="groupPrograma">
     <label for="programa">Programa a Solicitar</label>
-    <select id="programa" name="programa" required>
+    <select id="programa" disabled>
       <option value="">Seleccione una opción</option>
       <optgroup label="Promoción Social">
         <option value="1" data-tipo="1">Canasta Navideña</option>
         <option value="2" data-tipo="1">Campaña de Fortalecimiento de Valores</option>
         <option value="3" data-tipo="1">Campaña de Concienciación de Instalaciones</option>
         <option value="4" data-tipo="1">Feria de Empleo</option>
-        <option value="5" data-tipo="1">Consejería Personal</option>
+        <option value="13" data-tipo="1">Apoyo en Casos de Siniestros</option>
       </optgroup>
       <optgroup label="Salud">
+        <option value="5" data-tipo="2">Consejería Personal</option>
         <option value="6" data-tipo="2">Banco de Sangre</option>
         <option value="7" data-tipo="2">Ayuda en Gastos Médicos</option>
         <option value="8" data-tipo="2">Feria de Salud</option>
         <option value="9" data-tipo="2">Compra de Lentes</option>
-        <option value="10" data-tipo="2">Apoyo en medicamentos</option>
+        <option value="10" data-tipo="2">Apoyo en Medicamentos</option>
         <option value="11" data-tipo="2">Póliza de Salud</option>
+        <option value="12" data-tipo="2">Matrícula</option>
       </optgroup>
     </select>
   </div>
@@ -159,7 +175,7 @@
   </div>
 
   <div class="cta-section">
-     <button type="submit" class="cta-primary" id="btnEnviar">Enviar Solicitud</button>
+     <button type="submit" class="cta-primary" id="btnEnviar" disabled>Enviar Solicitud</button>
      <button type="button" onclick="window.location.href='programas.html'" class="cta-secondary">Cancelar</button>
   </div>
 
@@ -188,10 +204,21 @@
 <script>
 const API_BASE = window.location.origin;
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     const form = document.querySelector('.formulario');
     const messageDiv = document.getElementById('message');
     const loadingDiv = document.getElementById('loading');
+    const btnEnviar = document.getElementById('btnEnviar');
+    const missingParamsDiv = document.getElementById('missingParams');
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const tipoParam = urlParams.get('tipo');
+    const programaParam = urlParams.get('programa');
+
+    const tipoProgramaSelect = document.getElementById('tipoPrograma');
+    const programaSelect = document.getElementById('programa');
+    const tipoHidden = document.getElementById('tipoProgramaHidden');
+    const programaHidden = document.getElementById('programaHidden');
 
     function showMessage(message, isError = false) {
         messageDiv.style.display = 'block';
@@ -208,22 +235,24 @@ document.addEventListener('DOMContentLoaded', function() {
         loadingDiv.textContent = show ? 'Enviando solicitud...' : '';
     }
 
-    const mapProgramaNombre = {
-      '1':'Canasta Navideña','2':'Campaña de Fortalecimiento de Valores',
-      '3':'Campaña de Concienciación de Instalaciones','4':'Feria de Empleo',
-      '5':'Consejería Personal','6':'Banco de Sangre','7':'Ayuda en Gastos Médicos',
-      '8':'Feria de Salud','9':'Compra de Lentes','10':'Apoyo en Medicamentos',
-      '11':'Póliza de Salud'
-    };
-    const mapTipoNombre = { '1':'Promoción Social', '2':'Salud' };
+    function showMissingParams() {
+        missingParamsDiv.style.display = 'block';
+        missingParamsDiv.innerHTML = `
+          <div class="error-missing-params">
+            <h3>Debes seleccionar un programa primero</h3>
+            <p>Para hacer una solicitud, elige un programa desde la página de Programas.</p>
+            <a href="programas.html" class="cta-primary" style="display:inline-block; text-decoration:none; padding:10px 24px; background:#4D869C; color:white; border-radius:6px;">Ver Programas</a>
+          </div>`;
+        btnEnviar.disabled = true;
+    }
 
-    async function cargarDatosSesion() {
+    async function loadUserProfile() {
         try {
             const token = getAuthToken();
             if (!token) {
                 showMessage('Debes iniciar sesión para hacer una solicitud', true);
                 setTimeout(() => window.location.href = 'login.html', 2000);
-                return false;
+                return null;
             }
 
             const response = await fetch(`${API_BASE}/api/auth/me`, {
@@ -235,26 +264,20 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             const data = await response.json();
-
-            if (data.autenticado && data.Cedula) {
-                document.getElementById('cedula').value = data.Cedula;
-                document.getElementById('nombre').value = data.Nombre || '';
-                document.getElementById('apellido').value = data.Apellido || '';
-                document.getElementById('genero').value = data.IdGenero || '';
-                document.getElementById('facultad').value = data.IdFacultad || '';
-
-                document.getElementById('summaryName').textContent = data.Nombre || '—';
-                document.getElementById('summarySurname').textContent = data.Apellido || '—';
-                document.getElementById('summaryCedula').textContent = data.Cedula || '—';
-                document.getElementById('summaryFacultad').textContent = data.Facultad || '—';
-                document.getElementById('profileSummary').style.display = 'block';
-
-                return data;
-            } else {
+            if (!data.autenticado) {
                 showMessage('Debes iniciar sesión para hacer una solicitud', true);
                 setTimeout(() => window.location.href = 'login.html', 2000);
                 return null;
             }
+
+            const profileSummary = document.getElementById('profileSummary');
+            document.getElementById('summaryName').textContent = data.Nombre || data.nombre || '\u2014';
+            document.getElementById('summarySurname').textContent = data.Apellido || data.apellido || '\u2014';
+            document.getElementById('summaryCedula').textContent = data.Cedula || data.cedula || '\u2014';
+            document.getElementById('summaryFacultad').textContent = data.Facultad || data.facultad || '\u2014';
+            profileSummary.style.display = 'block';
+
+            return data;
         } catch (error) {
             console.error('Error al obtener datos del usuario:', error);
             showMessage('Error al verificar sesión. Por favor, inicia sesión nuevamente.', true);
@@ -263,140 +286,93 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    cargarDatosSesion().then(userData => {
-        if (!userData) return;
+    if (!tipoParam || !programaParam) {
+        showMissingParams();
+        await loadUserProfile();
+        return;
+    }
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const tipoParam = urlParams.get('tipo');
-        const programaParam = urlParams.get('programa');
+    const tipoProgramaId = parseInt(tipoParam);
+    const programaId = parseInt(programaParam);
 
-        const tipoProgramaSelect = document.getElementById('tipoPrograma');
-        const programaSelect = document.getElementById('programa');
-        const groupTipo = document.getElementById('groupTipoPrograma');
-        const groupPrograma = document.getElementById('groupPrograma');
-        const bannerDiv = document.getElementById('bannerPrograma');
+    if (isNaN(tipoProgramaId) || isNaN(programaId) || tipoProgramaId < 1 || tipoProgramaId > 2 || programaId < 1 || programaId > 13) {
+        showMissingParams();
+        await loadUserProfile();
+        return;
+    }
 
-        if (tipoParam && programaParam) {
-            tipoProgramaSelect.value = tipoParam;
-            tipoProgramaSelect.dispatchEvent(new Event('change'));
+    tipoProgramaSelect.value = tipoParam;
+    programaSelect.value = programaParam;
+    tipoProgramaSelect.classList.add('form-field-locked');
+    programaSelect.classList.add('form-field-locked');
 
-            setTimeout(() => {
-                programaSelect.value = programaParam;
-            }, 100);
+    tipoHidden.value = tipoParam;
+    programaHidden.value = programaParam;
+    btnEnviar.disabled = false;
 
-            tipoProgramaSelect.classList.add('form-field-locked');
-            tipoProgramaSelect.disabled = true;
-            programaSelect.classList.add('form-field-locked');
-            programaSelect.disabled = true;
+    const mapProgramaNombre = {
+      '1':'Canasta Navideña','2':'Campaña de Fortalecimiento de Valores',
+      '3':'Campaña de Concienciación de Instalaciones','4':'Feria de Empleo',
+      '5':'Consejería Personal','6':'Banco de Sangre','7':'Ayuda en Gastos Médicos',
+      '8':'Feria de Salud','9':'Compra de Lentes','10':'Apoyo en Medicamentos',
+      '11':'Póliza de Salud','12':'Matrícula','13':'Apoyo en Casos de Siniestros'
+    };
+    const mapTipoNombre = { '1':'Promoción Social', '2':'Salud' };
 
-            const nombrePrograma = mapProgramaNombre[programaParam] || 'Programa';
-            const nombreTipo = mapTipoNombre[tipoParam] || '';
+    const nombrePrograma = mapProgramaNombre[programaParam] || 'Programa';
+    const nombreTipo = mapTipoNombre[tipoParam] || '';
+    const bannerDiv = document.getElementById('bannerPrograma');
+    bannerDiv.style.display = 'block';
+    bannerDiv.innerHTML = `
+      <div class="programa-banner">
+        <div class="banner-icon">&#128204;</div>
+        <div class="banner-text">
+          Estás solicitando:<br>
+          <strong>${nombrePrograma}</strong> — ${nombreTipo}
+        </div>
+      </div>`;
 
-            bannerDiv.style.display = 'block';
-            bannerDiv.innerHTML = `
-              <div class="programa-banner">
-                <div class="banner-icon">&#128204;</div>
-                <div class="banner-text">
-                  Estás solicitando:<br>
-                  <strong>${nombrePrograma}</strong> — ${nombreTipo}
-                </div>
-              </div>`;
-
-            tipoProgramaSelect.name = '';
-            programaSelect.name = '';
-
-            const hiddenTipo = document.createElement('input');
-            hiddenTipo.type = 'hidden';
-            hiddenTipo.name = 'tipoPrograma';
-            hiddenTipo.value = tipoParam;
-            form.appendChild(hiddenTipo);
-
-            const hiddenPrograma = document.createElement('input');
-            hiddenPrograma.type = 'hidden';
-            hiddenPrograma.name = 'programa';
-            hiddenPrograma.value = programaParam;
-            form.appendChild(hiddenPrograma);
-
-            groupTipo.querySelector('label').textContent = 'Tipo de Programa (preseleccionado)';
-            groupPrograma.querySelector('label').textContent = 'Programa (preseleccionado)';
-        }
-
-        tipoProgramaSelect.addEventListener('change', function() {
-            const tipoSeleccionado = this.value;
-            const opciones = programaSelect.querySelectorAll('option');
-            programaSelect.value = '';
-            opciones.forEach(option => {
-                if (option.value === '') {
-                    option.style.display = 'block';
-                } else {
-                    const tipoOpcion = option.getAttribute('data-tipo');
-                    option.style.display = (tipoOpcion === tipoSeleccionado || !tipoSeleccionado) ? 'block' : 'none';
-                }
-            });
-        });
-    });
+    // Load profile info for display only
+    await loadUserProfile();
 
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
         messageDiv.style.display = 'none';
 
-        let cedula = document.getElementById('cedula').value;
-
-        if (!cedula) {
-            try {
-                const token = getAuthToken();
-                if (token) {
-                    const resp = await fetch(`${API_BASE}/api/auth/me`, {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-                    const userData = await resp.json();
-                    if (userData.autenticado && userData.Cedula) {
-                        document.getElementById('cedula').value = userData.Cedula;
-                        cedula = userData.Cedula;
-                    }
-                }
-            } catch (err) {
-                console.error('Error al reintentar carga de cédula:', err);
-            }
-        }
-
-        if (!cedula) {
-            showMessage('Error: No se pudo obtener tu cédula. Por favor, inicia sesión nuevamente.', true);
+        const token = getAuthToken();
+        if (!token) {
+            showMessage('Debes iniciar sesión para enviar esta solicitud', true);
             return;
         }
 
         showLoading(true);
 
-        const formData = new FormData(form);
-        formData.set('cedula', cedula);
+        const formData = new FormData();
+        formData.set('tipoPrograma', tipoHidden.value);
+        formData.set('programa', programaHidden.value);
 
-        const tipoProgramaSelect = document.getElementById('tipoPrograma');
-        const programaSelect = document.getElementById('programa');
-
-        if (tipoProgramaSelect.disabled && !formData.get('tipoPrograma')) {
-            const hiddenTipo = form.querySelector('input[type="hidden"][name="tipoPrograma"]');
-            if (hiddenTipo) formData.set('tipoPrograma', hiddenTipo.value);
-        }
-        if (programaSelect.disabled && !formData.get('programa')) {
-            const hiddenProg = form.querySelector('input[type="hidden"][name="programa"]');
-            if (hiddenProg) formData.set('programa', hiddenProg.value);
+        const fileInput = document.getElementById('archivo');
+        if (fileInput.files.length > 0) {
+            formData.set('archivo', fileInput.files[0]);
         }
 
         try {
             const response = await fetch(`${API_BASE}/api/formulario`, {
                 method: 'POST',
-                body: formData,
-                credentials: 'include'
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
             });
+
             const data = await response.json();
             showLoading(false);
 
-            if (data.success) {
+            if (response.ok && data.success) {
                 showMessage(`Solicitud registrada exitosamente! ID: ${data.id}`, false);
                 form.reset();
-                document.getElementById('cedula').value = cedula;
                 messageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                setTimeout(() => window.location.href = 'menupe.html', 2000);
+                setTimeout(() => window.location.href = 'solicitudes.html', 2000);
             } else {
                 showMessage(`${data.error || 'Ocurrió un error inesperado.'}`, true);
             }

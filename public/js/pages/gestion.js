@@ -32,15 +32,12 @@ const countHighPriority = document.getElementById('countHighPriority');
 document.addEventListener('DOMContentLoaded', () => {
   console.log('🚀 Iniciando Dashboard de Gestión...');
 
-  // Cargar iconos de Lucide
   if (typeof lucide !== 'undefined') {
     lucide.createIcons();
   }
 
-  // Cargar solicitudes
+  cargarProgramasDesdeAPI();
   cargarSolicitudes();
-
-  // Event listeners
   configurarEventListeners();
 });
 
@@ -104,12 +101,46 @@ function configurarEventListeners() {
 // ============================================
 // CARGAR SOLICITUDES DESDE EL BACKEND
 // ============================================
+async function cargarProgramasDesdeAPI() {
+  try {
+    const response = await fetch(`${API_URL.replace('/api', '')}/api/config`);
+    if (!response.ok) return;
+    const data = await response.json();
+    const filterPrograma = document.getElementById('filterPrograma');
+    if (!filterPrograma || !data.programas || data.programas.error) return;
+    filterPrograma.innerHTML = '<option value="">Todos los programas</option>';
+    data.programas.forEach(p => {
+      filterPrograma.innerHTML += `<option value="${p.Programa}">${p.Programa}</option>`;
+    });
+  } catch (err) {
+    console.warn('No se pudieron cargar programas desde API:', err);
+  }
+}
+
 async function cargarSolicitudes() {
   try {
     console.log('📥 Cargando solicitudes desde el backend...');
     mostrarCargando(true);
 
-    const response = await fetch(`${API_URL}/solicitudes`);
+    const token = getAuthToken();
+    if (!token) {
+      mostrarError('Debes iniciar sesión para ver las solicitudes.');
+      setTimeout(() => window.location.href = 'login.html', 2000);
+      return;
+    }
+
+    const response = await fetch(`${API_URL}/solicitudes`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (response.status === 401) {
+      mostrarError('Tu sesión ha expirado. Inicia sesión nuevamente.');
+      setTimeout(() => window.location.href = 'login.html', 2000);
+      return;
+    }
 
     if (!response.ok) {
       throw new Error(`Error ${response.status}: ${response.statusText}`);
@@ -507,6 +538,8 @@ function actualizarEstadisticas() {
 // ============================================
 async function aprobarSolicitud(id) {
   const notas = prompt('Notas (opcional):');
+  const token = getAuthToken();
+  if (!token) { mostrarToast('Debes iniciar sesión', true); return; }
 
   try {
     console.log('✅ Aprobando solicitud:', id);
@@ -514,7 +547,8 @@ async function aprobarSolicitud(id) {
     const response = await fetch(`${API_URL}/gestion/solicitud/${id}/aprobar`, {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify({ notas })
     });
@@ -552,6 +586,8 @@ async function aprobarSolicitud(id) {
 // ============================================
 async function rechazarSolicitud(id) {
   const notas = prompt('Motivo del rechazo (opcional):');
+  const token = getAuthToken();
+  if (!token) { mostrarToast('Debes iniciar sesión', true); return; }
 
   try {
     console.log('❌ Rechazando solicitud:', id);
@@ -559,7 +595,8 @@ async function rechazarSolicitud(id) {
     const response = await fetch(`${API_URL}/gestion/solicitud/${id}/rechazar`, {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify({ notas })
     });
@@ -596,13 +633,17 @@ async function rechazarSolicitud(id) {
 // CAMBIAR PRIORIDAD
 // ============================================
 async function cambiarPrioridad(id, prioridad) {
+  const token = getAuthToken();
+  if (!token) { mostrarToast('Debes iniciar sesión', true); return; }
+
   try {
     console.log(`🔔 Cambiando prioridad de ${id} a: ${prioridad}`);
 
     const response = await fetch(`${API_URL}/gestion/solicitud/${id}/prioridad`, {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify({ prioridad })
     });
