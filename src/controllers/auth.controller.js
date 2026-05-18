@@ -17,6 +17,10 @@ exports.register = async (req, res) => {
     return res.status(400).json({ error: 'Faltan campos obligatorios', campos: ['nombre', 'apellido', 'email', 'password', 'rol'] });
   }
 
+  if (!idGenero) {
+    return res.status(400).json({ error: 'El género es obligatorio' });
+  }
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     return res.status(400).json({ error: 'Formato de email inválido' });
@@ -33,6 +37,14 @@ exports.register = async (req, res) => {
   const rolNumerico = parseInt(rol);
 
   try {
+    const [generoRows] = await conexion.promise().query('SELECT IdGenero FROM genero WHERE IdGenero = ?', [parseInt(idGenero)]);
+    if (generoRows.length === 0) {
+      return res.status(400).json({ error: 'El género seleccionado no es válido' });
+    }
+
+    if (rolNumerico === ROLES.ESTUDIANTE && !idFacultad) {
+      return res.status(400).json({ error: 'La facultad es obligatoria para estudiantes' });
+    }
     const [existeEstudiante] = await conexion.promise().query('SELECT Email FROM estudiante WHERE Email = ?', [email]);
     const [existeTrabajador] = await conexion.promise().query('SELECT Email FROM trabajador_social WHERE Email = ?', [email]);
 
@@ -59,7 +71,7 @@ exports.register = async (req, res) => {
       );
       idUsuario = resultado.insertId;
       await registrarAuditoria(idUsuario, ROLES.ESTUDIANTE, email, ACCIONES_AUDITORIA.REGISTRO, 'Registro exitoso de estudiante', req.ip, req.get('user-agent'), true);
-      return res.status(201).json({ success: true, message: 'Estudiante registrado exitosamente', usuario: { id: idUsuario, email, nombre, apellido, rol: ROLES.ESTUDIANTE, tipoUsuario: ROL_LABELS[ROLES.ESTUDIANTE] } });
+      return res.status(201).json({ success: true, message: 'Estudiante registrado exitosamente', usuario: { id: idUsuario, email, nombre, apellido, idGenero: parseInt(idGenero), idFacultad: idFacultad ? parseInt(idFacultad) : null, rol: ROLES.ESTUDIANTE, tipoUsuario: ROL_LABELS[ROLES.ESTUDIANTE] } });
     } else {
       [resultado] = await conexion.promise().query(
         `INSERT INTO trabajador_social (Email, Password, Nombre, Apellido, Cedula, IdGenero, Departamento, Oficina, Activo)
@@ -68,7 +80,7 @@ exports.register = async (req, res) => {
       );
       idUsuario = resultado.insertId;
       await registrarAuditoria(idUsuario, ROLES.TRABAJADOR_SOCIAL, email, ACCIONES_AUDITORIA.REGISTRO, 'Registro exitoso de trabajador social', req.ip, req.get('user-agent'), true);
-      return res.status(201).json({ success: true, message: 'Trabajador social registrado exitosamente', usuario: { id: idUsuario, email, nombre, apellido, cedula: cedula || null, rol: ROLES.TRABAJADOR_SOCIAL, tipoUsuario: ROL_LABELS[ROLES.TRABAJADOR_SOCIAL] } });
+      return res.status(201).json({ success: true, message: 'Trabajador social registrado exitosamente', usuario: { id: idUsuario, email, nombre, apellido, cedula: cedula || null, idGenero: parseInt(idGenero), rol: ROLES.TRABAJADOR_SOCIAL, tipoUsuario: ROL_LABELS[ROLES.TRABAJADOR_SOCIAL] } });
     }
   } catch (error) {
     console.error('Error en registro:', error);

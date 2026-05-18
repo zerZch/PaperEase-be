@@ -1,71 +1,65 @@
 const conexion = require('../database/connection');
 const { generarIdFormulario } = require('../utils/id-generator');
 
-exports.submit = (req, res) => {
+exports.submit = async (req, res) => {
   try {
-    const { nombre, apellido, cedula, genero, facultad, tipoPrograma, programa } = req.body;
+    const { tipoPrograma, programa } = req.body;
+    const usuarioId = req.usuario.id;
+    const usuarioTipo = req.usuario.tipoUsuario;
 
-    const camposRequeridos = { nombre, apellido, cedula, genero, facultad, tipoPrograma, programa };
-    if (!nombre || !apellido || !cedula || !genero || !facultad || !tipoPrograma || !programa) {
-      return res.status(400).json({ error: 'Todos los campos son obligatorios', received: camposRequeridos });
+    if (!tipoPrograma || !programa) {
+      return res.status(400).json({ error: 'tipoPrograma y programa son obligatorios' });
     }
 
-    const cedulaRegex = /^[0-9\-]+$/;
-    if (!cedulaRegex.test(cedula)) {
-      return res.status(400).json({ error: 'Formato de cédula inválido. Solo se permiten números y guiones.' });
-    }
-
-    const generoId = parseInt(genero);
-    const facultadId = parseInt(facultad);
     const tipoProgramaId = parseInt(tipoPrograma);
     const programaId = parseInt(programa);
 
-    if (isNaN(generoId) || isNaN(facultadId) || isNaN(tipoProgramaId) || isNaN(programaId)) {
-      return res.status(400).json({ error: 'Los IDs deben ser números válidos' });
+    if (isNaN(tipoProgramaId) || isNaN(programaId)) {
+      return res.status(400).json({ error: 'tipoPrograma y programa deben ser números válidos' });
+    }
+
+    const [estudiantes] = await conexion.promise().query(
+      'SELECT IdEstudiante, Nombre, Apellido, Cedula, IdGenero, IdFacultad FROM estudiante WHERE IdEstudiante = ? AND Activo = 1',
+      [usuarioId]
+    );
+
+    if (estudiantes.length === 0) {
+      return res.status(404).json({ error: 'Estudiante no encontrado' });
+    }
+
+    const estudiante = estudiantes[0];
+
+    if (!estudiante.Cedula) {
+      return res.status(400).json({ error: 'Tu perfil no tiene cédula registrada. Completa tu perfil antes de solicitar.' });
+    }
+    if (!estudiante.IdGenero) {
+      return res.status(400).json({ error: 'Tu perfil no tiene género registrado. Completa tu perfil antes de solicitar.' });
+    }
+    if (!estudiante.IdFacultad) {
+      return res.status(400).json({ error: 'Tu perfil no tiene facultad registrada. Completa tu perfil antes de solicitar.' });
+    }
+
+    const [tipoRows] = await conexion.promise().query('SELECT IdTipoP FROM tipoprograma WHERE IdTipoP = ?', [tipoProgramaId]);
+    if (tipoRows.length === 0) {
+      return res.status(400).json({ error: 'Tipo de programa inválido' });
+    }
+
+    const [progRows] = await conexion.promise().query('SELECT IdPrograma FROM programa WHERE IdPrograma = ? AND IdTipoP = ?', [programaId, tipoProgramaId]);
+    if (progRows.length === 0) {
+      return res.status(400).json({ error: 'Programa inválido o no pertenece al tipo de programa indicado' });
     }
 
     const archivo = req.file ? req.file.filename : null;
     const idFormulario = generarIdFormulario();
 
-    const validarId = (query, params, fieldName) => {
-      return new Promise((resolve, reject) => {
-        conexion.query(query, params, (err, result) => {
-          if (err) reject(`Error al validar ${fieldName}: ${err.message}`);
-          else if (result.length === 0) reject(`ID de ${fieldName} inválido`);
-          else resolve(true);
-        });
-      });
-    };
+    await conexion.promise().query(
+      `INSERT INTO formulario_estudiante
+        (id_formulario, Nombre, Apellido, Cedula, IdGenero, IdFacultad, IdTipoP, IdPrograma, Archivo)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [idFormulario, estudiante.Nombre, estudiante.Apellido, estudiante.Cedula, estudiante.IdGenero, estudiante.IdFacultad, tipoProgramaId, programaId, archivo]
+    );
 
-    Promise.all([
-      validarId('SELECT IdGenero FROM genero WHERE IdGenero = ?', [generoId], 'género'),
-      validarId('SELECT IdFacultad FROM facultad WHERE IdFacultad = ?', [facultadId], 'facultad'),
-      validarId('SELECT IdTipoP FROM tipoprograma WHERE IdTipoP = ?', [tipoProgramaId], 'tipo de programa'),
-      validarId('SELECT IdPrograma FROM programa WHERE IdPrograma = ? AND IdTipoP = ?', [programaId, tipoProgramaId], 'programa')
-    ]).then(() => {
-      const sqlGetEstudiante = 'SELECT Cedula FROM estudiante WHERE Cedula = ? AND Activo = 1';
-      conexion.query(sqlGetEstudiante, [cedula], (err, estudianteRows) => {
-        if (err) return res.status(500).json({ error: 'Error al verificar información del estudiante', sql_error: err.message });
-        if (estudianteRows.length === 0) {
-          return res.status(404).json({ error: 'No se encontró un estudiante registrado con esa cédula.' });
-        }
-
-        const insertSQL = `
-          INSERT INTO formulario_estudiante
-          (id_formulario, Nombre, Apellido, Cedula, IdGenero, IdFacultad, IdTipoP, IdPrograma, Archivo)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-
-        const insertParams = [idFormulario, nombre, apellido, cedula, generoId, facultadId, tipoProgramaId, programaId, archivo];
-
-        conexion.query(insertSQL, insertParams, (err, result) => {
-          if (err) return res.status(500).json({ error: 'Error al guardar la solicitud', sql_error: err.message });
-          res.json({ success: true, message: 'Solicitud registrada exitosamente', id: idFormulario, archivo, insertId: result.insertId, affectedRows: result.affectedRows });
-        });
-      });
-    }).catch((validationError) => {
-      return res.status(400).json({ error: validationError });
-    });
-
+    res.json({ success: true, message: 'Solicitud registrada exitosamente', id: idFormulario, archivo });
   } catch (error) {
     console.error('Error general en formulario:', error);
     res.status(500).json({ error: 'Error interno del servidor', message: error.message });
@@ -97,24 +91,39 @@ exports.countSolicitudes = (req, res) => {
   });
 };
 
-exports.misSolicitudes = (req, res) => {
-  const { cedula } = req.params;
-  const sql = `
-    SELECT fe.id_formulario, fe.Nombre, fe.Apellido, fe.Cedula,
-      g.Genero, f.Facultad, tp.TipoPrograma, p.Programa,
-      fe.Archivo, fe.Estado, fe.Prioridad, fe.FechaCreacion, fe.FechaModificacion, fe.NotasTrabajador
-    FROM formulario_estudiante fe
-    LEFT JOIN genero g ON fe.IdGenero = g.IdGenero
-    LEFT JOIN facultad f ON fe.IdFacultad = f.IdFacultad
-    LEFT JOIN tipoprograma tp ON fe.IdTipoP = tp.IdTipoP
-    LEFT JOIN programa p ON fe.IdPrograma = p.IdPrograma
-    WHERE fe.Cedula = ?
-    ORDER BY fe.FechaCreacion DESC`;
+exports.misSolicitudes = async (req, res) => {
+  try {
+    const usuarioId = req.usuario.id;
 
-  conexion.query(sql, [cedula], (err, results) => {
-    if (err) return res.status(500).json({ error: 'Error en la base de datos', sql_error: err.message });
+    const [estudiantes] = await conexion.promise().query(
+      'SELECT Cedula FROM estudiante WHERE IdEstudiante = ? AND Activo = 1',
+      [usuarioId]
+    );
+
+    if (estudiantes.length === 0) {
+      return res.status(404).json({ error: 'Estudiante no encontrado' });
+    }
+
+    const cedula = estudiantes[0].Cedula;
+
+    const sql = `
+      SELECT fe.id_formulario, fe.Nombre, fe.Apellido, fe.Cedula,
+        g.Genero, f.Facultad, tp.TipoPrograma, p.Programa,
+        fe.Archivo, fe.Estado, fe.Prioridad, fe.FechaCreacion, fe.FechaModificacion, fe.NotasTrabajador
+      FROM formulario_estudiante fe
+      LEFT JOIN genero g ON fe.IdGenero = g.IdGenero
+      LEFT JOIN facultad f ON fe.IdFacultad = f.IdFacultad
+      LEFT JOIN tipoprograma tp ON fe.IdTipoP = tp.IdTipoP
+      LEFT JOIN programa p ON fe.IdPrograma = p.IdPrograma
+      WHERE fe.Cedula = ?
+      ORDER BY fe.FechaCreacion DESC`;
+
+    const [results] = await conexion.promise().query(sql, [cedula]);
     res.json(results);
-  });
+  } catch (error) {
+    console.error('Error en mis solicitudes:', error);
+    res.status(500).json({ error: 'Error al obtener solicitudes' });
+  }
 };
 
 exports.getConfig = (req, res) => {

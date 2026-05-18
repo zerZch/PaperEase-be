@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const controller = require('../controllers/formulario.controller');
 const serverConfig = require('../../config/server');
+const { verificarAutenticacion, verificarEstudiante, verificarTrabajadorSocial } = require('../middleware/auth');
 
 if (!fs.existsSync(serverConfig.uploadsDir)) {
   fs.mkdirSync(serverConfig.uploadsDir, { recursive: true });
@@ -33,9 +34,9 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({ storage, fileFilter, limits: { fileSize: serverConfig.upload.maxFileSize } });
 
 router.get('/config', controller.getConfig);
-router.get('/solicitudes', controller.listSolicitudes);
-router.get('/count', controller.countSolicitudes);
-router.get('/mis-solicitudes/:cedula', controller.misSolicitudes);
-router.post('/formulario', upload.single('archivo'), controller.submit);
+router.post('/formulario', verificarAutenticacion, verificarEstudiante, upload.single('archivo'), controller.submit);
+router.get('/mis-solicitudes', verificarAutenticacion, verificarEstudiante, controller.misSolicitudes);
+router.get('/solicitudes', verificarAutenticacion, verificarTrabajadorSocial, controller.listSolicitudes);
+router.get('/count', verificarAutenticacion, verificarTrabajadorSocial, controller.countSolicitudes);
 
 module.exports = router;

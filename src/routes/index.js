@@ -26,17 +26,19 @@ function mountSeoRoute(app) {
   const formularioHtmlPath = path.join(FRONTEND_DIR, 'pages', 'formulario.html');
 
   const programasMap = {
-    '1': { nombre: 'Canasta Navideña', tipo: 'Bienestar Social' },
-    '2': { nombre: 'Campaña de Fortalecimiento de Valores', tipo: 'Bienestar Social' },
-    '3': { nombre: 'Campaña de Concienciación de Instalaciones', tipo: 'Bienestar Social' },
-    '4': { nombre: 'Feria de Empleo', tipo: 'Bienestar Social' },
-    '5': { nombre: 'Consejería Personal', tipo: 'Bienestar Social' },
-    '6': { nombre: 'Banco de Sangre', tipo: 'Bienestar en Salud' },
-    '7': { nombre: 'Ayuda en Gastos Médicos', tipo: 'Bienestar en Salud' },
-    '8': { nombre: 'Feria de Salud', tipo: 'Bienestar en Salud' },
-    '9': { nombre: 'Compra de Lentes', tipo: 'Bienestar en Salud' },
-    '10': { nombre: 'Apoyo en Medicamentos', tipo: 'Bienestar en Salud' },
-    '11': { nombre: 'Póliza de Salud', tipo: 'Bienestar en Salud' }
+    '1': { nombre: 'Canasta Navideña', tipo: 'Promoción Social' },
+    '2': { nombre: 'Campaña de Fortalecimiento de Valores', tipo: 'Promoción Social' },
+    '3': { nombre: 'Campaña de Concienciación de Instalaciones', tipo: 'Promoción Social' },
+    '4': { nombre: 'Feria de Empleo', tipo: 'Promoción Social' },
+    '5': { nombre: 'Consejería Personal', tipo: 'Salud' },
+    '6': { nombre: 'Banco de Sangre', tipo: 'Salud' },
+    '7': { nombre: 'Ayuda en Gastos Médicos', tipo: 'Salud' },
+    '8': { nombre: 'Feria de Salud', tipo: 'Salud' },
+    '9': { nombre: 'Compra de Lentes', tipo: 'Salud' },
+    '10': { nombre: 'Apoyo en Medicamentos', tipo: 'Salud' },
+    '11': { nombre: 'Póliza de Salud', tipo: 'Salud' },
+    '12': { nombre: 'Matrícula', tipo: 'Salud' },
+    '13': { nombre: 'Apoyo en Casos de Siniestros', tipo: 'Promoción Social' }
   };
 
   app.get(['/Formulario.html', '/formulario.html', '/Formulario', '/formulario'], (req, res) => {

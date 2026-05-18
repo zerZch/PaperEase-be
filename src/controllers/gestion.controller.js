@@ -5,12 +5,19 @@ const { ESTADOS_SOLICITUD, PRIORIDADES_LIST, TIPO_NOTIFICACION } = require('../u
 
 exports.aprobar = async (req, res) => {
   const { id } = req.params;
+  const { notas } = req.body;
   try {
-    await conexion.promise().query(`UPDATE formulario_estudiante SET Estado = '${ESTADOS_SOLICITUD.APROBADA}', FechaModificacion = NOW() WHERE id_formulario = ?`, [id]);
-    const [rows] = await conexion.promise().query('SELECT Cedula FROM formulario_estudiante WHERE id_formulario = ?', [id]);
-    if (rows.length > 0) {
-      await crearNotificacion(rows[0].Cedula, id, TIPO_NOTIFICACION.APROBADA, 'Solicitud Aprobada', `Tu solicitud ${id} ha sido aprobada.`);
+    const [existing] = await conexion.promise().query('SELECT Cedula FROM formulario_estudiante WHERE id_formulario = ?', [id]);
+    if (existing.length === 0) {
+      return res.status(404).json({ error: 'Solicitud no encontrada' });
     }
+
+    await conexion.promise().query(
+      `UPDATE formulario_estudiante SET Estado = ?, NotasTrabajador = ?, FechaModificacion = NOW() WHERE id_formulario = ?`,
+      [ESTADOS_SOLICITUD.APROBADA, notas || null, id]
+    );
+
+    await crearNotificacion(existing[0].Cedula, id, TIPO_NOTIFICACION.APROBADA, 'Solicitud Aprobada', `Tu solicitud ${id} ha sido aprobada.`);
     res.json({ success: true, message: 'Solicitud aprobada exitosamente' });
   } catch (error) {
     console.error('Error al aprobar:', error);
@@ -20,12 +27,19 @@ exports.aprobar = async (req, res) => {
 
 exports.rechazar = async (req, res) => {
   const { id } = req.params;
+  const { notas } = req.body;
   try {
-    await conexion.promise().query(`UPDATE formulario_estudiante SET Estado = '${ESTADOS_SOLICITUD.RECHAZADA}', FechaModificacion = NOW() WHERE id_formulario = ?`, [id]);
-    const [rows] = await conexion.promise().query('SELECT Cedula FROM formulario_estudiante WHERE id_formulario = ?', [id]);
-    if (rows.length > 0) {
-      await crearNotificacion(rows[0].Cedula, id, TIPO_NOTIFICACION.RECHAZADA, 'Solicitud Rechazada', `Tu solicitud ${id} ha sido rechazada.`);
+    const [existing] = await conexion.promise().query('SELECT Cedula FROM formulario_estudiante WHERE id_formulario = ?', [id]);
+    if (existing.length === 0) {
+      return res.status(404).json({ error: 'Solicitud no encontrada' });
     }
+
+    await conexion.promise().query(
+      `UPDATE formulario_estudiante SET Estado = ?, NotasTrabajador = ?, FechaModificacion = NOW() WHERE id_formulario = ?`,
+      [ESTADOS_SOLICITUD.RECHAZADA, notas || null, id]
+    );
+
+    await crearNotificacion(existing[0].Cedula, id, TIPO_NOTIFICACION.RECHAZADA, 'Solicitud Rechazada', `Tu solicitud ${id} ha sido rechazada.`);
     res.json({ success: true, message: 'Solicitud rechazada exitosamente' });
   } catch (error) {
     console.error('Error al rechazar:', error);
