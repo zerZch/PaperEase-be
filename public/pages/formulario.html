@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/forms.css">
+  <title>Formulario de Solicitud • PaperEase</title>
+  <script src="../js/core/auth-helper.js"></script>
+  <style>
+    .programa-banner {
+      background: linear-gradient(135deg, #4D869C, #3b6b7e);
+      color: white;
+      padding: 18px 24px;
+      border-radius: 10px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 2px 8px rgba(77,134,156,0.3);
+    }
+    .programa-banner .banner-icon {
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+    .programa-banner .banner-text {
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    .programa-banner .banner-text strong {
+      font-size: 16px;
+    }
+    .form-field-locked {
+      background-color: #f3f4f6;
+      cursor: not-allowed;
+      opacity: 0.75;
+    }
+    .form-field-locked + .field-lock-note {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .section-divider {
+      border: none;
+      border-top: 1px solid #e5e7eb;
+      margin: 28px 0 20px;
+    }
+    .section-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 14px;
+    }
+    .profile-summary {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+    .profile-summary h4 {
+      margin: 0 0 10px 0;
+      font-size: 14px;
+      color: #374151;
+    }
+    .profile-summary .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      font-size: 13px;
+      color: #4b5563;
+    }
+    .profile-summary .summary-row .label {
+      color: #9ca3af;
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!isAuthenticated()) {
+        window.location.href = 'login.html';
+      }
+    });
+  </script>
+</head>
+<body>
+<!-- Header -->
+ <header>
+ <div class="container">
+ <a href="menupe.html" class="logo-container" style="text-decoration: none;">
+ <img src="../imagenes/logo.png" alt="PaperEase Logo" class="logo" width="40" height="40" />
+ <span class="logo-text">PaperEase</span>
+ </a>
+ </div>
+ </header>
+
+<!-- Contenido principal -->
+ <main>
+ <section class="form-section">
+ <div class="container">
+  <h2>Formulario de Solicitud</h2>
+
+  <div id="bannerPrograma" style="display:none;"></div>
+
+<form id="formulario" method="POST" enctype="multipart/form-data" class="formulario" action="/api/formulario">
+
+  <input type="hidden" id="cedula" name="cedula" />
+  <input type="hidden" id="nombre" name="nombre" />
+  <input type="hidden" id="apellido" name="apellido" />
+  <input type="hidden" id="genero" name="genero" />
+  <input type="hidden" id="facultad" name="facultad" />
+
+  <div class="profile-summary" id="profileSummary" style="display:none;">
+    <h4>Tus datos del perfil</h4>
+    <div class="summary-row"><span class="label">Nombre:</span> <span id="summaryName"></span></div>
+    <div class="summary-row"><span class="label">Apellido:</span> <span id="summarySurname"></span></div>
+    <div class="summary-row"><span class="label">Cédula:</span> <span id="summaryCedula"></span></div>
+    <div class="summary-row"><span class="label">Facultad:</span> <span id="summaryFacultad"></span></div>
+  </div>
+
+  <div class="form-group" id="groupTipoPrograma">
+    <label for="tipoPrograma">Tipo de Programa</label>
+    <select id="tipoPrograma" name="tipoPrograma" required>
+      <option value="">Seleccione un tipo</option>
+      <option value="1">Promoción Social</option>
+      <option value="2">Salud</option>
+    </select>
+  </div>
+
+  <div class="form-group" id="groupPrograma">
+    <label for="programa">Programa a Solicitar</label>
+    <select id="programa" name="programa" required>
+      <option value="">Seleccione una opción</option>
+      <optgroup label="Promoción Social">
+        <option value="1" data-tipo="1">Canasta Navideña</option>
+        <option value="2" data-tipo="1">Campaña de Fortalecimiento de Valores</option>
+        <option value="3" data-tipo="1">Campaña de Concienciación de Instalaciones</option>
+        <option value="4" data-tipo="1">Feria de Empleo</option>
+        <option value="5" data-tipo="1">Consejería Personal</option>
+      </optgroup>
+      <optgroup label="Salud">
+        <option value="6" data-tipo="2">Banco de Sangre</option>
+        <option value="7" data-tipo="2">Ayuda en Gastos Médicos</option>
+        <option value="8" data-tipo="2">Feria de Salud</option>
+        <option value="9" data-tipo="2">Compra de Lentes</option>
+        <option value="10" data-tipo="2">Apoyo en medicamentos</option>
+        <option value="11" data-tipo="2">Póliza de Salud</option>
+      </optgroup>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="archivo">Adjuntar Archivos (PDF, JPG, PNG)</label>
+    <input type="file" id="archivo" name="archivo" accept=".pdf,.jpg,.jpeg,.png" />
+  </div>
+
+  <div class="cta-section">
+     <button type="submit" class="cta-primary" id="btnEnviar">Enviar Solicitud</button>
+     <button type="button" onclick="window.location.href='programas.html'" class="cta-secondary">Cancelar</button>
+  </div>
+
+</form>
+
+<!-- Mensajes de estado -->
+<div id="message" style="display: none; padding: 15px; margin: 20px 0; border-radius: 5px;"></div>
+<div id="loading" style="display: none; text-align: center; padding: 20px;"></div>
+ </div>
+ </section>
+ </main>
+
+<!-- Footer -->
+ <footer>
+ <div class="footer-flex container">
+ <p>© 2025 PaperEase • Universidad Tecnológica de Panamá</p>
+ <div class="footer-links">
+ <a href="ayuda.html">Ayuda</a>
+ <a href="privacidad.html">Privacidad</a>
+ <a href="terminos.html">Términos</a>
+ </div>
+ </div>
+ </footer>
+
+<script src="../js/core/auth-helper.js"></script>
+<script>
+const API_BASE = window.location.origin;
+
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.formulario');
+    const messageDiv = document.getElementById('message');
+    const loadingDiv = document.getElementById('loading');
+
+    function showMessage(message, isError = false) {
+        messageDiv.style.display = 'block';
+        messageDiv.textContent = message;
+        messageDiv.style.backgroundColor = isError ? '#fee2e2' : '#dcfce7';
+        messageDiv.style.color = isError ? '#dc2626' : '#16a34a';
+        messageDiv.style.border = isError ? '1px solid #fca5a5' : '1px solid #86efac';
+        messageDiv.classList.add('success-animation');
+        setTimeout(() => messageDiv.classList.remove('success-animation'), 500);
+    }
+
+    function showLoading(show) {
+        loadingDiv.style.display = show ? 'block' : 'none';
+        loadingDiv.textContent = show ? 'Enviando solicitud...' : '';
+    }
+
+    const mapProgramaNombre = {
+      '1':'Canasta Navideña','2':'Campaña de Fortalecimiento de Valores',
+      '3':'Campaña de Concienciación de Instalaciones','4':'Feria de Empleo',
+      '5':'Consejería Personal','6':'Banco de Sangre','7':'Ayuda en Gastos Médicos',
+      '8':'Feria de Salud','9':'Compra de Lentes','10':'Apoyo en Medicamentos',
+      '11':'Póliza de Salud'
+    };
+    const mapTipoNombre = { '1':'Promoción Social', '2':'Salud' };
+
+    async function cargarDatosSesion() {
+        try {
+            const token = getAuthToken();
+            if (!token) {
+                showMessage('Debes iniciar sesión para hacer una solicitud', true);
+                setTimeout(() => window.location.href = 'login.html', 2000);
+                return false;
+            }
+
+            const response = await fetch(`${API_BASE}/api/auth/me`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.autenticado && data.Cedula) {
+                document.getElementById('cedula').value = data.Cedula;
+                document.getElementById('nombre').value = data.Nombre || '';
+                document.getElementById('apellido').value = data.Apellido || '';
+                document.getElementById('genero').value = data.IdGenero || '';
+                document.getElementById('facultad').value = data.IdFacultad || '';
+
+                document.getElementById('summaryName').textContent = data.Nombre || '—';
+                document.getElementById('summarySurname').textContent = data.Apellido || '—';
+                document.getElementById('summaryCedula').textContent = data.Cedula || '—';
+                document.getElementById('summaryFacultad').textContent = data.Facultad || '—';
+                document.getElementById('profileSummary').style.display = 'block';
+
+                return data;
+            } else {
+                showMessage('Debes iniciar sesión para hacer una solicitud', true);
+                setTimeout(() => window.location.href = 'login.html', 2000);
+                return null;
+            }
+        } catch (error) {
+            console.error('Error al obtener datos del usuario:', error);
+            showMessage('Error al verificar sesión. Por favor, inicia sesión nuevamente.', true);
+            setTimeout(() => window.location.href = 'login.html', 2000);
+            return null;
+        }
+    }
+
+    cargarDatosSesion().then(userData => {
+        if (!userData) return;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const tipoParam = urlParams.get('tipo');
+        const programaParam = urlParams.get('programa');
+
+        const tipoProgramaSelect = document.getElementById('tipoPrograma');
+        const programaSelect = document.getElementById('programa');
+        const groupTipo = document.getElementById('groupTipoPrograma');
+        const groupPrograma = document.getElementById('groupPrograma');
+        const bannerDiv = document.getElementById('bannerPrograma');
+
+        if (tipoParam && programaParam) {
+            tipoProgramaSelect.value = tipoParam;
+            tipoProgramaSelect.dispatchEvent(new Event('change'));
+
+            setTimeout(() => {
+                programaSelect.value = programaParam;
+            }, 100);
+
+            tipoProgramaSelect.classList.add('form-field-locked');
+            tipoProgramaSelect.disabled = true;
+            programaSelect.classList.add('form-field-locked');
+            programaSelect.disabled = true;
+
+            const nombrePrograma = mapProgramaNombre[programaParam] || 'Programa';
+            const nombreTipo = mapTipoNombre[tipoParam] || '';
+
+            bannerDiv.style.display = 'block';
+            bannerDiv.innerHTML = `
+              <div class="programa-banner">
+                <div class="banner-icon">&#128204;</div>
+                <div class="banner-text">
+                  Estás solicitando:<br>
+                  <strong>${nombrePrograma}</strong> — ${nombreTipo}
+                </div>
+              </div>`;
+
+            tipoProgramaSelect.name = '';
+            programaSelect.name = '';
+
+            const hiddenTipo = document.createElement('input');
+            hiddenTipo.type = 'hidden';
+            hiddenTipo.name = 'tipoPrograma';
+            hiddenTipo.value = tipoParam;
+            form.appendChild(hiddenTipo);
+
+            const hiddenPrograma = document.createElement('input');
+            hiddenPrograma.type = 'hidden';
+            hiddenPrograma.name = 'programa';
+            hiddenPrograma.value = programaParam;
+            form.appendChild(hiddenPrograma);
+
+            groupTipo.querySelector('label').textContent = 'Tipo de Programa (preseleccionado)';
+            groupPrograma.querySelector('label').textContent = 'Programa (preseleccionado)';
+        }
+
+        tipoProgramaSelect.addEventListener('change', function() {
+            const tipoSeleccionado = this.value;
+            const opciones = programaSelect.querySelectorAll('option');
+            programaSelect.value = '';
+            opciones.forEach(option => {
+                if (option.value === '') {
+                    option.style.display = 'block';
+                } else {
+                    const tipoOpcion = option.getAttribute('data-tipo');
+                    option.style.display = (tipoOpcion === tipoSeleccionado || !tipoSeleccionado) ? 'block' : 'none';
+                }
+            });
+        });
+    });
+
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        messageDiv.style.display = 'none';
+
+        let cedula = document.getElementById('cedula').value;
+
+        if (!cedula) {
+            try {
+                const token = getAuthToken();
+                if (token) {
+                    const resp = await fetch(`${API_BASE}/api/auth/me`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    const userData = await resp.json();
+                    if (userData.autenticado && userData.Cedula) {
+                        document.getElementById('cedula').value = userData.Cedula;
+                        cedula = userData.Cedula;
+                    }
+                }
+            } catch (err) {
+                console.error('Error al reintentar carga de cédula:', err);
+            }
+        }
+
+        if (!cedula) {
+            showMessage('Error: No se pudo obtener tu cédula. Por favor, inicia sesión nuevamente.', true);
+            return;
+        }
+
+        showLoading(true);
+
+        const formData = new FormData(form);
+        formData.set('cedula', cedula);
+
+        const tipoProgramaSelect = document.getElementById('tipoPrograma');
+        const programaSelect = document.getElementById('programa');
+
+        if (tipoProgramaSelect.disabled && !formData.get('tipoPrograma')) {
+            const hiddenTipo = form.querySelector('input[type="hidden"][name="tipoPrograma"]');
+            if (hiddenTipo) formData.set('tipoPrograma', hiddenTipo.value);
+        }
+        if (programaSelect.disabled && !formData.get('programa')) {
+            const hiddenProg = form.querySelector('input[type="hidden"][name="programa"]');
+            if (hiddenProg) formData.set('programa', hiddenProg.value);
+        }
+
+        try {
+            const response = await fetch(`${API_BASE}/api/formulario`, {
+                method: 'POST',
+                body: formData,
+                credentials: 'include'
+            });
+            const data = await response.json();
+            showLoading(false);
+
+            if (data.success) {
+                showMessage(`Solicitud registrada exitosamente! ID: ${data.id}`, false);
+                form.reset();
+                document.getElementById('cedula').value = cedula;
+                messageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => window.location.href = 'menupe.html', 2000);
+            } else {
+                showMessage(`${data.error || 'Ocurrió un error inesperado.'}`, true);
+            }
+        } catch (error) {
+            showLoading(false);
+            showMessage('Error al enviar la solicitud. Intenta nuevamente.', true);
+            console.error('Error en la petición:', error);
+        }
+    });
+});
+</script>
+</body>
+</html>
