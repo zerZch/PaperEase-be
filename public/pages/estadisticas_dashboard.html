@@ -4,12 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard de Estadísticas - Panel Administrativo | PaperEase</title>
-  <link rel="stylesheet" href="../css/estadisticas.css"/>
-  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="/css/estadisticas.css"/>
+  <link rel="stylesheet" href="/css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-  <script src="../js/core/auth-helper.js"></script>
-  <script src="../js/core/nav-rbac.js"></script>
+  <script src="/js/core/auth-helper.js"></script>
+  <script src="/js/core/nav-rbac.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       if (!isAuthenticated()) {
@@ -24,7 +24,7 @@
 <header>
   <div class="container">
     <a href="menupe.html" class="logo-container" style="text-decoration: none;">
-      <img src="../imagenes/logo.png" alt="PaperEase Logo" class="logo" width="40" height="40" />
+      <img src="/imagenes/logo.png" alt="PaperEase Logo" class="logo" width="40" height="40" />
       <span class="logo-text">PaperEase</span>
     </a>
     <nav class="nav">
@@ -255,7 +255,7 @@
   lucide.createIcons();
 </script>
 
-<script src="../js/pages/estadisticas.js"></script>
+<script src="/js/pages/estadisticas.js"></script>
 <!-- Socket.IO Client -->
 <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 
@@ -288,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 
 <!-- Sistema de Notificaciones -->
-<script src="../js/widgets/notificaciones.js"></script>
+<script src="/js/widgets/notificaciones.js"></script>
 
 <!-- Botón de Cerrar Sesión -->
 <script>
