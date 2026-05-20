@@ -11,24 +11,50 @@
     .programa-banner {
       background: linear-gradient(135deg, #4D869C, #3b6b7e);
       color: white;
-      padding: 18px 24px;
-      border-radius: 10px;
+      padding: 20px 24px;
+      border-radius: 12px;
       margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(77,134,156,0.3);
+    }
+    .programa-banner .banner-header {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 14px;
-      box-shadow: 0 2px 8px rgba(77,134,156,0.3);
+      margin-bottom: 12px;
     }
     .programa-banner .banner-icon {
-      font-size: 28px;
+      font-size: 32px;
       flex-shrink: 0;
     }
-    .programa-banner .banner-text {
-      font-size: 15px;
-      line-height: 1.5;
+    .programa-banner .banner-title {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      opacity: 0.9;
+      margin-bottom: 4px;
     }
-    .programa-banner .banner-text strong {
-      font-size: 16px;
+    .programa-banner .banner-selection {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .programa-banner .banner-selection .arrow {
+      margin: 0 8px;
+      opacity: 0.7;
+    }
+    .programa-banner .banner-note {
+      font-size: 13px;
+      opacity: 0.85;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .programa-banner .banner-note::before {
+      content: "🔒";
+      font-size: 12px;
     }
     .form-field-locked {
       background-color: #f3f4f6;
@@ -140,33 +166,35 @@
     <label for="tipoPrograma">Tipo de Programa</label>
     <select id="tipoPrograma" disabled>
       <option value="">Seleccione un tipo</option>
-      <option value="1">Promoción Social</option>
-      <option value="2">Salud</option>
+      <option value="1">Salud</option>
+      <option value="2">Promoción Social</option>
     </select>
+    <small style="color: #6b7280; font-size: 12px; margin-top: 4px; display: block;">📌 Este campo muestra tu selección y no puede modificarse</small>
   </div>
 
   <div class="form-group" id="groupPrograma">
     <label for="programa">Programa a Solicitar</label>
     <select id="programa" disabled>
       <option value="">Seleccione una opción</option>
-      <optgroup label="Promoción Social">
-        <option value="1" data-tipo="1">Canasta Navideña</option>
-        <option value="2" data-tipo="1">Campaña de Fortalecimiento de Valores</option>
-        <option value="3" data-tipo="1">Campaña de Concienciación de Instalaciones</option>
-        <option value="4" data-tipo="1">Feria de Empleo</option>
-        <option value="13" data-tipo="1">Apoyo en Casos de Siniestros</option>
-      </optgroup>
       <optgroup label="Salud">
-        <option value="5" data-tipo="2">Consejería Personal</option>
-        <option value="6" data-tipo="2">Banco de Sangre</option>
-        <option value="7" data-tipo="2">Ayuda en Gastos Médicos</option>
-        <option value="8" data-tipo="2">Feria de Salud</option>
-        <option value="9" data-tipo="2">Compra de Lentes</option>
-        <option value="10" data-tipo="2">Apoyo en Medicamentos</option>
-        <option value="11" data-tipo="2">Póliza de Salud</option>
-        <option value="12" data-tipo="2">Matrícula</option>
+        <option value="1" data-tipo="1">Consejería Personal</option>
+        <option value="2" data-tipo="1">Banco de Sangre</option>
+        <option value="3" data-tipo="1">Ayuda en Gastos Médicos</option>
+        <option value="4" data-tipo="1">Feria de Salud</option>
+        <option value="5" data-tipo="1">Compra de Lentes</option>
+        <option value="6" data-tipo="1">Apoyo en Medicamentos</option>
+        <option value="7" data-tipo="1">Póliza de Salud</option>
+        <option value="8" data-tipo="1">Matrícula</option>
+      </optgroup>
+      <optgroup label="Promoción Social">
+        <option value="9" data-tipo="2">Canasta Navideña</option>
+        <option value="10" data-tipo="2">Campaña de Fortalecimiento de Valores</option>
+        <option value="11" data-tipo="2">Campaña de Concienciación de Instalaciones</option>
+        <option value="12" data-tipo="2">Feria de Empleo</option>
+        <option value="13" data-tipo="2">Apoyo en Casos de Siniestros</option>
       </optgroup>
     </select>
+    <small style="color: #6b7280; font-size: 12px; margin-top: 4px; display: block;">📌 Este campo muestra tu selección y no puede modificarse</small>
   </div>
 
   <div class="form-group">
@@ -311,13 +339,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     btnEnviar.disabled = false;
 
     const mapProgramaNombre = {
-      '1':'Canasta Navideña','2':'Campaña de Fortalecimiento de Valores',
-      '3':'Campaña de Concienciación de Instalaciones','4':'Feria de Empleo',
-      '5':'Consejería Personal','6':'Banco de Sangre','7':'Ayuda en Gastos Médicos',
-      '8':'Feria de Salud','9':'Compra de Lentes','10':'Apoyo en Medicamentos',
-      '11':'Póliza de Salud','12':'Matrícula','13':'Apoyo en Casos de Siniestros'
+      '1':'Consejería Personal','2':'Banco de Sangre','3':'Ayuda en Gastos Médicos',
+      '4':'Feria de Salud','5':'Compra de Lentes','6':'Apoyo en Medicamentos',
+      '7':'Póliza de Salud','8':'Matrícula','9':'Canasta Navideña',
+      '10':'Campaña de Fortalecimiento de Valores','11':'Campaña de Concienciación de Instalaciones',
+      '12':'Feria de Empleo','13':'Apoyo en Casos de Siniestros'
     };
-    const mapTipoNombre = { '1':'Promoción Social', '2':'Salud' };
+    const mapTipoNombre = { '1':'Salud', '2':'Promoción Social' };
 
     const nombrePrograma = mapProgramaNombre[programaParam] || 'Programa';
     const nombreTipo = mapTipoNombre[tipoParam] || '';
@@ -325,11 +353,18 @@ document.addEventListener('DOMContentLoaded', async function() {
     bannerDiv.style.display = 'block';
     bannerDiv.innerHTML = `
       <div class="programa-banner">
-        <div class="banner-icon">&#128204;</div>
-        <div class="banner-text">
-          Estás solicitando:<br>
-          <strong>${nombrePrograma}</strong> — ${nombreTipo}
+        <div class="banner-header">
+          <div class="banner-icon">📋</div>
+          <div>
+            <div class="banner-title">Has seleccionado el programa</div>
+            <div class="banner-selection">
+              <span>${nombreTipo}</span>
+              <span class="arrow">→</span>
+              <span>${nombrePrograma}</span>
+            </div>
+          </div>
         </div>
+        <div class="banner-note">Esta selección no se puede cambiar en este paso. Si necesitas modificarla, cancela y vuelve a seleccionar desde la página de Programas.</div>
       </div>`;
 
     // Load profile info for display only
