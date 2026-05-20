@@ -31,4 +31,25 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelector(".requisitos-grid").style.alignContent = "start";
       });
     });
+
+    document.addEventListener("click", event => {
+      const applyLink = event.target.closest('a[href*="formulario.html"]');
+      if (!applyLink) return;
+
+      const target = new URL(applyLink.getAttribute("href"), window.location.origin);
+      const tipo = target.searchParams.get("tipo");
+      const programa = target.searchParams.get("programa");
+      if (!tipo || !programa) return;
+
+      const destination = `/formulario.html?tipo=${encodeURIComponent(tipo)}&programa=${encodeURIComponent(programa)}`;
+
+      if (typeof isAuthenticated === "function" && !isAuthenticated()) {
+        event.preventDefault();
+        localStorage.setItem("postAuthRedirect", destination);
+        window.location.href = "/registro.html";
+        return;
+      }
+
+      applyLink.setAttribute("href", destination);
+    });
   });

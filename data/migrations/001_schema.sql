@@ -208,7 +208,7 @@ INSERT IGNORE INTO programa (IdPrograma, Programa, IdTipoP) VALUES
   (3, 'Ayuda en Gastos Médicos', 1),
   (4, 'Feria de Salud', 1),
   (5, 'Compra de Lentes', 1),
-  (6, 'Apoyo en Medicamentos', 1),
+  (6, 'Apoyo en Medicamento', 1),
   (7, 'Póliza de Salud', 1),
   (8, 'Matrícula', 1),
   (9, 'Canasta Navideña', 2),
@@ -216,3 +216,7 @@ INSERT IGNORE INTO programa (IdPrograma, Programa, IdTipoP) VALUES
   (11, 'Campaña de Concienciación de Instalaciones', 2),
   (12, 'Feria de Empleo', 2),
   (13, 'Apoyo en Casos de Siniestros', 2);
+
+UPDATE programa
+SET Programa = 'Apoyo en Medicamento'
+WHERE IdPrograma = 6 AND IdTipoP = 1;

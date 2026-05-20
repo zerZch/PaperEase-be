@@ -31,7 +31,7 @@ function mountSeoRoute(app) {
     '3': { nombre: 'Ayuda en Gastos Médicos', tipo: 'Salud' },
     '4': { nombre: 'Feria de Salud', tipo: 'Salud' },
     '5': { nombre: 'Compra de Lentes', tipo: 'Salud' },
-    '6': { nombre: 'Apoyo en Medicamentos', tipo: 'Salud' },
+    '6': { nombre: 'Apoyo en Medicamento', tipo: 'Salud' },
     '7': { nombre: 'Póliza de Salud', tipo: 'Salud' },
     '8': { nombre: 'Matrícula', tipo: 'Salud' },
     '9': { nombre: 'Canasta Navideña', tipo: 'Promoción Social' },
