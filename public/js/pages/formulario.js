@@ -81,26 +81,10 @@
   }
 
   function renderSelection(tipo, programa) {
-    const tipoSelect = document.getElementById('tipoPrograma');
-    const programaSelect = document.getElementById('programa');
     const tipoHidden = document.getElementById('tipoProgramaHidden');
     const programaHidden = document.getElementById('programaHidden');
     const btnEnviar = document.getElementById('btnEnviar');
     const bannerDiv = document.getElementById('bannerPrograma');
-
-    if (tipoSelect) {
-      tipoSelect.value = String(tipo.IdTipoP);
-      tipoSelect.disabled = true;
-      tipoSelect.classList.add('form-field-locked');
-    }
-
-    if (programaSelect) {
-      programaSelect.value = String(programa.IdPrograma);
-      const selectedOption = programaSelect.querySelector('option[value="' + programa.IdPrograma + '"]');
-      if (selectedOption) selectedOption.textContent = displayProgramName(programa);
-      programaSelect.disabled = true;
-      programaSelect.classList.add('form-field-locked');
-    }
 
     if (tipoHidden) tipoHidden.value = String(tipo.IdTipoP);
     if (programaHidden) programaHidden.value = String(programa.IdPrograma);
@@ -111,23 +95,10 @@
     const nombrePrograma = displayProgramName(programa);
     bannerDiv.style.display = 'block';
     bannerDiv.innerHTML = [
-      '<div class="programa-banner">',
-      '<div class="banner-header">',
-      '<div class="banner-icon" aria-hidden="true">&#128203;</div>',
-      '<div>',
-      '<div class="banner-title">Has seleccionado el programa</div>',
-      '<div class="banner-selection">',
-      '<span>' + tipo.TipoPrograma + '</span>',
-      '<span class="arrow">&rarr;</span>',
-      '<span>' + nombrePrograma + '</span>',
-      '</div>',
-      '</div>',
-      '</div>',
-      '<div style="display:grid; gap:8px; margin-top:14px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.25);">',
-      '<div><strong>Tipo de Programa:</strong> ' + tipo.TipoPrograma + '</div>',
-      '<div><strong>Programa a solicitar:</strong> ' + nombrePrograma + '</div>',
-      '</div>',
-      '<div class="banner-note">Esta seleccion no se puede cambiar en este paso. Si necesitas modificarla, cancela y vuelve a seleccionar desde la pagina de Programas.</div>',
+      '<div class="solicitud-meta">',
+      '<span class="meta-badge">' + tipo.TipoPrograma + '</span>',
+      '<h3 class="meta-title">' + nombrePrograma + '</h3>',
+      '<p class="meta-note">Esta selecci&oacute;n no se puede cambiar en este paso. Si necesitas modificarla, cancela y vuelve a seleccionar desde la p&aacute;gina de Programas.</p>',
       '</div>'
     ].join('');
   }
@@ -163,17 +134,8 @@
         return;
       }
 
-      const profileSummary = document.getElementById('profileSummary');
-      const setText = (id, value) => {
-        const element = document.getElementById(id);
-        if (element) element.textContent = value || '-';
-      };
-
-      setText('summaryName', data.Nombre || data.nombre);
-      setText('summarySurname', data.Apellido || data.apellido);
-      setText('summaryCedula', data.Cedula || data.cedula);
-      setText('summaryFacultad', data.Facultad || data.facultad);
-      if (profileSummary) profileSummary.style.display = 'block';
+      // Datos del perfil ya no se muestran en un bloque separado;
+      // se integran directamente en el banner por el script inline.
     } catch (error) {
       console.error('Error al obtener datos del usuario:', error);
       showMessage('No se pudo verificar tu sesion. Intenta iniciar sesion nuevamente.', true);

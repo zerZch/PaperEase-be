@@ -5,104 +5,51 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="/css/style.css">
   <link rel="stylesheet" href="/css/forms.css">
-  <title>Formulario de Solicitud • PaperEase</title>
+  <title>Formulario de Solicitud &bull; PaperEase</title>
   <script src="/js/core/auth-helper.js"></script>
   <style>
-    .programa-banner {
-      background: linear-gradient(135deg, #4D869C, #3b6b7e);
-      color: white;
+    .solicitud-meta {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
       padding: 20px 24px;
-      border-radius: 12px;
       margin-bottom: 24px;
-      box-shadow: 0 4px 12px rgba(77,134,156,0.3);
     }
-    .programa-banner .banner-header {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      margin-bottom: 12px;
-    }
-    .programa-banner .banner-icon {
-      font-size: 32px;
-      flex-shrink: 0;
-    }
-    .programa-banner .banner-title {
-      font-size: 13px;
+    .solicitud-meta .meta-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      opacity: 0.9;
-      margin-bottom: 4px;
+      color: #4D869C;
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 10px;
     }
-    .programa-banner .banner-selection {
-      font-size: 18px;
-      font-weight: 600;
-      line-height: 1.4;
+    .solicitud-meta .meta-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #111827;
+      margin: 0 0 6px;
+      line-height: 1.3;
     }
-    .programa-banner .banner-selection .arrow {
-      margin: 0 8px;
-      opacity: 0.7;
-    }
-    .programa-banner .banner-note {
+    .solicitud-meta .meta-user {
       font-size: 13px;
-      opacity: 0.85;
+      color: #6b7280;
+      margin: 0;
+    }
+    .solicitud-meta .meta-user strong {
+      color: #374151;
+      font-weight: 600;
+    }
+    .solicitud-meta .meta-note {
+      font-size: 12px;
+      color: #9ca3af;
       margin-top: 12px;
       padding-top: 12px;
-      border-top: 1px solid rgba(255,255,255,0.2);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .programa-banner .banner-note::before {
-      content: "🔒";
-      font-size: 12px;
-    }
-    .form-field-locked {
-      background-color: #f3f4f6;
-      cursor: not-allowed;
-      opacity: 0.75;
-    }
-    .form-field-locked + .field-lock-note {
-      font-size: 12px;
-      color: #6b7280;
-      margin-top: 4px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .section-divider {
-      border: none;
-      border-top: 1px solid #e5e7eb;
-      margin: 28px 0 20px;
-    }
-    .section-label {
-      font-size: 13px;
-      font-weight: 600;
-      color: #6b7280;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 14px;
-    }
-    .profile-summary {
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 24px;
-    }
-    .profile-summary h4 {
-      margin: 0 0 10px 0;
-      font-size: 14px;
-      color: #374151;
-    }
-    .profile-summary .summary-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 4px 0;
-      font-size: 13px;
-      color: #4b5563;
-    }
-    .profile-summary .summary-row .label {
-      color: #9ca3af;
+      border-top: 1px solid #f3f4f6;
     }
     .error-missing-params {
       background: #fef2f2;
@@ -154,49 +101,6 @@
   <input type="hidden" id="tipoProgramaHidden" name="tipoPrograma" />
   <input type="hidden" id="programaHidden" name="programa" />
 
-  <div class="profile-summary" id="profileSummary" style="display:none;">
-    <h4>Tus datos del perfil</h4>
-    <div class="summary-row"><span class="label">Nombre:</span> <span id="summaryName"></span></div>
-    <div class="summary-row"><span class="label">Apellido:</span> <span id="summarySurname"></span></div>
-    <div class="summary-row"><span class="label">Cédula:</span> <span id="summaryCedula"></span></div>
-    <div class="summary-row"><span class="label">Facultad:</span> <span id="summaryFacultad"></span></div>
-  </div>
-
-  <div class="form-group" id="groupTipoPrograma">
-    <label for="tipoPrograma">Tipo de Programa</label>
-    <select id="tipoPrograma" disabled>
-      <option value="">Seleccione un tipo</option>
-      <option value="1">Salud</option>
-      <option value="2">Promoción Social</option>
-    </select>
-    <small style="color: #6b7280; font-size: 12px; margin-top: 4px; display: block;">📌 Este campo muestra tu selección y no puede modificarse</small>
-  </div>
-
-  <div class="form-group" id="groupPrograma">
-    <label for="programa">Programa a Solicitar</label>
-    <select id="programa" disabled>
-      <option value="">Seleccione una opción</option>
-      <optgroup label="Salud">
-        <option value="1" data-tipo="1">Consejería Personal</option>
-        <option value="2" data-tipo="1">Banco de Sangre</option>
-        <option value="3" data-tipo="1">Ayuda en Gastos Médicos</option>
-        <option value="4" data-tipo="1">Feria de Salud</option>
-        <option value="5" data-tipo="1">Compra de Lentes</option>
-        <option value="6" data-tipo="1">Apoyo en Medicamento</option>
-        <option value="7" data-tipo="1">Póliza de Salud</option>
-        <option value="8" data-tipo="1">Matrícula</option>
-      </optgroup>
-      <optgroup label="Promoción Social">
-        <option value="9" data-tipo="2">Canasta Navideña</option>
-        <option value="10" data-tipo="2">Campaña de Fortalecimiento de Valores</option>
-        <option value="11" data-tipo="2">Campaña de Concienciación de Instalaciones</option>
-        <option value="12" data-tipo="2">Feria de Empleo</option>
-        <option value="13" data-tipo="2">Apoyo en Casos de Siniestros</option>
-      </optgroup>
-    </select>
-    <small style="color: #6b7280; font-size: 12px; margin-top: 4px; display: block;">📌 Este campo muestra tu selección y no puede modificarse</small>
-  </div>
-
   <div class="form-group">
     <label for="archivo">Adjuntar Archivos (PDF, JPG, PNG)</label>
     <input type="file" id="archivo" name="archivo" accept=".pdf,.jpg,.jpeg,.png" />
@@ -219,11 +123,11 @@
 <!-- Footer -->
  <footer>
  <div class="footer-flex container">
- <p>© 2025 PaperEase • Universidad Tecnológica de Panamá</p>
+ <p>&copy; 2025 PaperEase &bull; Universidad Tecnol&oacute;gica de Panam&aacute;</p>
  <div class="footer-links">
  <a href="ayuda.html">Ayuda</a>
  <a href="privacidad.html">Privacidad</a>
- <a href="terminos.html">Términos</a>
+ <a href="terminos.html">T&eacute;rminos</a>
  </div>
  </div>
  </footer>
@@ -245,8 +149,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     const tipoParam = urlParams.get('tipo');
     const programaParam = urlParams.get('programa');
 
-    const tipoProgramaSelect = document.getElementById('tipoPrograma');
-    const programaSelect = document.getElementById('programa');
     const tipoHidden = document.getElementById('tipoProgramaHidden');
     const programaHidden = document.getElementById('programaHidden');
 
@@ -270,7 +172,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         missingParamsDiv.innerHTML = `
           <div class="error-missing-params">
             <h3>Debes seleccionar un programa primero</h3>
-            <p>Para hacer una solicitud, elige un programa desde la página de Programas.</p>
+            <p>Para hacer una solicitud, elige un programa desde la p&aacute;gina de Programas.</p>
             <a href="programas.html" class="cta-primary" style="display:inline-block; text-decoration:none; padding:10px 24px; background:#4D869C; color:white; border-radius:6px;">Ver Programas</a>
           </div>`;
         btnEnviar.disabled = true;
@@ -280,7 +182,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         try {
             const token = getAuthToken();
             if (!token) {
-                showMessage('Debes iniciar sesión para hacer una solicitud', true);
+                showMessage('Debes iniciar sesi&oacute;n para hacer una solicitud', true);
                 setTimeout(() => window.location.href = 'login.html', 2000);
                 return null;
             }
@@ -295,22 +197,15 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             const data = await response.json();
             if (!data.autenticado) {
-                showMessage('Debes iniciar sesión para hacer una solicitud', true);
+                showMessage('Debes iniciar sesi&oacute;n para hacer una solicitud', true);
                 setTimeout(() => window.location.href = 'login.html', 2000);
                 return null;
             }
 
-            const profileSummary = document.getElementById('profileSummary');
-            document.getElementById('summaryName').textContent = data.Nombre || data.nombre || '\u2014';
-            document.getElementById('summarySurname').textContent = data.Apellido || data.apellido || '\u2014';
-            document.getElementById('summaryCedula').textContent = data.Cedula || data.cedula || '\u2014';
-            document.getElementById('summaryFacultad').textContent = data.Facultad || data.facultad || '\u2014';
-            profileSummary.style.display = 'block';
-
             return data;
         } catch (error) {
             console.error('Error al obtener datos del usuario:', error);
-            showMessage('Error al verificar sesión. Por favor, inicia sesión nuevamente.', true);
+            showMessage('Error al verificar sesi&oacute;n. Por favor, inicia sesi&oacute;n nuevamente.', true);
             setTimeout(() => window.location.href = 'login.html', 2000);
             return null;
         }
@@ -331,46 +226,34 @@ document.addEventListener('DOMContentLoaded', async function() {
         return;
     }
 
-    tipoProgramaSelect.value = tipoParam;
-    programaSelect.value = programaParam;
-    tipoProgramaSelect.classList.add('form-field-locked');
-    programaSelect.classList.add('form-field-locked');
-
     tipoHidden.value = tipoParam;
     programaHidden.value = programaParam;
     btnEnviar.disabled = false;
 
     const mapProgramaNombre = {
-      '1':'Consejería Personal','2':'Banco de Sangre','3':'Ayuda en Gastos Médicos',
-      '4':'Feria de Salud','5':'Compra de Lentes','6':'Apoyo en Medicamentos',
-      '7':'Póliza de Salud','8':'Matrícula','9':'Canasta Navideña',
-      '10':'Campaña de Fortalecimiento de Valores','11':'Campaña de Concienciación de Instalaciones',
+      '1':'Consejer&iacute;a Personal','2':'Banco de Sangre','3':'Ayuda en Gastos M&eacute;dicos',
+      '4':'Feria de Salud','5':'Compra de Lentes','6':'Apoyo en Medicamento',
+      '7':'P&oacute;liza de Salud','8':'Matr&iacute;cula','9':'Canasta Navide&ntilde;a',
+      '10':'Campa&ntilde;a de Fortalecimiento de Valores','11':'Campa&ntilde;a de Concienciaci&oacute;n de Instalaciones',
       '12':'Feria de Empleo','13':'Apoyo en Casos de Siniestros'
     };
-    const mapTipoNombre = { '1':'Salud', '2':'Promoción Social' };
+    const mapTipoNombre = { '1':'Salud', '2':'Promoci&oacute;n Social' };
 
     const nombrePrograma = mapProgramaNombre[programaParam] || 'Programa';
     const nombreTipo = mapTipoNombre[tipoParam] || '';
+
+    const userData = await loadUserProfile();
+    const userName = userData ? `${userData.Nombre || userData.nombre || ''} ${userData.Apellido || userData.apellido || ''}`.trim() : '';
+
     const bannerDiv = document.getElementById('bannerPrograma');
     bannerDiv.style.display = 'block';
     bannerDiv.innerHTML = `
-      <div class="programa-banner">
-        <div class="banner-header">
-          <div class="banner-icon">📋</div>
-          <div>
-            <div class="banner-title">Has seleccionado el programa</div>
-            <div class="banner-selection">
-              <span>${nombreTipo}</span>
-              <span class="arrow">→</span>
-              <span>${nombrePrograma}</span>
-            </div>
-          </div>
-        </div>
-        <div class="banner-note">Esta selección no se puede cambiar en este paso. Si necesitas modificarla, cancela y vuelve a seleccionar desde la página de Programas.</div>
+      <div class="solicitud-meta">
+        <span class="meta-badge">${nombreTipo}</span>
+        <h3 class="meta-title">${nombrePrograma}</h3>
+        ${userName ? `<p class="meta-user">Solicitando como: <strong>${userName}</strong></p>` : ''}
+        <p class="meta-note">Esta selecci&oacute;n no se puede cambiar en este paso. Si necesitas modificarla, cancela y vuelve a seleccionar desde la p&aacute;gina de Programas.</p>
       </div>`;
-
-    // Load profile info for display only
-    await loadUserProfile();
 
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -378,7 +261,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         const token = getAuthToken();
         if (!token) {
-            showMessage('Debes iniciar sesión para enviar esta solicitud', true);
+            showMessage('Debes iniciar sesi&oacute;n para enviar esta solicitud', true);
             return;
         }
 
@@ -411,12 +294,12 @@ document.addEventListener('DOMContentLoaded', async function() {
                 messageDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 setTimeout(() => window.location.href = 'solicitudes.html', 2000);
             } else {
-                showMessage(`${data.error || 'Ocurrió un error inesperado.'}`, true);
+                showMessage(`${data.error || 'Ocurri&oacute; un error inesperado.'}`, true);
             }
         } catch (error) {
             showLoading(false);
             showMessage('Error al enviar la solicitud. Intenta nuevamente.', true);
-            console.error('Error en la petición:', error);
+            console.error('Error en la petici&oacute;n:', error);
         }
     });
 });
