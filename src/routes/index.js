@@ -26,18 +26,18 @@ function mountSeoRoute(app) {
   const formularioHtmlPath = path.join(FRONTEND_DIR, 'pages', 'formulario.html');
 
   const programasMap = {
-    '1': { nombre: 'Canasta Navideña', tipo: 'Promoción Social' },
-    '2': { nombre: 'Campaña de Fortalecimiento de Valores', tipo: 'Promoción Social' },
-    '3': { nombre: 'Campaña de Concienciación de Instalaciones', tipo: 'Promoción Social' },
-    '4': { nombre: 'Feria de Empleo', tipo: 'Promoción Social' },
-    '5': { nombre: 'Consejería Personal', tipo: 'Salud' },
-    '6': { nombre: 'Banco de Sangre', tipo: 'Salud' },
-    '7': { nombre: 'Ayuda en Gastos Médicos', tipo: 'Salud' },
-    '8': { nombre: 'Feria de Salud', tipo: 'Salud' },
-    '9': { nombre: 'Compra de Lentes', tipo: 'Salud' },
-    '10': { nombre: 'Apoyo en Medicamentos', tipo: 'Salud' },
-    '11': { nombre: 'Póliza de Salud', tipo: 'Salud' },
-    '12': { nombre: 'Matrícula', tipo: 'Salud' },
+    '1': { nombre: 'Consejería Personal', tipo: 'Salud' },
+    '2': { nombre: 'Banco de Sangre', tipo: 'Salud' },
+    '3': { nombre: 'Ayuda en Gastos Médicos', tipo: 'Salud' },
+    '4': { nombre: 'Feria de Salud', tipo: 'Salud' },
+    '5': { nombre: 'Compra de Lentes', tipo: 'Salud' },
+    '6': { nombre: 'Apoyo en Medicamentos', tipo: 'Salud' },
+    '7': { nombre: 'Póliza de Salud', tipo: 'Salud' },
+    '8': { nombre: 'Matrícula', tipo: 'Salud' },
+    '9': { nombre: 'Canasta Navideña', tipo: 'Promoción Social' },
+    '10': { nombre: 'Campaña de Fortalecimiento de Valores', tipo: 'Promoción Social' },
+    '11': { nombre: 'Campaña de Concienciación de Instalaciones', tipo: 'Promoción Social' },
+    '12': { nombre: 'Feria de Empleo', tipo: 'Promoción Social' },
     '13': { nombre: 'Apoyo en Casos de Siniestros', tipo: 'Promoción Social' }
   };
 
