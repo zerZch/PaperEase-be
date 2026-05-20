@@ -192,81 +192,26 @@
   .form-group input:hover,
   .form-group select:hover {
     border-color: var(--color-primario);
-    transform: translateY(-1px);
   }
 
-  /* Efecto para campos preseleccionados */
-  .form-group select[data-preselected="true"] {
-    background-color: #f0f9ff;
-    border-color: var(--color-primario);
-    animation: highlight 0.6s ease-in-out;
-  }
-
-  @keyframes highlight {
-    0% {
-      background-color: #dbeafe;
-    }
-    100% {
-      background-color: #f0f9ff;
-    }
-  }
-
-  /* Mejora del botón de envío */
+  /* Botón de envío limpio */
   .cta-primary {
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px -1px rgba(77, 134, 156, 0.3);
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 4px rgba(77, 134, 156, 0.2);
   }
 
   .cta-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(77, 134, 156, 0.4);
+    box-shadow: 0 4px 8px rgba(77, 134, 156, 0.3);
   }
 
-  .cta-primary:active {
-    transform: translateY(0);
-  }
-
-  /* Efecto ripple para el botón */
-  .cta-primary::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.3);
-    transform: translate(-50%, -50%);
-    transition: width 0.6s, height 0.6s;
-  }
-
-  .cta-primary:active::before {
-    width: 300px;
-    height: 300px;
-  }
-
-  /* Mejora de los mensajes de estado */
+  /* Mensajes de estado */
   #message {
     border-radius: 0.5rem;
     font-weight: 500;
-    animation: slideIn 0.4s ease-out;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   }
 
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* Animación para el loading */
+  /* Indicador de carga */
   #loading {
     font-size: 1.1rem;
     color: var(--color-primario);
@@ -283,9 +228,9 @@
     }
   }
 
-  /* Mejora visual para input file */
+  /* Input file */
   .form-group input[type="file"] {
-    transition: all 0.3s ease;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
     cursor: pointer;
   }
 
@@ -301,7 +246,7 @@
     font-weight: bold;
   }
 
-  /* Estilo para select cuando está enfocado */
+  /* Estilo para select */
   .form-group select {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
     background-position: right 0.5rem center;
@@ -309,20 +254,6 @@
     background-size: 1.5em 1.5em;
     padding-right: 2.5rem;
     appearance: none;
-  }
-
-  /* Efecto de foco mejorado */
-  .form-group input:focus,
-  .form-group select:focus {
-    transform: translateY(-2px);
-  }
-
-  /* Título de la sección con efecto degradado */
-  .form-section h2 {
-    background: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
   }
 
   /* Mejora del párrafo descriptivo */
